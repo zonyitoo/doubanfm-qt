@@ -4,13 +4,11 @@
 #include <QMainWindow>
 #include <QtNetwork/QtNetwork>
 #include <QVector>
-#include "doubanfmsong.h"
 #include <phonon/MediaObject>
 #include <phonon/SeekSlider>
 #include <phonon/VolumeSlider>
 #include <phonon/AudioOutput>
-#include "doubanuser.h"
-#include "networkmanager.h"
+#include "douban.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,7 +24,8 @@ public:
     
 private:
     Ui::MainWindow *ui;
-    NetworkManager manager;
+    QNetworkAccessManager *_networkmgr;
+    Douban *_douban;
 
     QList<DoubanFMSong> songs;
     QList<Phonon::MediaSource> mediaSources;
@@ -36,6 +35,13 @@ private:
     Phonon::SeekSlider *seekSlider;
     Phonon::VolumeSlider *volumeSilder;
 
+    qint32 _channel;
+
+    void getImage(const QString &url);
+    void recvAlbumImage(const QByteArray &data);
+    void loadBackupData(const QString& filename);
+    void saveBackupData(const QString& filename);
+
 private slots:
     void stateChanged(Phonon::State newState, Phonon::State oldState);
     void playTick(qint64 time);
@@ -44,7 +50,12 @@ private slots:
     void on_nextButton_clicked();
     void recvNewList(const QList<DoubanFMSong> &song);
     void recvPlayingList(const QList<DoubanFMSong> &song);
-    void recvAlbumImage(const QByteArray &data);
+    void on_trashButton_clicked();
+    void on_heartButton_clicked();
+    void onReceivedImage(QNetworkReply *reply);
+    void onReceivedChannels(const QList<DoubanChannel>& channels);
+    void on_channelComboBox_currentIndexChanged(int index);
+    void recvRateSong(const bool succeed);
 };
 
 static const QString DOUBAN_PLAYLIST_ADDR = "http://www.douban.com/j/app/radio/people";

@@ -14,13 +14,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    networkmanager.cpp \
-    doubanuser.cpp
+    douban.cpp
 
 HEADERS  += mainwindow.h \
-    doubanfmsong.h \
-    networkmanager.h \
-    doubanuser.h
+    douban.h
 
 FORMS    += mainwindow.ui
 

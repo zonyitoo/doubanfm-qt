@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(onReceivedChannels(QList<DoubanChannel>)));
     connect(_douban, SIGNAL(receivedRateSong(bool)), this, SLOT(recvRateSong(bool)));
 
+    _channel = 1;
     this->loadBackupData("config.xml");
     _douban->loadUserFromXML("user.xml");
     _douban->getChannels();

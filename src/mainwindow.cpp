@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(_douban, SIGNAL(receivedNewList(QList<DoubanFMSong>)),
             this, SLOT(recvNewList(QList<DoubanFMSong>)));
+    connect(_douban, SIGNAL(receivedPlayingList(QList<DoubanFMSong>)),
+            this, SLOT(recvPlayingList(QList<DoubanFMSong>)));
     connect(_douban, SIGNAL(receivedChannels(QList<DoubanChannel>)),
             this, SLOT(onReceivedChannels(QList<DoubanChannel>)));
     connect(_douban, SIGNAL(receivedRateSong(bool)), this, SLOT(recvRateSong(bool)));
@@ -49,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _channel = 1;
     this->loadBackupData("config.xml");
     _douban->getChannels();
-    //_douban->getNewPlayList(_channel);
+    _douban->getNewPlayList(_channel);
 }
 
 void MainWindow::loadBackupData(const QString& filename) {
@@ -186,7 +188,7 @@ void MainWindow::sourceChanged(const Phonon::MediaSource& source) {
 
 
     ui->artistName->setText(songs[index].artist);
-    ui->albumName->setText(QString("< ") + songs[index].albumtitle + "  >  " + songs[index].public_time);
+    ui->albumName->setText(QString("< ") + songs[index].albumtitle + " >  " + songs[index].public_time);
     ui->songName->setText("<font color='green'>" + songs[index].title + "</font>");
 
     if (songs[index].like)
@@ -214,7 +216,12 @@ void MainWindow::stateChanged(Phonon::State newState, Phonon::State oldState) {
     case Phonon::PlayingState:
         qDebug() << Q_FUNC_INFO << "Phonon::PlayingState";
         ui->pauseButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_MediaPause)));
+        unfreeze();
         pause_state = false;
+
+        if (mediaSources.indexOf(mediaObject->currentSource()) == mediaSources.size() - 1) {
+            _douban->getPlayingList(_channel, songs[songs.size() - 1].sid);
+        }
         break;
     case Phonon::StoppedState:
         qDebug() << Q_FUNC_INFO << "Phonon::StoppedState";
@@ -228,7 +235,9 @@ void MainWindow::stateChanged(Phonon::State newState, Phonon::State oldState) {
         ui->pauseButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_MediaPlay)));
         pause_state = true;
         break;
-    default:
+    case Phonon::LoadingState:
+        qDebug() << Q_FUNC_INFO << "Phonon::LoadingState";
+        freeze();
         break;
     }
 }
@@ -269,9 +278,8 @@ void MainWindow::recvPlayingList(const QList<DoubanFMSong> &song) {
         mediaSources.append(s.url);
         qDebug() << Q_FUNC_INFO << s.title;
     }
-    mediaObject->clear();
+    mediaObject->clearQueue();
     mediaObject->setQueue(mediaSources);
-    mediaObject->play();
 }
 
 void MainWindow::recvAlbumImage(const QByteArray &data) {
@@ -312,7 +320,6 @@ void MainWindow::onReceivedChannels(const QList<DoubanChannel> &channels) {
     }
     ui->channelComboBox->setCurrentIndex(index);
     isInited = true;
-    _douban->getNewPlayList(_channel);
 }
 
 void MainWindow::on_channelComboBox_currentIndexChanged(int index) {

@@ -48,6 +48,7 @@ public:
     void userLogout();
 
     void getNewPlayList(const quint32& channel);
+    void getPlayingList(const quint32& channel, const quint32& sid);
     void rateSong(const quint32& sid, const quint32& channel, const bool toRate);
     void unrateSong(const quint32& sid, const quint32& channel);
     void skipSong(const quint32& sid, const quint32& channel);
@@ -61,6 +62,7 @@ public:
     
 signals:
     void receivedNewList(const QList<DoubanFMSong>& songs);
+    void receivedPlayingList(const QList<DoubanFMSong>& songs);
     void receivedRateSong(const bool succeed);
     void receivedSkipSong(const bool succeed);
     void receivedCurrentEnd(const bool succeed);
@@ -69,6 +71,7 @@ signals:
     
 private slots:
     void onReceivedNewList(QNetworkReply *reply);
+    void onReceivedPlayingList(QNetworkReply *reply);
     void onReceivedRateSong(QNetworkReply *reply);
     void onReceivedSkipSong(QNetworkReply *reply);
     void onReceivedCurrentEnd(QNetworkReply *reply);
@@ -87,8 +90,9 @@ private:
      * 4: current end
      * 5: bye song
      * 6: get channels
+     * 7: playing list
      */
-    QNetworkAccessManager *_managers[7];
+    QNetworkAccessManager *_managers[8];
 
     DoubanUser _user;
 };

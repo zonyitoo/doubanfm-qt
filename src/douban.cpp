@@ -5,12 +5,14 @@
 #include <QtXml/QDomElement>
 #include <QtXml/QDomNode>
 
+#include <algorithm>
+
 static Douban *_INSTANCE = NULL;
 static const QString DOUBAN_FM_API_ADDR = "http://www.douban.com/j/app/radio/people";
 static const QString DOUBAN_FM_API_CHANNEL = "http://www.douban.com/j/app/radio/channels";
 
 Douban::Douban(QObject *parent) : QObject(parent) {
-    for (int i = 0; i < 7; ++ i)
+    for (int i = 0; i < 8; ++ i)
         _managers[i] = new QNetworkAccessManager(this);
 
     connect(_managers[1], SIGNAL(finished(QNetworkReply*)),
@@ -25,11 +27,13 @@ Douban::Douban(QObject *parent) : QObject(parent) {
             this, SLOT(onReceivedByeSong(QNetworkReply*)));
     connect(_managers[6], SIGNAL(finished(QNetworkReply*)),
             this, SLOT(onReceivedChannels(QNetworkReply*)));
+    connect(_managers[7], SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(onReceivedPlayingList(QNetworkReply*)));
 }
 
 
 Douban::~Douban() {
-    for (int i = 0; i < 7; ++ i)
+    for (int i = 0; i < 8; ++ i)
         delete _managers[i];
 }
 
@@ -81,6 +85,7 @@ void Douban::onReceivedNewList(QNetworkReply *reply) {
 
     if (ok) {
         QVariantMap obj = result.toMap();
+        if (obj["r"].toInt() != 0) return;
         QVariantList songList = obj["song"].toList();
         foreach(QVariant item, songList) {
             QVariantMap song = item.toMap();
@@ -102,6 +107,56 @@ void Douban::onReceivedNewList(QNetworkReply *reply) {
         qDebug() << Q_FUNC_INFO << "songs.size() =" << songs.size();
     }
     emit receivedNewList(songs);
+    reply->deleteLater();
+}
+
+void Douban::getPlayingList(const quint32& channel, const quint32 &sid) {
+    QString args = QString("?app_name=radio_desktop_win&version=100")
+            + QString("&user_id=") + _user.user_id
+            + QString("&expire=") + _user.expire
+            + QString("&token=") + _user.token
+            + QString("&sid=") + QString::number(sid)
+            + QString("&h=")
+            + QString("&channel=") + QString::number(channel, 10)
+            + QString("&type=p");
+
+    _managers[7]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
+}
+
+void Douban::onReceivedPlayingList(QNetworkReply *reply) {
+    QTextCodec *codec = QTextCodec::codecForName("utf-8");
+    QString all = codec->toUnicode(reply->readAll());
+
+    QJson::Parser parser;
+    bool ok;
+    QVariant result = parser.parse(all.toAscii(), &ok);
+
+    QList<DoubanFMSong> songs;
+
+    if (ok) {
+        QVariantMap obj = result.toMap();
+        if (obj["r"].toInt() != 0) return;
+        QVariantList songList = obj["song"].toList();
+        foreach(QVariant item, songList) {
+            QVariantMap song = item.toMap();
+            DoubanFMSong s;
+            s.album = song["album"].toString();
+            s.picture = song["picture"].toString();
+            s.ssid = song["ssid"].toString();
+            s.artist = song["artist"].toString();
+            s.url = song["url"].toString();
+            s.company = song["company"].toString();
+            s.title = song["title"].toString();
+            s.public_time = song["public_time"].toString();
+            s.sid = song["sid"].toUInt();
+            s.aid = song["aid"].toUInt();
+            s.albumtitle = song["albumtitle"].toString();
+            s.like = song["like"].toBool();
+            songs.push_back(s);
+        }
+        qDebug() << Q_FUNC_INFO << "songs.size() =" << songs.size();
+    }
+    emit receivedPlayingList(songs);
     reply->deleteLater();
 }
 
@@ -225,6 +280,10 @@ void Douban::getChannels() {
     _managers[6]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_CHANNEL)));
 }
 
+bool cmp_channels(const DoubanChannel& a, const DoubanChannel& b) {
+    return a.channel_id < b.channel_id;
+}
+
 void Douban::onReceivedChannels(QNetworkReply *reply) {
     qDebug() << Q_FUNC_INFO;
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
@@ -252,6 +311,7 @@ void Douban::onReceivedChannels(QNetworkReply *reply) {
         qDebug() << Q_FUNC_INFO << "channels.size() =" << channels.size();
     }
 
+    std::sort(channels.begin(), channels.end(), cmp_channels);
     emit receivedChannels(channels);
     reply->deleteLater();
 }

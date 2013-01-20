@@ -69,7 +69,7 @@
           </property>
           <property name="font">
            <font>
-            <family>文泉驿微米黑</family>
+            <family>Sans Serif</family>
             <pointsize>20</pointsize>
             <weight>50</weight>
             <italic>false</italic>
@@ -98,6 +98,9 @@
           <property name="text">
            <string/>
           </property>
+          <property name="shortcut">
+           <string>Space</string>
+          </property>
          </widget>
         </item>
        </layout>
@@ -112,6 +115,7 @@
         </property>
         <property name="font">
          <font>
+          <family>Sans Serif</family>
           <pointsize>10</pointsize>
          </font>
         </property>
@@ -145,6 +149,7 @@
           </property>
           <property name="font">
            <font>
+            <family>Sans Serif</family>
             <pointsize>12</pointsize>
             <weight>50</weight>
             <italic>false</italic>
@@ -281,6 +286,9 @@
           </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="shortcut">
+           <string>Right</string>
           </property>
          </widget>
         </item>

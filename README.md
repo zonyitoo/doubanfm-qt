@@ -10,7 +10,7 @@
 ![截图](https://raw.github.com/zonyitoo/doubanfm-qt/master/screenshot.png)
 
 ## TODO
-* --基本播放功能--
-* --频道选择--
+* <del>基本播放功能</del>
+* <del>频道选择</del>
 * 用户登录
 * 快捷键

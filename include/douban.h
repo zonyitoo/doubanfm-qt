@@ -46,8 +46,6 @@ public:
 
     DoubanUser userLogin(const QString& name, const QString& password);
     void userLogout();
-    void loadUserFromXML(const QString& xmlfilename);
-    void saveUserToXML(const QString& xmlfilename);
 
     void getNewPlayList(const quint32& channel);
     void rateSong(const quint32& sid, const quint32& channel, const bool toRate);
@@ -59,6 +57,7 @@ public:
     void getChannels();
 
     void setUser(const DoubanUser& user);
+    DoubanUser getUser();
     
 signals:
     void receivedNewList(const QList<DoubanFMSong>& songs);

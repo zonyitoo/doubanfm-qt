@@ -48,7 +48,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _channel = 1;
     this->loadBackupData("config.xml");
-    _douban->loadUserFromXML("user.xml");
     _douban->getChannels();
     //_douban->getNewPlayList(_channel);
 }
@@ -72,6 +71,31 @@ void MainWindow::loadBackupData(const QString& filename) {
                 audioOutput->setVolume(list.at(i).toElement().text().toDouble(&ok));
                 if (!ok) audioOutput->setVolume(0.5);
                 qDebug() << Q_FUNC_INFO << "Last volume =" << audioOutput->volume();
+            }
+            else if (list.at(i).nodeName() == "user") {
+                QDomElement user = list.at(i).toElement();
+                QString user_id = user.attribute("user_id");
+
+                QString expire, token;
+
+                QDomNodeList list = user.childNodes();
+                for (int i = 0; i < list.size(); ++ i) {
+                    QDomNode node = list.at(i);
+                    if (node.nodeName() == "expire") {
+                        expire = node.toElement().text();
+                    }
+                    else if (node.nodeName() == "token") {
+                        token = node.toElement().text();
+                    }
+                }
+
+                if (user_id.isEmpty() || expire.isEmpty() || token.isEmpty()) continue;
+
+                DoubanUser ruser;
+                ruser.user_id = user_id;
+                ruser.expire = expire;
+                ruser.token = token;
+                _douban->setUser(ruser);
             }
         }
     }
@@ -100,6 +124,19 @@ void MainWindow::saveBackupData(const QString& filename) {
     volume.appendChild(volume_val);
     doubanfm.appendChild(volume);
     doubanfm.appendChild(channel);
+
+    QDomElement user = doc.createElement("user");
+    user.setAttribute("user_id", _douban->getUser().user_id);
+    QDomElement expire = doc.createElement("expire");
+    QDomText expire_t = doc.createTextNode(_douban->getUser().expire);
+    expire.appendChild(expire_t);
+    QDomElement token = doc.createElement("token");
+    QDomText token_t = doc.createTextNode(_douban->getUser().token);
+    token.appendChild(token_t);
+    user.appendChild(expire);
+    user.appendChild(token);
+    doubanfm.appendChild(user);
+
     doc.appendChild(doubanfm);
     doc.save(out, 4, QDomNode::EncodingFromTextStream);
 
@@ -149,7 +186,7 @@ void MainWindow::sourceChanged(const Phonon::MediaSource& source) {
 
 
     ui->artistName->setText(songs[index].artist);
-    ui->albumName->setText(QString("< ") + songs[index].albumtitle + ">  " + songs[index].public_time);
+    ui->albumName->setText(QString("< ") + songs[index].albumtitle + "  >  " + songs[index].public_time);
     ui->songName->setText("<font color='green'>" + songs[index].title + "</font>");
 
     if (songs[index].like)

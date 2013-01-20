@@ -53,65 +53,8 @@ void Douban::setUser(const DoubanUser& user) {
     _user = user;
 }
 
-void Douban::loadUserFromXML(const QString& xmlfilename) {
-    QFile file(xmlfilename);
-    QDomDocument doc;
-    if (!file.open(QIODevice::ReadOnly)) return;
-    if (doc.setContent(&file)) {
-        QDomElement user = doc.documentElement();
-        QString user_id = user.attribute("user_id");
-
-        QString expire, token;
-
-        QDomNodeList list = user.childNodes();
-        for (int i = 0; i < list.size(); ++ i) {
-            QDomNode node = list.at(i);
-            if (node.nodeName() == "expire") {
-                expire = node.toElement().text();
-            }
-            else if (node.nodeName() == "token") {
-                token = node.toElement().text();
-            }
-        }
-
-        if (user_id.isEmpty() || expire.isEmpty() || token.isEmpty()) return;
-
-        _user.user_id = user_id;
-        _user.expire = expire;
-        _user.token = token;
-
-        qDebug() << Q_FUNC_INFO << _user.user_id << _user.expire << _user.token;
-    }
-    file.close();
-}
-
-void Douban::saveUserToXML(const QString& xmlfilename) {
-    QFile file(xmlfilename);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate |QIODevice::Text)) {
-        return;
-    }
-    QTextStream out(&file);
-    out.setCodec("UTF-8");
-
-    QDomDocument doc;
-
-    QDomProcessingInstruction instruction =
-            doc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"UTF-8\"");
-    doc.appendChild(instruction);
-    QDomElement user = doc.createElement("user");
-    user.setAttribute("user_id", _user.user_id);
-    QDomElement expire = doc.createElement("expire");
-    QDomText expire_t = doc.createTextNode(_user.expire);
-    expire.appendChild(expire_t);
-    QDomElement token = doc.createElement("token");
-    QDomText token_t = doc.createTextNode(_user.token);
-    token.appendChild(token_t);
-    user.appendChild(expire);
-    user.appendChild(token);
-    doc.appendChild(user);
-    doc.save(out, 4, QDomNode::EncodingFromTextStream);
-
-    file.close();
+DoubanUser Douban::getUser() {
+    return _user;
 }
 
 void Douban::getNewPlayList(const quint32& channel) {

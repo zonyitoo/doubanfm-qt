@@ -149,7 +149,7 @@ void MainWindow::sourceChanged(const Phonon::MediaSource& source) {
 
 
     ui->artistName->setText(songs[index].artist);
-    ui->albumName->setText(songs[index].albumtitle);
+    ui->albumName->setText(QString("< ") + songs[index].albumtitle + ">  " + songs[index].public_time);
     ui->songName->setText("<font color='green'>" + songs[index].title + "</font>");
 
     if (songs[index].like)
@@ -181,8 +181,10 @@ void MainWindow::stateChanged(Phonon::State newState, Phonon::State oldState) {
         break;
     case Phonon::StoppedState:
         qDebug() << Q_FUNC_INFO << "Phonon::StoppedState";
-        if (mediaSources.indexOf(mediaObject->currentSource()) == mediaSources.size() - 1)
+        if (mediaSources.indexOf(mediaObject->currentSource()) == mediaSources.size() - 1) {
             _douban->getNewPlayList(_channel);
+            freeze();
+        }
         break;
     case Phonon::PausedState:
         qDebug() << Q_FUNC_INFO << "Phonon::PausedState";
@@ -215,11 +217,12 @@ void MainWindow::recvNewList(const QList<DoubanFMSong> &song) {
     mediaSources.clear();
     foreach(DoubanFMSong s, song) {
         mediaSources.append(s.url);
-        qDebug() << Q_FUNC_INFO << s.url;
+        qDebug() << Q_FUNC_INFO << s.title;
     }
     mediaObject->clear();
     mediaObject->setQueue(mediaSources);
     mediaObject->play();
+    unfreeze();
 }
 
 void MainWindow::recvPlayingList(const QList<DoubanFMSong> &song) {
@@ -298,4 +301,18 @@ void MainWindow::recvRateSong(const bool succeed) {
             ui->heartButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_DialogCloseButton)));
         }
     }
+}
+
+void MainWindow::freeze() {
+    ui->heartButton->setEnabled(false);
+    ui->trashButton->setEnabled(false);
+    ui->pauseButton->setEnabled(false);
+    ui->channelComboBox->setEnabled(false);
+}
+
+void MainWindow::unfreeze() {
+    ui->heartButton->setEnabled(true);
+    ui->trashButton->setEnabled(true);
+    ui->pauseButton->setEnabled(true);
+    ui->channelComboBox->setEnabled(true);
 }

@@ -70,7 +70,7 @@
           <property name="font">
            <font>
             <family>文泉驿微米黑</family>
-            <pointsize>16</pointsize>
+            <pointsize>20</pointsize>
             <weight>50</weight>
             <italic>false</italic>
             <bold>false</bold>
@@ -109,6 +109,11 @@
           <width>300</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
         </property>
         <property name="text">
          <string/>

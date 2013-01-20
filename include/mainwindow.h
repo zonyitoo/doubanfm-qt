@@ -42,6 +42,9 @@ private:
     void loadBackupData(const QString& filename);
     void saveBackupData(const QString& filename);
 
+    void freeze();
+    void unfreeze();
+
 private slots:
     void stateChanged(Phonon::State newState, Phonon::State oldState);
     void playTick(qint64 time);

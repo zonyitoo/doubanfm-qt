@@ -7,6 +7,8 @@
 
 ## 截图
 
+[!截图](https://raw.github.com/zonyitoo/doubanfm-qt/master/screenshot.png)
+
 ## TODO
 * --基本播放功能--
 * --频道选择--

@@ -232,7 +232,7 @@ void MainWindow::sourceChanged(const Phonon::MediaSource& source) {
 
 
     ui->artistName->setText(songs[index].artist);
-    ui->albumName->setText(QString("< ") + songs[index].albumtitle + " >");
+    ui->albumName->setText(QString("< ") + songs[index].albumtitle + " >  " + songs[index].public_time);
     ui->songName->setText("<font color='green'>" + songs[index].title + "</font>");
 
     if (songs[index].like)

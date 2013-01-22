@@ -47,6 +47,7 @@ signals:
     
 private slots:
     void onReceivedAuth(QNetworkReply *reply);
+    void onReceivedRelogin(QNetworkReply *reply);
     void onReceivedNewList(QNetworkReply *reply);
     void onReceivedPlayingList(QNetworkReply *reply);
     void onReceivedRateSong(QNetworkReply *reply);

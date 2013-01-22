@@ -35,8 +35,6 @@ private:
 
     qint32 _channel;
 
-    QMovie *_loading;
-
     void getImage(const QString &url);
     void recvAlbumImage(const QByteArray &data);
     void loadBackupData(const QString& filename);

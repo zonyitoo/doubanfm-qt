@@ -34,7 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(sourceChanged(Phonon::MediaSource)));
 
     connect(_networkmgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedImage(QNetworkReply*)));
-    _loading = new QMovie(":loading.gif");
+
+    connect(ui->userNameButton, SIGNAL(clicked()), this, SLOT(on_authAction_triggered()));
 
     connect(_douban, SIGNAL(receivedNewList(QList<DoubanFMSong>)),
             this, SLOT(recvNewList(QList<DoubanFMSong>)));
@@ -123,6 +124,8 @@ void MainWindow::loadBackupData(const QString& filename) {
                 ruser.user_name = user_name;
                 ruser.password = password;
 
+                ui->userNameButton->setText(user_name);
+
                 _douban->setUser(ruser);
             }
         }
@@ -204,9 +207,6 @@ void MainWindow::playTick(qint64 time) {
 
 void MainWindow::getImage(const QString &url) {
     qDebug() << Q_FUNC_INFO << url;
-
-    ui->albumImage->setMovie(_loading);
-    _loading->start();
     _networkmgr->get(QNetworkRequest(QUrl(url)));
 }
 
@@ -230,7 +230,7 @@ void MainWindow::sourceChanged(const Phonon::MediaSource& source) {
 
 
     ui->artistName->setText(songs[index].artist);
-    ui->albumName->setText(QString("< ") + songs[index].albumtitle + " >  " + songs[index].public_time);
+    ui->albumName->setText(QString("< ") + songs[index].albumtitle + " >");
     ui->songName->setText("<font color='green'>" + songs[index].title + "</font>");
 
     if (songs[index].like)
@@ -334,8 +334,6 @@ void MainWindow::recvAlbumImage(const QByteArray &data) {
     pixmap.loadFromData(data);
     int w = ui->albumImage->width();
     int h = ui->albumImage->height();
-    ui->albumImage->setMovie(NULL);
-    _loading->stop();
     ui->albumImage->setPixmap(pixmap.scaled(w, h, Qt::IgnoreAspectRatio));
 }
 
@@ -416,8 +414,10 @@ void MainWindow::on_authAction_triggered() {
 void MainWindow::recvUserLogin(DoubanUser *user) {
     ui->authAction->setText(user->user_name + QString("  ") + user->email);
     _douban->getNewPlayList(_channel);
+    ui->userNameButton->setText(user->user_name);
 }
 
 void MainWindow::recvUserLogoff() {
     ui->authAction->setText("未登录");
+    ui->userNameButton->setText("未登录");
 }

@@ -35,6 +35,8 @@ private:
 
     qint32 _channel;
 
+    QMovie *_loading;
+
     void getImage(const QString &url);
     void recvAlbumImage(const QByteArray &data);
     void loadBackupData(const QString& filename);
@@ -61,5 +63,7 @@ private slots:
     void recvUserLogin(DoubanUser *user);
     void recvUserLogoff();
 };
+
+const QString VERSION = "1.0";
 
 #endif // MAINWINDOW_H

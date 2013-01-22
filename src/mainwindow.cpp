@@ -3,6 +3,7 @@
 #include <qjson/parser.h>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QMovie>
 
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
@@ -27,10 +28,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->nextButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_MediaSkipForward)));
 
     connect(mediaObject, SIGNAL(tick(qint64)), this, SLOT(playTick(qint64)));
-    connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
+    connect(mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
             this, SLOT(stateChanged(Phonon::State,Phonon::State)));
     connect(mediaObject, SIGNAL(currentSourceChanged(Phonon::MediaSource)),
             this, SLOT(sourceChanged(Phonon::MediaSource)));
+
+    connect(_networkmgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedImage(QNetworkReply*)));
+    _loading = new QMovie(":loading.gif");
 
     connect(_douban, SIGNAL(receivedNewList(QList<DoubanFMSong>)),
             this, SLOT(recvNewList(QList<DoubanFMSong>)));
@@ -59,9 +63,13 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::loadBackupData(const QString& filename) {
     QDomDocument doc;
     QFile file(filename);
-    if (!file.open(QIODevice::ReadOnly)) return;
+    if (!file.open(QIODevice::ReadWrite)) return;
     if (doc.setContent(&file)) {
         QDomElement config = doc.documentElement();
+        if (config.attribute("version") != VERSION) {
+            file.remove();
+            return;
+        }
         QDomNodeList list = config.childNodes();
         for (int i = 0; i < list.size(); ++ i) {
             if (list.at(i).nodeName() == "channel") {
@@ -119,6 +127,9 @@ void MainWindow::loadBackupData(const QString& filename) {
             }
         }
     }
+    else {
+        file.remove();
+    }
     file.close();
 }
 
@@ -136,6 +147,7 @@ void MainWindow::saveBackupData(const QString& filename) {
             doc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"UTF-8\"");
     doc.appendChild(instruction);
     QDomElement doubanfm = doc.createElement("DoubanFM");
+    doubanfm.setAttribute("version", VERSION);
     QDomElement channel = doc.createElement("channel");
     QDomText channel_val = doc.createTextNode(QString::number(_channel));
     channel.appendChild(channel_val);
@@ -192,8 +204,9 @@ void MainWindow::playTick(qint64 time) {
 
 void MainWindow::getImage(const QString &url) {
     qDebug() << Q_FUNC_INFO << url;
-    disconnect(_networkmgr, 0, 0, 0);
-    connect(_networkmgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedImage(QNetworkReply*)));
+
+    ui->albumImage->setMovie(_loading);
+    _loading->start();
     _networkmgr->get(QNetworkRequest(QUrl(url)));
 }
 
@@ -281,6 +294,14 @@ void MainWindow::on_pauseButton_clicked() {
 }
 
 void MainWindow::on_nextButton_clicked() {
+    if (mediaObject->state() == Phonon::StoppedState) {
+        _douban->getNewPlayList(_channel);
+        return;
+    }
+    else if (mediaObject->state() == Phonon::PausedState) {
+        mediaObject->play();
+    }
+
     int index = mediaSources.indexOf(mediaObject->currentSource());
     _douban->skipSong(songs[index].sid, _channel);
     mediaObject->seek(mediaObject->totalTime());
@@ -313,6 +334,8 @@ void MainWindow::recvAlbumImage(const QByteArray &data) {
     pixmap.loadFromData(data);
     int w = ui->albumImage->width();
     int h = ui->albumImage->height();
+    ui->albumImage->setMovie(NULL);
+    _loading->stop();
     ui->albumImage->setPixmap(pixmap.scaled(w, h, Qt::IgnoreAspectRatio));
 }
 

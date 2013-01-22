@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>用户登录</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../icon.png</normaloff>../icon.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLineEdit" name="emailLineEdit">

@@ -18,3 +18,8 @@
 
 ## BUGS
 * 在长时间暂停后重启播放会崩溃
+
+## LICENSE
+本项目基于MIT协议发布
+
+MIT: [http://rem.mit-license.org](http://rem.mit-license.org)

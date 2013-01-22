@@ -206,8 +206,10 @@ void MainWindow::playTick(qint64 time) {
 
 
 void MainWindow::getImage(const QString &url) {
-    qDebug() << Q_FUNC_INFO << url;
-    _networkmgr->get(QNetworkRequest(QUrl(url)));
+    QString mod_url = url;
+    mod_url.replace("mpic", "lpic");
+    qDebug() << Q_FUNC_INFO << mod_url;
+    _networkmgr->get(QNetworkRequest(QUrl(mod_url)));
 }
 
 void MainWindow::onReceivedImage(QNetworkReply *reply) {

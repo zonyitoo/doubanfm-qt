@@ -420,7 +420,6 @@ bool cmp_channels(const DoubanChannel& a, const DoubanChannel& b) {
 }
 
 void Douban::onReceivedChannels(QNetworkReply *reply) {
-    qDebug() << Q_FUNC_INFO;
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
 

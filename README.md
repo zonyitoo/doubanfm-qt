@@ -4,10 +4,11 @@
 ## 依赖
 * libqt4
 * libphonon
+* libqjson
 
 ## 截图
 
-![截图](https://raw.github.com/zonyitoo/doubanfm-qt/master/screenshot.png)
+![截图](https://gitcafe.com/zonyitoo/doubanfm-qt/raw/master/screenshot.png)
 
 ## TODO
 * <del>基本播放功能</del>

@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>244</height>
+    <height>218</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>244</height>
+    <height>218</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>500</width>
-    <height>244</height>
+    <height>218</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -330,23 +330,6 @@
      </layout>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>500</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>用户</string>
-    </property>
-    <addaction name="authAction"/>
-   </widget>
-   <addaction name="menu"/>
   </widget>
   <action name="authAction">
    <property name="text">

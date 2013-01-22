@@ -57,7 +57,6 @@ private slots:
     void onReceivedChannels(const QList<DoubanChannel>& channels);
     void on_channelComboBox_currentIndexChanged(int index);
     void recvRateSong(const bool succeed);
-    void on_authAction_triggered();
     void recvUserLogin(DoubanUser *user);
     void recvUserLogoff();
 };

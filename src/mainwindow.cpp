@@ -409,17 +409,11 @@ void MainWindow::unfreeze() {
     ui->channelComboBox->setEnabled(true);
 }
 
-void MainWindow::on_authAction_triggered() {
-    _douban->userLogin();
-}
-
 void MainWindow::recvUserLogin(DoubanUser *user) {
-    ui->authAction->setText(user->user_name + QString("  ") + user->email);
     _douban->getNewPlayList(_channel);
     ui->userNameButton->setText(user->user_name);
 }
 
 void MainWindow::recvUserLogoff() {
-    ui->authAction->setText("未登录");
     ui->userNameButton->setText("未登录");
 }

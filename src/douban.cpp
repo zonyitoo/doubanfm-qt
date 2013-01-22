@@ -4,17 +4,22 @@
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 #include <QtXml/QDomNode>
+#include <QTime>
+#include <QtGui>
 
 #include <algorithm>
 
 static Douban *_INSTANCE = NULL;
 static const QString DOUBAN_FM_API_ADDR = "http://www.douban.com/j/app/radio/people";
 static const QString DOUBAN_FM_API_CHANNEL = "http://www.douban.com/j/app/radio/channels";
+static const QString DOUBAN_FM_LOGIN = "http://www.douban.com/j/app/login";
 
 Douban::Douban(QObject *parent) : QObject(parent) {
     for (int i = 0; i < 8; ++ i)
         _managers[i] = new QNetworkAccessManager(this);
 
+    connect(_managers[0], SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(onReceivedAuth(QNetworkReply*)));
     connect(_managers[1], SIGNAL(finished(QNetworkReply*)),
             this, SLOT(onReceivedNewList(QNetworkReply*)));
     connect(_managers[2], SIGNAL(finished(QNetworkReply*)),
@@ -29,12 +34,15 @@ Douban::Douban(QObject *parent) : QObject(parent) {
             this, SLOT(onReceivedChannels(QNetworkReply*)));
     connect(_managers[7], SIGNAL(finished(QNetworkReply*)),
             this, SLOT(onReceivedPlayingList(QNetworkReply*)));
-}
 
+    loginDialog = NULL;
+}
 
 Douban::~Douban() {
     for (int i = 0; i < 8; ++ i)
         delete _managers[i];
+
+    delete loginDialog;
 }
 
 Douban* Douban::getInstance(const DoubanUser &user) {
@@ -45,16 +53,84 @@ Douban* Douban::getInstance(const DoubanUser &user) {
     return _INSTANCE;
 }
 
-DoubanUser Douban::userLogin(const QString& name, const QString& password) {
+void Douban::userLogin() {
+    if (loginDialog == NULL) {
+        qDebug() << Q_FUNC_INFO << "loginDialog == NULL";
+        return;
+    }
+    if (hasLogin()) {
+        loginDialog->setNameAndPassword(_user.email, _user.password);
+    }
+    loginDialog->show();
+}
 
+void Douban::onLoginSucceed(DoubanUser user) {
+    _user = user;
+    emit this->loginSucceed(&_user);
+}
+
+void Douban::userReLogin() {
+    QString args = QString("app_name=radio_desktop_win&version=100")
+            + QString("&email=") + _user.email
+            + QString("&password=") + _user.password;
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+                      QVariant("application/x-www-form-urlencoded"));
+    request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(args.length()));
+    request.setUrl(QUrl(DOUBAN_FM_LOGIN));
+    _managers[0]->post(request, args.toAscii());
+}
+
+void Douban::onReceivedAuth(QNetworkReply *reply) {
+    QTextCodec *codec = QTextCodec::codecForName("utf-8");
+    QString all = codec->toUnicode(reply->readAll());
+
+    QJson::Parser parser;
+    bool ok;
+    QVariant result = parser.parse(all.toAscii(), &ok);
+
+    if (ok) {
+        QVariantMap obj = result.toMap();
+        if (obj["r"].toInt() != 0) {
+            if (obj["err"].toString() == "expired") {
+                qDebug() << Q_FUNC_INFO << "User expired. Relogin";
+                userReLogin();
+            }
+            else
+                qDebug() << Q_FUNC_INFO << "Err" << obj["err"].toString();
+            return;
+        }
+        DoubanUser nuser;
+        nuser.user_id = obj["user_id"].toString();
+        nuser.expire = obj["expire"].toString();
+        nuser.token = obj["token"].toString();
+        nuser.user_name = obj["user_name"].toString();
+        nuser.email = obj["email"].toString();
+        nuser.password = _user.password;
+
+        onLoginSucceed(nuser);
+    }
+
+    reply->deleteLater();
 }
 
 void Douban::userLogout() {
-
+    _user = DoubanUser();
+    emit logoffSucceed();
 }
 
 void Douban::setUser(const DoubanUser& user) {
     _user = user;
+
+    if (_user.user_id.isEmpty()
+            || _user.token.isEmpty()
+            || _user.user_id.isEmpty()
+            || _user.expire.isEmpty()) {
+        _user = DoubanUser();
+        return;
+    }
+
+    QTime time;
 }
 
 DoubanUser Douban::getUser() {
@@ -85,7 +161,15 @@ void Douban::onReceivedNewList(QNetworkReply *reply) {
 
     if (ok) {
         QVariantMap obj = result.toMap();
-        if (obj["r"].toInt() != 0) return;
+        if (obj["r"].toInt() != 0) {
+            if (obj["err"].toString() == "expired") {
+                qDebug() << Q_FUNC_INFO << "User expired. Relogin";
+                userReLogin();
+            }
+            else
+                qDebug() << Q_FUNC_INFO << "Err" << obj["err"].toString();
+            return;
+        }
         QVariantList songList = obj["song"].toList();
         foreach(QVariant item, songList) {
             QVariantMap song = item.toMap();
@@ -135,7 +219,15 @@ void Douban::onReceivedPlayingList(QNetworkReply *reply) {
 
     if (ok) {
         QVariantMap obj = result.toMap();
-        if (obj["r"].toInt() != 0) return;
+        if (obj["r"].toInt() != 0) {
+            if (obj["err"].toString() == "expired") {
+                qDebug() << Q_FUNC_INFO << "User expired. Relogin";
+                userReLogin();
+            }
+            else
+                qDebug() << Q_FUNC_INFO << "Err" << obj["err"].toString();
+            return;
+        }
         QVariantList songList = obj["song"].toList();
         foreach(QVariant item, songList) {
             QVariantMap song = item.toMap();
@@ -183,6 +275,10 @@ void Douban::onReceivedRateSong(QNetworkReply *reply) {
     if (ok) {
         QVariantMap obj = result.toMap();
         if (obj["r"].toInt() == 1) {
+            if (obj["err"].toString() == "expired") {
+                qDebug() << Q_FUNC_INFO << "User expired. Relogin";
+                userReLogin();
+            }
             emit receivedRateSong(false);
         }
         else {
@@ -215,6 +311,10 @@ void Douban::onReceivedSkipSong(QNetworkReply *reply) {
     if (ok) {
         QVariantMap obj = result.toMap();
         if (obj["r"].toInt() == 1) {
+            if (obj["err"].toString() == "expired") {
+                qDebug() << Q_FUNC_INFO << "User expired. Relogin";
+                userReLogin();
+            }
             emit receivedSkipSong(false);
         }
         else {
@@ -267,6 +367,10 @@ void Douban::onReceivedByeSong(QNetworkReply *reply) {
     if (ok) {
         QVariantMap obj = result.toMap();
         if (obj["r"].toInt() == 1) {
+            if (obj["err"].toString() == "expired") {
+                qDebug() << Q_FUNC_INFO << "User expired. Relogin";
+                userReLogin();
+            }
             emit receivedByeSong(false);
         }
         else {
@@ -314,4 +418,20 @@ void Douban::onReceivedChannels(QNetworkReply *reply) {
     std::sort(channels.begin(), channels.end(), cmp_channels);
     emit receivedChannels(channels);
     reply->deleteLater();
+}
+
+void Douban::setLoginDialog(DoubanLoginDialog *dialog) {
+    if (dialog == NULL) return;
+
+    loginDialog = dialog;
+    connect(loginDialog, SIGNAL(loginSucceed(DoubanUser)),
+            this, SLOT(onLoginSucceed(DoubanUser)));
+}
+
+bool Douban::hasLogin() {
+    return (!_user.expire.isEmpty()
+            && !_user.token.isEmpty()
+            && !_user.user_id.isEmpty()
+            && !_user.email.isEmpty()
+            && !_user.user_name.isEmpty());
 }

@@ -14,20 +14,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     mediaObject = new Phonon::MediaObject(this);
     audioOutput = new Phonon::AudioOutput(this);
-    seekSlider = new Phonon::SeekSlider(this);
-    volumeSilder = new Phonon::VolumeSlider(this);
     _douban = Douban::getInstance();
     _networkmgr = new QNetworkAccessManager(this);
 
-    ui->controlLayout->addWidget(seekSlider);
-    QHBoxLayout *volumeControlLayout = new QHBoxLayout(this);
-    volumeControlLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding));
-    volumeControlLayout->addWidget(volumeSilder);
-    ui->controlLayout->addItem(volumeControlLayout);
-
-    seekSlider->setMediaObject(mediaObject);
-    seekSlider->setEnabled(false);
-    volumeSilder->setAudioOutput(audioOutput);
+    ui->seekSlider->setMediaObject(mediaObject);
+    ui->seekSlider->setEnabled(false);
+    ui->volumeSlider->setAudioOutput(audioOutput);
     Phonon::createPath(mediaObject, audioOutput);
 
     ui->trashButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_TrashIcon)));
@@ -47,11 +39,21 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_douban, SIGNAL(receivedChannels(QList<DoubanChannel>)),
             this, SLOT(onReceivedChannels(QList<DoubanChannel>)));
     connect(_douban, SIGNAL(receivedRateSong(bool)), this, SLOT(recvRateSong(bool)));
+    connect(_douban, SIGNAL(loginSucceed(DoubanUser*)),
+            this, SLOT(recvUserLogin(DoubanUser*)));
+    connect(_douban, SIGNAL(logoffSucceed()), this, SLOT(recvUserLogoff()));
 
     _channel = 1;
     this->loadBackupData("config.xml");
     _douban->getChannels();
     _douban->getNewPlayList(_channel);
+
+    DoubanLoginDialog *logindialog = new DoubanLoginDialog(this);
+    _douban->setLoginDialog(logindialog);
+
+    if (_douban->hasLogin()) {
+        ui->authAction->setText(_douban->getUser().user_name + QString("  ") + _douban->getUser().email);
+    }
 }
 
 void MainWindow::loadBackupData(const QString& filename) {
@@ -66,37 +68,53 @@ void MainWindow::loadBackupData(const QString& filename) {
                 bool ok;
                 _channel = list.at(i).toElement().text().toInt(&ok, 10);
                 if (!ok) _channel = 0;
-                qDebug() << Q_FUNC_INFO << "Last channel =" << _channel;
+                qDebug() << Q_FUNC_INFO << "Loaded last channel =" << _channel;
             }
             else if (list.at(i).nodeName() == "volume") {
                 bool ok;
                 audioOutput->setVolume(list.at(i).toElement().text().toDouble(&ok));
                 if (!ok) audioOutput->setVolume(0.5);
-                qDebug() << Q_FUNC_INFO << "Last volume =" << audioOutput->volume();
+                qDebug() << Q_FUNC_INFO << "Loaded last volume =" << audioOutput->volume();
             }
             else if (list.at(i).nodeName() == "user") {
                 QDomElement user = list.at(i).toElement();
                 QString user_id = user.attribute("user_id");
 
-                QString expire, token;
+                QString token, email, password;
+                QString user_name, expire;
 
-                QDomNodeList list = user.childNodes();
-                for (int i = 0; i < list.size(); ++ i) {
-                    QDomNode node = list.at(i);
+                QDomNodeList lista = user.childNodes();
+                for (int j = 0; j < lista.size(); ++ j) {
+                    QDomNode node = lista.at(j);
                     if (node.nodeName() == "expire") {
                         expire = node.toElement().text();
                     }
                     else if (node.nodeName() == "token") {
                         token = node.toElement().text();
                     }
+                    else if (node.nodeName() == "user_name") {
+                        user_name = node.toElement().text();
+                    }
+                    else if (node.nodeName() == "email") {
+                        email = node.toElement().text();
+                    }
+                    else if (node.nodeName() == "password") {
+                        password = node.toElement().text();
+                    }
                 }
+                qDebug() << Q_FUNC_INFO << "Loaded user =" << user_name;
 
-                if (user_id.isEmpty() || expire.isEmpty() || token.isEmpty()) continue;
+                if (user_id.isEmpty() || expire.isEmpty() || token.isEmpty() || email.isEmpty() || user_name.isEmpty()) continue;
 
                 DoubanUser ruser;
+
                 ruser.user_id = user_id;
                 ruser.expire = expire;
                 ruser.token = token;
+                ruser.email = email;
+                ruser.user_name = user_name;
+                ruser.password = password;
+
                 _douban->setUser(ruser);
             }
         }
@@ -132,11 +150,23 @@ void MainWindow::saveBackupData(const QString& filename) {
     QDomElement expire = doc.createElement("expire");
     QDomText expire_t = doc.createTextNode(_douban->getUser().expire);
     expire.appendChild(expire_t);
+    user.appendChild(expire);
     QDomElement token = doc.createElement("token");
     QDomText token_t = doc.createTextNode(_douban->getUser().token);
     token.appendChild(token_t);
-    user.appendChild(expire);
     user.appendChild(token);
+    QDomElement uname = doc.createElement("user_name");
+    QDomText uname_t = doc.createTextNode(_douban->getUser().user_name);
+    uname.appendChild(uname_t);
+    user.appendChild(uname);
+    QDomElement uemail = doc.createElement("email");
+    QDomText uemail_t = doc.createTextNode(_douban->getUser().email);
+    uemail.appendChild(uemail_t);
+    user.appendChild(uemail);
+    QDomElement upasswd = doc.createElement("password");
+    QDomText upasswd_t = doc.createTextNode(_douban->getUser().password);
+    upasswd.appendChild(upasswd_t);
+    user.appendChild(upasswd);
     doubanfm.appendChild(user);
 
     doc.appendChild(doubanfm);
@@ -150,7 +180,6 @@ MainWindow::~MainWindow() {
     delete ui;
     delete mediaObject;
     delete audioOutput;
-    delete seekSlider;
     delete _networkmgr;
     delete _douban;
 }
@@ -258,12 +287,10 @@ void MainWindow::on_nextButton_clicked() {
 }
 
 void MainWindow::recvNewList(const QList<DoubanFMSong> &song) {
-    qDebug() << Q_FUNC_INFO;
     this->songs = song;
     mediaSources.clear();
     foreach(DoubanFMSong s, song) {
         mediaSources.append(s.url);
-        qDebug() << Q_FUNC_INFO << s.title;
     }
     mediaObject->clear();
     mediaObject->setQueue(mediaSources);
@@ -276,7 +303,6 @@ void MainWindow::recvPlayingList(const QList<DoubanFMSong> &song) {
     mediaSources.clear();
     foreach(DoubanFMSong s, song) {
         mediaSources.append(s.url);
-        qDebug() << Q_FUNC_INFO << s.title;
     }
     mediaObject->clearQueue();
     mediaObject->setQueue(mediaSources);
@@ -315,7 +341,6 @@ void MainWindow::onReceivedChannels(const QList<DoubanChannel> &channels) {
     int index = 0;
     for (int i = 0; i < channels.size(); ++ i) {
         ui->channelComboBox->addItem(channels[i].name, QVariant(channels[i].channel_id));
-        qDebug() << Q_FUNC_INFO << channels[i].name << channels[i].channel_id;
         if (channels[i].channel_id == _channel) index = i;
     }
     ui->channelComboBox->setCurrentIndex(index);
@@ -359,4 +384,17 @@ void MainWindow::unfreeze() {
     ui->trashButton->setEnabled(true);
     ui->pauseButton->setEnabled(true);
     ui->channelComboBox->setEnabled(true);
+}
+
+void MainWindow::on_authAction_triggered() {
+    _douban->userLogin();
+}
+
+void MainWindow::recvUserLogin(DoubanUser *user) {
+    ui->authAction->setText(user->user_name + QString("  ") + user->email);
+    _douban->getNewPlayList(_channel);
+}
+
+void MainWindow::recvUserLogoff() {
+    ui->authAction->setText("未登录");
 }

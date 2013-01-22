@@ -3,39 +3,8 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
-
-struct DoubanUser {
-    QString user_id;
-    QString expire;
-    QString token;
-};
-
-struct DoubanChannel {
-    QString name;
-    qint32 seq_id;
-    QString abbr_en;
-    qint32 channel_id;
-    QString name_en;
-};
-
-struct DoubanFMSong {
-    QString album;
-    QString picture;
-    QString ssid;
-    QString artist;
-    QString url;
-    QString company;
-    QString title;
-    double rating_avg;
-    quint32 length;
-    QString subtype;
-    QString public_time;
-    quint32 sid;
-    quint32 aid;
-    quint32 kbps;
-    QString albumtitle;
-    bool like;
-};
+#include "douban_types.h"
+#include "doubanlogindialog.h"
 
 class Douban : public QObject
 {
@@ -44,8 +13,12 @@ public:
     ~Douban();
     static Douban* getInstance(const DoubanUser& user = DoubanUser());
 
-    DoubanUser userLogin(const QString& name, const QString& password);
+    void userLogin();
+    void doLogin(const QString &email, const QString &password);
     void userLogout();
+    void userReLogin();
+
+    void setLoginDialog(DoubanLoginDialog *dialog);
 
     void getNewPlayList(const quint32& channel);
     void getPlayingList(const quint32& channel, const quint32& sid);
@@ -59,6 +32,7 @@ public:
 
     void setUser(const DoubanUser& user);
     DoubanUser getUser();
+    bool hasLogin();
     
 signals:
     void receivedNewList(const QList<DoubanFMSong>& songs);
@@ -68,8 +42,11 @@ signals:
     void receivedCurrentEnd(const bool succeed);
     void receivedByeSong(const bool succeed);
     void receivedChannels(const QList<DoubanChannel>& channels);
+    void loginSucceed(DoubanUser *user);
+    void logoffSucceed();
     
 private slots:
+    void onReceivedAuth(QNetworkReply *reply);
     void onReceivedNewList(QNetworkReply *reply);
     void onReceivedPlayingList(QNetworkReply *reply);
     void onReceivedRateSong(QNetworkReply *reply);
@@ -77,6 +54,8 @@ private slots:
     void onReceivedCurrentEnd(QNetworkReply *reply);
     void onReceivedByeSong(QNetworkReply *reply);
     void onReceivedChannels(QNetworkReply *reply);
+
+    void onLoginSucceed(DoubanUser user);
 
 private:
     explicit Douban(QObject *parent = 0);
@@ -95,6 +74,8 @@ private:
     QNetworkAccessManager *_managers[8];
 
     DoubanUser _user;
+
+    DoubanLoginDialog *loginDialog;
 };
 
 

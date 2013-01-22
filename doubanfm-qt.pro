@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network webkit
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,12 +14,16 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
-    src/douban.cpp
+    src/douban.cpp \
+    src/doubanlogindialog.cpp
 
 HEADERS  += include/mainwindow.h \
-    include/douban.h
+    include/douban.h \
+    include/doubanlogindialog.h \
+    include/douban_types.h
 
-FORMS    += src/mainwindow.ui
+FORMS    += src/mainwindow.ui \
+    src/doubanlogindialog.ui
 
 LIBS     += -lqjson -lphonon
 

@@ -32,8 +32,6 @@ private:
 
     Phonon::MediaObject *mediaObject;
     Phonon::AudioOutput *audioOutput;
-    Phonon::SeekSlider *seekSlider;
-    Phonon::VolumeSlider *volumeSilder;
 
     qint32 _channel;
 
@@ -59,8 +57,9 @@ private slots:
     void onReceivedChannels(const QList<DoubanChannel>& channels);
     void on_channelComboBox_currentIndexChanged(int index);
     void recvRateSong(const bool succeed);
+    void on_authAction_triggered();
+    void recvUserLogin(DoubanUser *user);
+    void recvUserLogoff();
 };
-
-static const QString DOUBAN_PLAYLIST_ADDR = "http://www.douban.com/j/app/radio/people";
 
 #endif // MAINWINDOW_H

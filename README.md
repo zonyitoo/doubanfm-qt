@@ -31,10 +31,14 @@ cp QDoubanFM.png /usr/share/pixmaps
 * <del>基本播放功能</del>
 * <del>频道选择</del>
 * <del>用户登录</del>
-* 快捷键
+* <del>快捷键</del> 在主界面按箭头右是下一首，空格暂停或播放..其他自探索哦哈
+* Linux的播放提示 + DBus
+* 后台播放 + 托盘提示 (Ubuntu下是Indicator)
+* 歌词
 
 ## BUGS
 * 在长时间暂停后重启播放会崩溃
+* 在网络不好时卡住会崩溃
 
 ## LICENSE
 本项目基于MIT协议发布

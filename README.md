@@ -8,7 +8,7 @@
 
 ## 截图
 
-![截图](https://gitcafe.com/zonyitoo/doubanfm-qt/raw/master/screenshot.png)
+![截图](/raw/master/screenshot.png)
 
 ## INSTALL
 

@@ -331,14 +331,6 @@
     </item>
    </layout>
   </widget>
-  <action name="authAction">
-   <property name="text">
-    <string>未登录</string>
-   </property>
-   <property name="toolTip">
-    <string>登录用户</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

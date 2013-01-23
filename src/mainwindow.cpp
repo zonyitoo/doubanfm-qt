@@ -35,8 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(_networkmgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedImage(QNetworkReply*)));
 
-    connect(ui->userNameButton, SIGNAL(clicked()), this, SLOT(on_authAction_triggered()));
-
     connect(_douban, SIGNAL(receivedNewList(QList<DoubanFMSong>)),
             this, SLOT(recvNewList(QList<DoubanFMSong>)));
     connect(_douban, SIGNAL(receivedPlayingList(QList<DoubanFMSong>)),
@@ -57,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _douban->setLoginDialog(logindialog);
 
     if (_douban->hasLogin()) {
-        ui->authAction->setText(_douban->getUser().user_name + QString("  ") + _douban->getUser().email);
+        ui->userNameButton->setText(_douban->getUser().user_name);
     }
 }
 
@@ -416,4 +414,8 @@ void MainWindow::recvUserLogin(DoubanUser *user) {
 
 void MainWindow::recvUserLogoff() {
     ui->userNameButton->setText("未登录");
+}
+
+void MainWindow::on_userNameButton_clicked() {
+    _douban->userLogin();
 }

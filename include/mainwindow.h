@@ -59,6 +59,7 @@ private slots:
     void recvRateSong(const bool succeed);
     void recvUserLogin(DoubanUser *user);
     void recvUserLogoff();
+    void on_userNameButton_clicked();
 };
 
 const QString VERSION = "1.0";

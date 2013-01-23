@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ $1 = "-u" ]; then
+if [ "$1" = "-u" ]; then
     rm /usr/bin/doubanfm-qt
     rm /usr/share/pixmaps/QDoubanFM.png
     rm /usr/share/applications/QDoubanFM.desktop

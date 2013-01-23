@@ -9,6 +9,10 @@
 #include <QtXml/QDomElement>
 #include <QtXml/QDomNode>
 
+#include <QSettings>
+
+static const QString BACKUP_FILE = "config/settings";
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow) {
 
@@ -47,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_douban, SIGNAL(logoffSucceed()), this, SLOT(recvUserLogoff()));
 
     _channel = 1;
-    this->loadBackupData("config.xml");
+    this->loadBackupData(BACKUP_FILE);
     _douban->getChannels();
     _douban->getNewPlayList(_channel);
 
@@ -60,136 +64,42 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::loadBackupData(const QString& filename) {
-    QDomDocument doc;
-    QFile file(filename);
-    if (!file.open(QIODevice::ReadWrite)) return;
-    if (doc.setContent(&file)) {
-        QDomElement config = doc.documentElement();
-        if (config.attribute("version") != VERSION) {
-            file.remove();
-            return;
-        }
-        QDomNodeList list = config.childNodes();
-        for (int i = 0; i < list.size(); ++ i) {
-            if (list.at(i).nodeName() == "channel") {
-                bool ok;
-                _channel = list.at(i).toElement().text().toInt(&ok, 10);
-                if (!ok) _channel = 0;
-                qDebug() << Q_FUNC_INFO << "Loaded last channel =" << _channel;
-            }
-            else if (list.at(i).nodeName() == "volume") {
-                bool ok;
-                audioOutput->setVolume(list.at(i).toElement().text().toDouble(&ok));
-                if (!ok) audioOutput->setVolume(0.5);
-                qDebug() << Q_FUNC_INFO << "Loaded last volume =" << audioOutput->volume();
-            }
-            else if (list.at(i).nodeName() == "user") {
-                QDomElement user = list.at(i).toElement();
-                QString user_id = user.attribute("user_id");
+    QSettings settings(filename, QSettings::NativeFormat);
+    _channel = settings.value("channel", 0).toInt();
+    audioOutput->setVolume(settings.value("volume", 0.5).toDouble());
+    QVariantMap user = settings.value("user").toMap();
 
-                QString token, email, password;
-                QString user_name, expire;
+    if (!user.empty()) {
+        DoubanUser nuser;
+        nuser.email = user.value("email", "").toString();
+        nuser.expire = user.value("expire", "").toString();
+        nuser.password = user.value("password", "").toString();
+        nuser.token = user.value("token", "").toString();
+        nuser.user_id = user.value("user_id", "").toString();
+        nuser.user_name = user.value("user_name", "").toString();
 
-                QDomNodeList lista = user.childNodes();
-                for (int j = 0; j < lista.size(); ++ j) {
-                    QDomNode node = lista.at(j);
-                    if (node.nodeName() == "expire") {
-                        expire = node.toElement().text();
-                    }
-                    else if (node.nodeName() == "token") {
-                        token = node.toElement().text();
-                    }
-                    else if (node.nodeName() == "user_name") {
-                        user_name = node.toElement().text();
-                    }
-                    else if (node.nodeName() == "email") {
-                        email = node.toElement().text();
-                    }
-                    else if (node.nodeName() == "password") {
-                        password = node.toElement().text();
-                    }
-                }
-                qDebug() << Q_FUNC_INFO << "Loaded user =" << user_name;
-
-                if (user_id.isEmpty() || expire.isEmpty() || token.isEmpty() || email.isEmpty() || user_name.isEmpty()) continue;
-
-                DoubanUser ruser;
-
-                ruser.user_id = user_id;
-                ruser.expire = expire;
-                ruser.token = token;
-                ruser.email = email;
-                ruser.user_name = user_name;
-                ruser.password = password;
-
-                ui->userNameButton->setText(user_name);
-
-                _douban->setUser(ruser);
-            }
-        }
+        _douban->setUser(nuser);
     }
-    else {
-        file.remove();
-    }
-    file.close();
 }
 
 void MainWindow::saveBackupData(const QString& filename) {
-    QFile file(filename);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate |QIODevice::Text)) {
-        return;
-    }
-    QTextStream out(&file);
-    out.setCodec("UTF-8");
-
-    QDomDocument doc;
-
-    QDomProcessingInstruction instruction =
-            doc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"UTF-8\"");
-    doc.appendChild(instruction);
-    QDomElement doubanfm = doc.createElement("DoubanFM");
-    doubanfm.setAttribute("version", VERSION);
-    QDomElement channel = doc.createElement("channel");
-    QDomText channel_val = doc.createTextNode(QString::number(_channel));
-    channel.appendChild(channel_val);
-    QDomElement volume = doc.createElement("volume");
-    QDomText volume_val = doc.createTextNode(QString::number(audioOutput->volume()));
-    volume.appendChild(volume_val);
-    doubanfm.appendChild(volume);
-    doubanfm.appendChild(channel);
-
-    QDomElement user = doc.createElement("user");
-    user.setAttribute("user_id", _douban->getUser().user_id);
-    QDomElement expire = doc.createElement("expire");
-    QDomText expire_t = doc.createTextNode(_douban->getUser().expire);
-    expire.appendChild(expire_t);
-    user.appendChild(expire);
-    QDomElement token = doc.createElement("token");
-    QDomText token_t = doc.createTextNode(_douban->getUser().token);
-    token.appendChild(token_t);
-    user.appendChild(token);
-    QDomElement uname = doc.createElement("user_name");
-    QDomText uname_t = doc.createTextNode(_douban->getUser().user_name);
-    uname.appendChild(uname_t);
-    user.appendChild(uname);
-    QDomElement uemail = doc.createElement("email");
-    QDomText uemail_t = doc.createTextNode(_douban->getUser().email);
-    uemail.appendChild(uemail_t);
-    user.appendChild(uemail);
-    QDomElement upasswd = doc.createElement("password");
-    QDomText upasswd_t = doc.createTextNode(_douban->getUser().password);
-    upasswd.appendChild(upasswd_t);
-    user.appendChild(upasswd);
-    doubanfm.appendChild(user);
-
-    doc.appendChild(doubanfm);
-    doc.save(out, 4, QDomNode::EncodingFromTextStream);
-
-    file.close();
+    QSettings settings(filename, QSettings::NativeFormat);
+    settings.setValue("channel", _channel);
+    settings.setValue("volume", audioOutput->volume());
+    QVariantMap user;
+    DoubanUser curUser = _douban->getUser();
+    user.insert("email", curUser.email);
+    user.insert("expire", curUser.expire);
+    user.insert("password", curUser.password);
+    user.insert("token", curUser.token);
+    user.insert("user_id", curUser.user_id);
+    user.insert("user_name", curUser.user_name);
+    settings.setValue("user", user);
+    settings.sync();
 }
 
 MainWindow::~MainWindow() {
-    saveBackupData("config.xml");
+    saveBackupData(BACKUP_FILE);
     delete ui;
     delete mediaObject;
     delete audioOutput;

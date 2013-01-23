@@ -11,8 +11,6 @@
 
 #include <QSettings>
 
-static const QString BACKUP_FILE = "config/settings";
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow) {
 
@@ -51,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_douban, SIGNAL(logoffSucceed()), this, SLOT(recvUserLogoff()));
 
     _channel = 1;
-    this->loadBackupData(BACKUP_FILE);
+    this->loadBackupData();
     _douban->getChannels();
     _douban->getNewPlayList(_channel);
 
@@ -63,8 +61,9 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 }
 
-void MainWindow::loadBackupData(const QString& filename) {
-    QSettings settings(filename, QSettings::NativeFormat);
+void MainWindow::loadBackupData() {
+    QSettings settings("QDoubanFM", "DoubanFM");
+
     _channel = settings.value("channel", 0).toInt();
     audioOutput->setVolume(settings.value("volume", 0.5).toDouble());
     QVariantMap user = settings.value("user").toMap();
@@ -82,8 +81,8 @@ void MainWindow::loadBackupData(const QString& filename) {
     }
 }
 
-void MainWindow::saveBackupData(const QString& filename) {
-    QSettings settings(filename, QSettings::NativeFormat);
+void MainWindow::saveBackupData() {
+    QSettings settings("QDoubanFM", "DoubanFM");
     settings.setValue("channel", _channel);
     settings.setValue("volume", audioOutput->volume());
     QVariantMap user;
@@ -99,7 +98,7 @@ void MainWindow::saveBackupData(const QString& filename) {
 }
 
 MainWindow::~MainWindow() {
-    saveBackupData(BACKUP_FILE);
+    saveBackupData();
     delete ui;
     delete mediaObject;
     delete audioOutput;

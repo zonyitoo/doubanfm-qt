@@ -37,8 +37,8 @@ private:
 
     void getImage(const QString &url);
     void recvAlbumImage(const QByteArray &data);
-    void loadBackupData(const QString& filename);
-    void saveBackupData(const QString& filename);
+    void loadBackupData();
+    void saveBackupData();
 
     void freeze();
     void unfreeze();

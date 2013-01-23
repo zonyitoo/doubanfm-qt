@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Encoding=UTF-8
+Name=QDoubanFM
+GenericName=DoubanFM Client
+Comment=A DoubanFM Client
+Exec=doubanfm-qt
+Icon=/usr/share/pixmaps/QDoubanFM.png
+Terminal=false
+Categories=GNOME;Appliation;Network
+
+
+Name[zh_CN]=豆瓣FM

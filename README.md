@@ -10,6 +10,23 @@
 
 ![截图](https://gitcafe.com/zonyitoo/doubanfm-qt/raw/master/screenshot.png)
 
+## INSTALL
+
+```bash
+qmake doubanfm-qt.pro
+make
+```
+
+得到`doubanfm-qt`后直接运行即可，或
+
+```
+cp doubanfm-qt /usr/bin
+cp QDoubanFM.desktop /usr/share/applications
+cp QDoubanFM.png /usr/share/pixmaps
+```
+
+或运行`install.sh`脚本同样可以
+
 ## TODO
 * <del>基本播放功能</del>
 * <del>频道选择</del>

@@ -8,7 +8,7 @@
 
 ## 截图
 
-![截图](/raw/master/screenshot.png)
+![截图](https://gitcafe.com/zonyitoo/doubanfm-qt/raw/master/screenshot.png)
 
 ## INSTALL
 
@@ -37,7 +37,7 @@ cp QDoubanFM.png /usr/share/pixmaps
 * 歌词
 
 ## BUGS
-* 在长时间暂停后重启播放会崩溃
+* <del>在长时间暂停后重启播放会崩溃</del>
 * 在网络不好时卡住会崩溃
 
 ## LICENSE

@@ -16,7 +16,7 @@ static const QString DOUBAN_FM_API_CHANNEL = "http://www.douban.com/j/app/radio/
 static const QString DOUBAN_FM_LOGIN = "http://www.douban.com/j/app/login";
 
 Douban::Douban(QObject *parent) : QObject(parent) {
-    for (int i = 0; i < 8; ++ i)
+    for (int i = 0; i < 9; ++ i)
         _managers[i] = new QNetworkAccessManager(this);
 
     connect(_managers[0], SIGNAL(finished(QNetworkReply*)),
@@ -35,15 +35,13 @@ Douban::Douban(QObject *parent) : QObject(parent) {
             this, SLOT(onReceivedChannels(QNetworkReply*)));
     connect(_managers[7], SIGNAL(finished(QNetworkReply*)),
             this, SLOT(onReceivedPlayingList(QNetworkReply*)));
-
-    loginDialog = NULL;
+    connect(_managers[8], SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(onReceivedAuth(QNetworkReply*)));
 }
 
 Douban::~Douban() {
-    for (int i = 0; i < 8; ++ i)
+    for (int i = 0; i < 9; ++ i)
         delete _managers[i];
-
-    delete loginDialog;
 }
 
 Douban* Douban::getInstance(const DoubanUser &user) {
@@ -54,20 +52,21 @@ Douban* Douban::getInstance(const DoubanUser &user) {
     return _INSTANCE;
 }
 
-void Douban::userLogin() {
-    if (loginDialog == NULL) {
-        qDebug() << Q_FUNC_INFO << "loginDialog == NULL";
-        return;
-    }
-    if (hasLogin()) {
-        loginDialog->setNameAndPassword(_user.email, _user.password);
-    }
-    loginDialog->show();
-}
-
 void Douban::onLoginSucceed(DoubanUser user) {
     _user = user;
     emit this->loginSucceed(&_user);
+}
+
+void Douban::doLogin(const QString &email, const QString &password) {
+    QString args = QString("app_name=radio_desktop_win&version=100")
+            + QString("&email=") + email
+            + QString("&password=") + password;
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+                      QVariant("application/x-www-form-urlencoded"));
+    request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(args.length()));
+    request.setUrl(QUrl(DOUBAN_FM_LOGIN));
+    _managers[8]->post(request, args.toAscii());
 }
 
 void Douban::userReLogin() {
@@ -126,6 +125,7 @@ void Douban::onReceivedAuth(QNetworkReply *reply) {
         QVariantMap obj = result.toMap();
         if (obj["r"].toInt() != 0) {
             qDebug() << Q_FUNC_INFO << "Err" << obj["err"].toString();
+            emit loginFailed(obj["err"].toString());
             return;
         }
         DoubanUser nuser;
@@ -134,7 +134,6 @@ void Douban::onReceivedAuth(QNetworkReply *reply) {
         nuser.token = obj["token"].toString();
         nuser.user_name = obj["user_name"].toString();
         nuser.email = obj["email"].toString();
-        nuser.password = _user.password;
 
         onLoginSucceed(nuser);
     }
@@ -448,14 +447,6 @@ void Douban::onReceivedChannels(QNetworkReply *reply) {
     std::sort(channels.begin(), channels.end(), cmp_channels);
     emit receivedChannels(channels);
     reply->deleteLater();
-}
-
-void Douban::setLoginDialog(DoubanLoginDialog *dialog) {
-    if (dialog == NULL) return;
-
-    loginDialog = dialog;
-    connect(loginDialog, SIGNAL(loginSucceed(DoubanUser)),
-            this, SLOT(onLoginSucceed(DoubanUser)));
 }
 
 bool Douban::hasLogin() {

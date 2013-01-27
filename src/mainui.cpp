@@ -1,19 +1,18 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "mainui.h"
+#include "ui_mainui.h"
 #include <qjson/parser.h>
 #include <QMessageBox>
 #include <QPixmap>
-#include <QMovie>
-
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomElement>
-#include <QtXml/QDomNode>
-
 #include <QSettings>
+#include <QScrollBar>
+#include "channelbutton.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow) {
+static QTime bktime;
 
+MainUI::MainUI(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::MainUI)
+{
     ui->setupUi(this);
     mediaObject = new Phonon::MediaObject(this);
     audioOutput = new Phonon::AudioOutput(this);
@@ -47,21 +46,33 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_douban, SIGNAL(loginSucceed(DoubanUser*)),
             this, SLOT(recvUserLogin(DoubanUser*)));
     connect(_douban, SIGNAL(logoffSucceed()), this, SLOT(recvUserLogoff()));
+    connect(_douban, SIGNAL(loginFailed(QString)), this, SLOT(recvUserLoginFailed(QString)));
 
-    _channel = 1;
+    _channel = 2;
     this->loadBackupData();
     _douban->getChannels();
     _douban->getNewPlayList(_channel);
 
-    DoubanLoginDialog *logindialog = new DoubanLoginDialog(this);
-    _douban->setLoginDialog(logindialog);
+    ui->userNameLineEdit->hide();
+    ui->passwordLineEdit->hide();
+    ui->loginButton->hide();
+    ui->loginErrMsg->hide();
+
+    ui->scrollArea->hide();
+    ui->channelButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_ArrowDown)));
+
+    emailRegExp.setPatternSyntax(QRegExp::RegExp2);
+    emailRegExp.setCaseSensitivity(Qt::CaseSensitive);
+    emailRegExp.setPattern("^[a-zA-Z_]+([\\.-]?[a-zA-Z_]+)*@[a-zA-Z_]+([\\.-]?[a-zA-Z_]+)*(\\.[a-zA-Z_]{2,3})+");
 
     if (_douban->hasLogin()) {
         ui->userNameButton->setText(_douban->getUser().user_name);
     }
+
+    bktime.start();
 }
 
-void MainWindow::loadBackupData() {
+void MainUI::loadBackupData() {
     QSettings settings("QDoubanFM", "DoubanFM");
 
     _channel = settings.value("channel", 0).toInt();
@@ -81,7 +92,7 @@ void MainWindow::loadBackupData() {
     }
 }
 
-void MainWindow::saveBackupData() {
+void MainUI::saveBackupData() {
     QSettings settings("QDoubanFM", "DoubanFM");
     settings.setValue("channel", _channel);
     settings.setValue("volume", audioOutput->volume());
@@ -97,7 +108,7 @@ void MainWindow::saveBackupData() {
     settings.sync();
 }
 
-MainWindow::~MainWindow() {
+MainUI::~MainUI() {
     saveBackupData();
     delete ui;
     delete mediaObject;
@@ -106,20 +117,20 @@ MainWindow::~MainWindow() {
     delete _douban;
 }
 
-void MainWindow::playTick(qint64 time) {
+void MainUI::playTick(qint64 time) {
     QTime displayTime(0, (time / 60000) % 60, (time / 1000) % 60);
     ui->currentTick->setText(displayTime.toString("mm:ss"));
 }
 
 
-void MainWindow::getImage(const QString &url) {
+void MainUI::getImage(const QString &url) {
     QString mod_url = url;
     mod_url.replace("mpic", "lpic");
     qDebug() << Q_FUNC_INFO << mod_url;
     _networkmgr->get(QNetworkRequest(QUrl(mod_url)));
 }
 
-void MainWindow::onReceivedImage(QNetworkReply *reply) {
+void MainUI::onReceivedImage(QNetworkReply *reply) {
     if (QNetworkReply::NoError != reply->error()) {
         qDebug() << Q_FUNC_INFO << "pixmap receiving error" << reply->error();
         reply->deleteLater();
@@ -133,7 +144,7 @@ void MainWindow::onReceivedImage(QNetworkReply *reply) {
 }
 
 
-void MainWindow::sourceChanged(const Phonon::MediaSource& source) {
+void MainUI::sourceChanged(const Phonon::MediaSource& source) {
     int index = mediaSources.indexOf(source);
     qDebug() << Q_FUNC_INFO << "Switch to" << songs[index].title;
 
@@ -151,7 +162,7 @@ void MainWindow::sourceChanged(const Phonon::MediaSource& source) {
 }
 
 static bool pause_state = false;
-void MainWindow::stateChanged(Phonon::State newState, Phonon::State oldState) {
+void MainUI::stateChanged(Phonon::State newState, Phonon::State oldState) {
     switch (newState) {
     case Phonon::ErrorState:
         qDebug() << Q_FUNC_INFO << "Phonon::ErrorState";
@@ -173,6 +184,14 @@ void MainWindow::stateChanged(Phonon::State newState, Phonon::State oldState) {
         if (mediaSources.indexOf(mediaObject->currentSource()) == mediaSources.size() - 1) {
             _douban->getPlayingList(_channel, songs[songs.size() - 1].sid);
         }
+
+        if (oldState == Phonon::PausedState) {
+            if (bktime.restart() > 1800000) {
+                _douban->getPlayingList(_channel,
+                                        songs[mediaSources.indexOf(mediaObject->currentSource())].sid);
+            }
+        }
+
         break;
     case Phonon::StoppedState:
         qDebug() << Q_FUNC_INFO << "Phonon::StoppedState";
@@ -185,6 +204,11 @@ void MainWindow::stateChanged(Phonon::State newState, Phonon::State oldState) {
         qDebug() << Q_FUNC_INFO << "Phonon::PausedState";
         ui->pauseButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_MediaPlay)));
         pause_state = true;
+
+        if (oldState == Phonon::PlayingState) {
+            bktime.restart();
+        }
+
         break;
     case Phonon::LoadingState:
         qDebug() << Q_FUNC_INFO << "Phonon::LoadingState";
@@ -193,7 +217,7 @@ void MainWindow::stateChanged(Phonon::State newState, Phonon::State oldState) {
     }
 }
 
-void MainWindow::on_pauseButton_clicked() {
+void MainUI::on_pauseButton_clicked() {
     if (pause_state) {
         emit mediaObject->play();
     }
@@ -202,7 +226,7 @@ void MainWindow::on_pauseButton_clicked() {
     }
 }
 
-void MainWindow::on_nextButton_clicked() {
+void MainUI::on_nextButton_clicked() {
     if (mediaObject->state() == Phonon::StoppedState) {
         _douban->getNewPlayList(_channel);
         return;
@@ -216,7 +240,7 @@ void MainWindow::on_nextButton_clicked() {
     mediaObject->seek(mediaObject->totalTime());
 }
 
-void MainWindow::recvNewList(const QList<DoubanFMSong> &song) {
+void MainUI::recvNewList(const QList<DoubanFMSong> &song) {
     this->songs = song;
     mediaSources.clear();
     foreach(DoubanFMSong s, song) {
@@ -228,7 +252,7 @@ void MainWindow::recvNewList(const QList<DoubanFMSong> &song) {
     unfreeze();
 }
 
-void MainWindow::recvPlayingList(const QList<DoubanFMSong> &song) {
+void MainUI::recvPlayingList(const QList<DoubanFMSong> &song) {
     this->songs = song;
     mediaSources.clear();
     foreach(DoubanFMSong s, song) {
@@ -238,7 +262,7 @@ void MainWindow::recvPlayingList(const QList<DoubanFMSong> &song) {
     mediaObject->setQueue(mediaSources);
 }
 
-void MainWindow::recvAlbumImage(const QByteArray &data) {
+void MainUI::recvAlbumImage(const QByteArray &data) {
     QPixmap pixmap;
     pixmap.loadFromData(data);
     int w = ui->albumImage->width();
@@ -246,14 +270,14 @@ void MainWindow::recvAlbumImage(const QByteArray &data) {
     ui->albumImage->setPixmap(pixmap.scaled(w, h, Qt::IgnoreAspectRatio));
 }
 
-void MainWindow::on_trashButton_clicked() {
+void MainUI::on_trashButton_clicked() {
     int index = mediaSources.indexOf(mediaObject->currentSource());
     qDebug() << Q_FUNC_INFO << "Bye Song.id =" << songs[index].sid;
     _douban->byeSong(songs[index].sid, _channel);
     mediaObject->seek(mediaObject->totalTime());
 }
 
-void MainWindow::on_heartButton_clicked() {
+void MainUI::on_heartButton_clicked() {
     int index = mediaSources.indexOf(mediaObject->currentSource());
     qDebug() << Q_FUNC_INFO << "Like Song.id =" << songs[index].sid;
 
@@ -267,27 +291,38 @@ void MainWindow::on_heartButton_clicked() {
 }
 
 static bool isInited = false;
-void MainWindow::onReceivedChannels(const QList<DoubanChannel> &channels) {
-    int index = 0;
+void MainUI::onReceivedChannels(const QList<DoubanChannel> &channels) {
+    QHBoxLayout *layout = new QHBoxLayout(this);
     for (int i = 0; i < channels.size(); ++ i) {
-        ui->channelComboBox->addItem(channels[i].name, QVariant(channels[i].channel_id));
-        if (channels[i].channel_id == _channel) index = i;
+        ChannelButton *bt = new ChannelButton(ui->scrollArea);
+        bt->setText(channels[i].name);
+        bt->setFlat(true);
+        layout->addWidget(bt);
+        connect(bt, SIGNAL(clicked(const ChannelButton*)),
+                this, SLOT(on_chooseChannel(const ChannelButton*)));
+
+        if (channels[i].channel_id == _channel) {
+            ui->channelButton->setText(channels[i].name);
+        }
     }
-    ui->channelComboBox->setCurrentIndex(index);
+    ui->scrollArea->widget()->setLayout(layout);
     isInited = true;
+
+    this->channels = channels;
 }
 
-void MainWindow::on_channelComboBox_currentIndexChanged(int index) {
-    if (!isInited) return;
-
-    _channel = ui->channelComboBox->itemData(index).toInt();
-
-    mediaObject->stop();
-    mediaObject->clear();
-    _douban->getNewPlayList(_channel);
+void MainUI::on_chooseChannel(const ChannelButton *button) {
+    foreach(DoubanChannel c, channels) {
+        if (c.name == button->text()) {
+            _channel = c.channel_id;
+            _douban->getNewPlayList(_channel);
+            ui->channelButton->setText(c.name);
+            break;
+        }
+    }
 }
 
-void MainWindow::recvRateSong(const bool succeed) {
+void MainUI::recvRateSong(const bool succeed) {
     int index = mediaSources.indexOf(mediaObject->currentSource());
     ui->heartButton->setEnabled(true);
     if (succeed) {
@@ -302,29 +337,98 @@ void MainWindow::recvRateSong(const bool succeed) {
     }
 }
 
-void MainWindow::freeze() {
+void MainUI::freeze() {
     ui->heartButton->setEnabled(false);
     ui->trashButton->setEnabled(false);
     ui->pauseButton->setEnabled(false);
-    ui->channelComboBox->setEnabled(false);
+    ui->channelButton->setEnabled(false);
 }
 
-void MainWindow::unfreeze() {
+void MainUI::unfreeze() {
     ui->heartButton->setEnabled(true);
     ui->trashButton->setEnabled(true);
     ui->pauseButton->setEnabled(true);
-    ui->channelComboBox->setEnabled(true);
+    ui->channelButton->setEnabled(true);
 }
 
-void MainWindow::recvUserLogin(DoubanUser *user) {
+void MainUI::recvUserLogin(DoubanUser *user) {
     _douban->getNewPlayList(_channel);
     ui->userNameButton->setText(user->user_name);
+    user->password = ui->passwordLineEdit->text().trimmed();
+
+    ui->userNameLineEdit->hide();
+    ui->passwordLineEdit->hide();
+    ui->loginButton->hide();
+    ui->loginErrMsg->hide();
+
+    ui->userNameLineEdit->setEnabled(true);
+    ui->passwordLineEdit->setEnabled(true);
+    ui->loginButton->setEnabled(true);
 }
 
-void MainWindow::recvUserLogoff() {
+void MainUI::recvUserLoginFailed(const QString &errmsg) {
+    ui->loginErrMsg->setText(QString("<font color=red>") + errmsg + QString("</font>"));
+
+    ui->userNameLineEdit->setEnabled(true);
+    ui->passwordLineEdit->setEnabled(true);
+    ui->loginButton->setEnabled(true);
+}
+
+void MainUI::recvUserLogoff() {
     ui->userNameButton->setText("未登录");
 }
 
-void MainWindow::on_userNameButton_clicked() {
-    _douban->userLogin();
+void MainUI::on_userNameButton_clicked() {
+    if (ui->userNameLineEdit->isHidden()) {
+        if (_douban->hasLogin()) {
+            DoubanUser u = _douban->getUser();
+            ui->userNameLineEdit->setText(u.email);
+            ui->passwordLineEdit->setText(u.password);
+
+            ui->loginErrMsg->setText(QString("<font color=green>用户 ")
+                                     + u.email + QString(" 已登录</font>"));
+        }
+        else {
+            ui->loginErrMsg->setText("<font color=green>输入用户名和密码</font>");
+        }
+
+        ui->userNameLineEdit->show();
+        ui->passwordLineEdit->show();
+        ui->loginButton->show();
+        ui->loginErrMsg->show();
+    }
+    else {
+        ui->userNameLineEdit->hide();
+        ui->passwordLineEdit->hide();
+        ui->loginButton->hide();
+        ui->loginErrMsg->hide();
+    }
+}
+
+void MainUI::on_loginButton_clicked() {
+    QString em = ui->userNameLineEdit->text().trimmed();
+    QString pw = ui->passwordLineEdit->text().trimmed();
+
+    if (emailRegExp.exactMatch(em) && !pw.isEmpty()) {
+        _douban->doLogin(em, pw);
+
+        ui->userNameLineEdit->setEnabled(false);
+        ui->passwordLineEdit->setEnabled(false);
+        ui->loginButton->setEnabled(false);
+        ui->loginErrMsg->setText(QString("<font color=green>登录中</font>"));
+    }
+    else {
+        ui->loginErrMsg->setText(QString("<font color=red>请输入正确格式的用户名和密码</font>"));
+    }
+}
+
+void MainUI::on_channelButton_clicked() {
+    if (ui->scrollArea->isHidden()) {
+        ui->scrollArea->show();
+        ui->channelButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_ArrowUp)));
+    }
+    else {
+        ui->scrollArea->hide();
+        ui->channelButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_ArrowDown)));
+    }
 }

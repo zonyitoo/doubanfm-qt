@@ -13,18 +13,21 @@ TEMPLATE = app
 
 
 SOURCES += src/main.cpp\
-        src/mainwindow.cpp \
     src/douban.cpp \
-    src/doubanlogindialog.cpp
+    src/mainui.cpp \
+    src/channelbutton.cpp
 
-HEADERS  += include/mainwindow.h \
+HEADERS  += \
     include/douban.h \
-    include/doubanlogindialog.h \
-    include/douban_types.h
+    include/douban_types.h \
+    include/mainui.h \
+    include/channelbutton.h
 
-FORMS    += src/mainwindow.ui \
-    src/doubanlogindialog.ui
+FORMS    += \
+    src/mainui.ui
 
 LIBS     += -lqjson -lphonon
 
 INCLUDEPATH += include/
+
+RESOURCES +=

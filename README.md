@@ -20,7 +20,10 @@ make
 得到`doubanfm-qt`后直接运行即可，或
 
 ```
-cp doubanfm-qt /usr/bin
+mkdir -p /usr/share/QDoubanFM
+cp doubanfm-qt /usr/share/QDoubanFM
+rm -f /usr/bin/doubanfm-qt
+ln -s /usr/share/QDoubanFM/doubanfm-qt /usr/bin/doubanfm-qt
 cp QDoubanFM.desktop /usr/share/applications
 cp QDoubanFM.png /usr/share/pixmaps
 ```

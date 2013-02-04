@@ -235,7 +235,7 @@ border-radius: 4px;
          </property>
          <property name="styleSheet">
           <string notr="true">QWidget#controlWidget {
-	background-color: #fffbf8;
+	background-color: rgba(255, 255, 255, 200);
 }</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -325,7 +325,7 @@ border-radius: 4px;
             </item>
             <item>
              <widget class="QWidget" name="widget" native="true">
-              <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0">
+              <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
                <item row="1" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <property name="spacing">
@@ -718,26 +718,12 @@ background: #ffffff;</string>
         <height>76</height>
        </rect>
       </property>
-      <zorder>layoutWidget</zorder>
-      <zorder>layoutWidget</zorder>
-      <zorder>loginErrMsg</zorder>
-      <zorder>layoutWidget</zorder>
-      <zorder>loginErrMsg</zorder>
-      <zorder>layoutWidget</zorder>
      </widget>
     </widget>
    </item>
   </layout>
-  <zorder>seekSlider</zorder>
-  <zorder>seekSlider</zorder>
-  <zorder>currentTick</zorder>
-  <zorder>layoutWidget_2</zorder>
-  <zorder>controlWidget</zorder>
-  <zorder>trackingWidget</zorder>
-  <zorder>layoutWidget</zorder>
   <zorder>scrollArea</zorder>
   <zorder>widget_2</zorder>
-  <zorder>loginErrMsg</zorder>
  </widget>
  <customwidgets>
   <customwidget>

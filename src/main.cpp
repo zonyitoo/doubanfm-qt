@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
     MainUI ui;
+    //ui.setWindowFlags(Qt::WindowShadeButtonHint | Qt::FramelessWindowHint);
     ui.show();
     
     return a.exec();

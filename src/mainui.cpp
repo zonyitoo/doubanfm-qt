@@ -20,13 +20,13 @@ MainUI::MainUI(QWidget *parent) :
     _networkmgr = new QNetworkAccessManager(this);
 
     ui->seekSlider->setMediaObject(mediaObject);
-    ui->seekSlider->setEnabled(false);
     ui->volumeSlider->setAudioOutput(audioOutput);
     Phonon::createPath(mediaObject, audioOutput);
 
     ui->trashButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_TrashIcon)));
     ui->pauseButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_MediaPause)));
     ui->nextButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_MediaSkipForward)));
+    ui->userNameButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_DirHomeIcon)));
 
     connect(mediaObject, SIGNAL(tick(qint64)), this, SLOT(playTick(qint64)));
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
@@ -65,9 +65,14 @@ MainUI::MainUI(QWidget *parent) :
     emailRegExp.setCaseSensitivity(Qt::CaseSensitive);
     emailRegExp.setPattern("^[a-zA-Z_]+([\\.-]?[a-zA-Z_]+)*@[a-zA-Z_]+([\\.-]?[a-zA-Z_]+)*(\\.[a-zA-Z_]{2,3})+");
 
+    /*
     if (_douban->hasLogin()) {
         ui->userNameButton->setText(_douban->getUser().user_name);
     }
+    else {
+        ui->userNameButton->setText(QString("未登录"));
+    }
+    */
 
     bktime.start();
 }
@@ -119,7 +124,8 @@ MainUI::~MainUI() {
 
 void MainUI::playTick(qint64 time) {
     QTime displayTime(0, (time / 60000) % 60, (time / 1000) % 60);
-    ui->currentTick->setText(displayTime.toString("mm:ss"));
+    ui->currentTick->setText(QString("<font color='white'>") +
+                             displayTime.toString("mm:ss") + QString("</font>"));
 }
 
 
@@ -149,9 +155,15 @@ void MainUI::sourceChanged(const Phonon::MediaSource& source) {
     qDebug() << Q_FUNC_INFO << "Switch to" << songs[index].title;
 
 
-    ui->artistName->setText(songs[index].artist);
-    ui->albumName->setText(QString("< ") + songs[index].albumtitle + " >  " + songs[index].public_time);
-    ui->songName->setText("<font color='green'>" + songs[index].title + "</font>");
+    ui->artistName->setText(QString("<font color=grey>")
+                            + songs[index].artist
+                            + QString(" - &lt; ")
+                            + songs[index].albumtitle
+                            + " &gt;  "
+                            + songs[index].public_time
+                            + QString("</font>"));
+
+    ui->songName->setText("<font color='#57463e'>" + songs[index].title + "</font>");
 
     if (songs[index].like)
         ui->heartButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_DialogCloseButton)));
@@ -268,6 +280,7 @@ void MainUI::recvAlbumImage(const QByteArray &data) {
     int w = ui->albumImage->width();
     int h = ui->albumImage->height();
     ui->albumImage->setPixmap(pixmap.scaled(w, h, Qt::IgnoreAspectRatio));
+
 }
 
 void MainUI::on_trashButton_clicked() {
@@ -353,7 +366,7 @@ void MainUI::unfreeze() {
 
 void MainUI::recvUserLogin(DoubanUser *user) {
     _douban->getNewPlayList(_channel);
-    ui->userNameButton->setText(user->user_name);
+    //ui->userNameButton->setText(user->user_name);
     user->password = ui->passwordLineEdit->text().trimmed();
 
     ui->userNameLineEdit->hide();
@@ -375,7 +388,9 @@ void MainUI::recvUserLoginFailed(const QString &errmsg) {
 }
 
 void MainUI::recvUserLogoff() {
-    ui->userNameButton->setText("未登录");
+    /*
+    ui->userNameButton->setText(QString("未登录"));
+    */
 }
 
 void MainUI::on_userNameButton_clicked() {

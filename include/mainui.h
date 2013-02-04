@@ -44,6 +44,8 @@ private slots:
     void on_channelButton_clicked();
     void on_chooseChannel(const ChannelButton* button);
 
+    void on_volumeButton_clicked();
+
 private:
     Ui::MainUI *ui;
 
@@ -66,6 +68,9 @@ private:
 
     void freeze();
     void unfreeze();
+
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
 
     QRegExp emailRegExp;
 };

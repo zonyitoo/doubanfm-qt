@@ -6,6 +6,8 @@
 #include <QSettings>
 #include <QScrollBar>
 #include "channelbutton.h"
+#include <QPropertyAnimation>
+#include <QEasingCurve>
 
 static QTime bktime;
 
@@ -22,11 +24,13 @@ MainUI::MainUI(QWidget *parent) :
     ui->seekSlider->setMediaObject(mediaObject);
     ui->volumeSlider->setAudioOutput(audioOutput);
     Phonon::createPath(mediaObject, audioOutput);
+    ui->volumeSlider->setVisible(false);
 
     ui->trashButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_TrashIcon)));
     ui->pauseButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_MediaPause)));
     ui->nextButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_MediaSkipForward)));
     ui->userNameButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_DirHomeIcon)));
+    ui->volumeButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_MediaVolume)));
 
     connect(mediaObject, SIGNAL(tick(qint64)), this, SLOT(playTick(qint64)));
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
@@ -445,5 +449,48 @@ void MainUI::on_channelButton_clicked() {
     else {
         ui->scrollArea->hide();
         ui->channelButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_ArrowDown)));
+    }
+}
+
+void MainUI::enterEvent(QEvent *event) {
+    qDebug() << Q_FUNC_INFO << "Open Control Panel";
+
+    QPropertyAnimation *anim = new QPropertyAnimation(ui->controlWidget, "geometry");
+    anim->setDuration(300);
+
+    anim->setStartValue(ui->controlWidget->geometry());
+    QRect curGeo = ui->controlWidget->geometry();
+    curGeo = QRect(curGeo.x(),
+                   this->geometry().height() - ui->controlWidget->height(),
+                   curGeo.width(),
+                   curGeo.height());
+    anim->setEndValue(curGeo);
+    anim->setEasingCurve(QEasingCurve::OutQuad);
+    anim->start();
+}
+
+void MainUI::leaveEvent(QEvent *event) {
+    qDebug() << Q_FUNC_INFO << "Close Control Panel";
+
+    QPropertyAnimation *anim = new QPropertyAnimation(ui->controlWidget, "geometry");
+    anim->setDuration(300);
+
+    anim->setStartValue(ui->controlWidget->geometry());
+    QRect curGeo = ui->controlWidget->geometry();
+    curGeo = QRect(curGeo.x(),
+                   this->geometry().height() - ui->trackingWidget->geometry().height(),
+                   curGeo.width(),
+                   curGeo.height());
+    anim->setEndValue(curGeo);
+    anim->setEasingCurve(QEasingCurve::OutQuad);
+    anim->start();
+}
+
+void MainUI::on_volumeButton_clicked() {
+    if (ui->volumeSlider->isVisible()) {
+        ui->volumeSlider->setVisible(false);
+    }
+    else {
+        ui->volumeSlider->setVisible(true);
     }
 }

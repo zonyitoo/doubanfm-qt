@@ -461,7 +461,7 @@ void MainUI::enterEvent(QEvent *event) {
     anim->setStartValue(ui->controlWidget->geometry());
     QRect curGeo = ui->controlWidget->geometry();
     curGeo = QRect(curGeo.x(),
-                   this->geometry().height() - ui->controlWidget->height(),
+                   ui->mainWidget->geometry().y() + ui->mainWidget->geometry().height() - ui->controlWidget->height(),
                    curGeo.width(),
                    curGeo.height());
     anim->setEndValue(curGeo);
@@ -478,7 +478,7 @@ void MainUI::leaveEvent(QEvent *event) {
     anim->setStartValue(ui->controlWidget->geometry());
     QRect curGeo = ui->controlWidget->geometry();
     curGeo = QRect(curGeo.x(),
-                   this->geometry().height() - ui->trackingWidget->geometry().height(),
+                   ui->mainWidget->geometry().y() + ui->mainWidget->geometry().height() - ui->trackingWidget->geometry().height(),
                    curGeo.width(),
                    curGeo.height());
     anim->setEndValue(curGeo);

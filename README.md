@@ -36,6 +36,7 @@ cp QDoubanFM.png /usr/share/pixmaps
 * <del>用户登录</del>
 * <del>快捷键</del> 在主界面按箭头右是下一首，空格暂停或播放..其他自探索哦哈
 * <del>动画</del>
+* i18n支持
 * Linux的播放提示 + DBus
 * 后台播放 + 托盘提示 (Ubuntu下是Indicator)
 * 歌词

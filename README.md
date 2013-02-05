@@ -43,6 +43,7 @@ cp QDoubanFM.png /usr/share/pixmaps
 ## BUGS
 * <del>在长时间暂停后重启播放会崩溃</del>
 * 在网络不好时卡住会崩溃
+* 动画有Bug，若打开了频道界面然后鼠标厉害，则会让控制面板滑动位置出错
 
 ## LICENSE
 本项目基于MIT协议发布

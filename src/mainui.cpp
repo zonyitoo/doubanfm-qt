@@ -1,5 +1,6 @@
 #include "mainui.h"
 #include "ui_mainui.h"
+#include "channelwidget.h"
 #include <qjson/parser.h>
 #include <QMessageBox>
 #include <QPixmap>
@@ -16,6 +17,12 @@ MainUI::MainUI(QWidget *parent) :
     ui(new Ui::MainUI)
 {
     ui->setupUi(this);
+    channelWidget = new ChannelWidget(this);
+    channelWidget->setGeometry(QRect(channelWidget->geometry().x(),
+                                     -channelWidget->getInvisibleHeight(),
+                                     channelWidget->geometry().width(),
+                                     channelWidget->geometry().height()));
+
     mediaObject = new Phonon::MediaObject(this);
     audioOutput = new Phonon::AudioOutput(this);
     _douban = Douban::getInstance();
@@ -46,6 +53,8 @@ MainUI::MainUI(QWidget *parent) :
             this, SLOT(recvPlayingList(QList<DoubanFMSong>)));
     connect(_douban, SIGNAL(receivedChannels(QList<DoubanChannel>)),
             this, SLOT(onReceivedChannels(QList<DoubanChannel>)));
+    connect(channelWidget, SIGNAL(channelChanged(qint32)),
+            this, SLOT(onChannelChanged(qint32)));
     connect(_douban, SIGNAL(receivedRateSong(bool)), this, SLOT(recvRateSong(bool)));
     connect(_douban, SIGNAL(loginSucceed(DoubanUser*)),
             this, SLOT(recvUserLogin(DoubanUser*)));
@@ -54,7 +63,8 @@ MainUI::MainUI(QWidget *parent) :
 
     _channel = 2;
     this->loadBackupData();
-    _douban->getChannels();
+    //_douban->getChannels();
+    channelWidget->setChannelId(_channel);
     _douban->getNewPlayList(_channel);
 
     ui->userNameLineEdit->hide();
@@ -326,6 +336,11 @@ void MainUI::onReceivedChannels(const QList<DoubanChannel> &channels) {
     isInited = true;
 
     this->channels = channels;
+}
+
+void MainUI::onChannelChanged(qint32 channel_id) {
+    _channel = channel_id;
+    _douban->getNewPlayList(_channel);
 }
 
 void MainUI::on_chooseChannel(const ChannelButton *button) {

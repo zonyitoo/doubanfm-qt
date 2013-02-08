@@ -16,45 +16,25 @@ static const QString DOUBAN_FM_API_CHANNEL = "http://www.douban.com/j/app/radio/
 static const QString DOUBAN_FM_LOGIN = "http://www.douban.com/j/app/login";
 
 Douban::Douban(QObject *parent) : QObject(parent) {
-    for (int i = 0; i < 9; ++ i)
-        _managers[i] = new QNetworkAccessManager(this);
-
-    connect(_managers[0], SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(onReceivedRelogin(QNetworkReply*)));
-    connect(_managers[1], SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(onReceivedNewList(QNetworkReply*)));
-    connect(_managers[2], SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(onReceivedRateSong(QNetworkReply*)));
-    connect(_managers[3], SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(onReceivedSkipSong(QNetworkReply*)));
-    connect(_managers[4], SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(onReceivedCurrentEnd(QNetworkReply*)));
-    connect(_managers[5], SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(onReceivedByeSong(QNetworkReply*)));
-    connect(_managers[6], SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(onReceivedChannels(QNetworkReply*)));
-    connect(_managers[7], SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(onReceivedPlayingList(QNetworkReply*)));
-    connect(_managers[8], SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(onReceivedAuth(QNetworkReply*)));
+    for (int i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
+        _managers[i] = NULL;
 }
 
 Douban::~Douban() {
-    for (int i = 0; i < 9; ++ i)
+    for (int i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
         delete _managers[i];
 }
 
-Douban* Douban::getInstance(const DoubanUser &user) {
+Douban* Douban::getInstance() {
     if (_INSTANCE == NULL) {
         _INSTANCE = new Douban();
     }
-    _INSTANCE->_user = user;
     return _INSTANCE;
 }
 
 void Douban::onLoginSucceed(DoubanUser user) {
     _user = user;
-    emit this->loginSucceed(&_user);
+    emit this->loginSucceed(_user);
 }
 
 void Douban::doLogin(const QString &email, const QString &password) {
@@ -66,6 +46,11 @@ void Douban::doLogin(const QString &email, const QString &password) {
                       QVariant("application/x-www-form-urlencoded"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(args.length()));
     request.setUrl(QUrl(DOUBAN_FM_LOGIN));
+    if (_managers[8] == NULL) {
+        _managers[8] = new QNetworkAccessManager(this);
+        connect(_managers[8], SIGNAL(finished(QNetworkReply*)),
+                this, SLOT(onReceivedAuth(QNetworkReply*)));
+    }
     _managers[8]->post(request, args.toAscii());
 }
 
@@ -78,6 +63,11 @@ void Douban::userReLogin() {
                       QVariant("application/x-www-form-urlencoded"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(args.length()));
     request.setUrl(QUrl(DOUBAN_FM_LOGIN));
+    if (_managers[0] == NULL) {
+        _managers[0] = new QNetworkAccessManager(this);
+        connect(_managers[0], SIGNAL(finished(QNetworkReply*)),
+                this, SLOT(onReceivedRelogin(QNetworkReply*)));
+    }
     _managers[0]->post(request, args.toAscii());
 
     QEventLoop eventloop;
@@ -176,6 +166,11 @@ void Douban::getNewPlayList(const quint32& channel) {
             + QString("&channel=") + QString::number(channel, 10)
             + QString("&type=n");
 
+    if (_managers[1] == NULL) {
+        _managers[1] = new QNetworkAccessManager(this);
+        connect(_managers[1], SIGNAL(finished(QNetworkReply*)),
+                this, SLOT(onReceivedNewList(QNetworkReply*)));
+    }
     _managers[1]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
@@ -234,6 +229,11 @@ void Douban::getPlayingList(const quint32& channel, const quint32 &sid) {
             + QString("&channel=") + QString::number(channel, 10)
             + QString("&type=p");
 
+    if (_managers[7] == NULL) {
+        _managers[7] = new QNetworkAccessManager(this);
+        connect(_managers[7], SIGNAL(finished(QNetworkReply*)),
+                this, SLOT(onReceivedPlayingList(QNetworkReply*)));
+    }
     _managers[7]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
@@ -291,6 +291,11 @@ void Douban::rateSong(const quint32& sid, const quint32 &channel, const bool toR
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
             + (toRate? QString("&type=r"): QString("&type=u"));
+    if (_managers[2] == NULL) {
+        _managers[2] = new QNetworkAccessManager(this);
+        connect(_managers[2], SIGNAL(finished(QNetworkReply*)),
+                this, SLOT(onReceivedRateSong(QNetworkReply*)));
+    }
     _managers[2]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
@@ -327,6 +332,11 @@ void Douban::skipSong(const quint32 &sid, const quint32& channel) {
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
             + QString("&type=s");
+    if (_managers[3] == NULL) {
+        _managers[3] = new QNetworkAccessManager(this);
+        connect(_managers[3], SIGNAL(finished(QNetworkReply*)),
+                this, SLOT(onReceivedSkipSong(QNetworkReply*)));
+    }
     _managers[3]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
@@ -363,6 +373,11 @@ void Douban::songEnd(const quint32& sid, const quint32& channel) {
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
             + QString("&type=e");
+    if (_managers[4] == NULL) {
+        _managers[4] = new QNetworkAccessManager(this);
+        connect(_managers[4], SIGNAL(finished(QNetworkReply*)),
+                this, SLOT(onReceivedCurrentEnd(QNetworkReply*)));
+    }
     _managers[4]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
@@ -383,6 +398,11 @@ void Douban::byeSong(const quint32 &sid, const quint32 &channel) {
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
             + QString("&type=b");
+    if (_managers[5] == NULL) {
+        _managers[5] = new QNetworkAccessManager(this);
+        connect(_managers[5], SIGNAL(finished(QNetworkReply*)),
+                this, SLOT(onReceivedByeSong(QNetworkReply*)));
+    }
     _managers[5]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
@@ -411,6 +431,11 @@ void Douban::onReceivedByeSong(QNetworkReply *reply) {
 }
 
 void Douban::getChannels() {
+    if (_managers[6] == NULL) {
+        _managers[6] = new QNetworkAccessManager(this);
+        connect(_managers[6], SIGNAL(finished(QNetworkReply*)),
+                this, SLOT(onReceivedChannels(QNetworkReply*)));
+    }
     _managers[6]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_CHANNEL)));
 }
 

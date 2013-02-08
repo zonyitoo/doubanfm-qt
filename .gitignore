@@ -1,0 +1,3 @@
+*.qm
+*.o
+Makefile

@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/heart.png</file>
+        <file>icons/heart_empty.png</file>
+        <file>icons/pause.png</file>
+        <file>icons/next.png</file>
+        <file>icons/trash.png</file>
+        <file>icons/channel_left.png</file>
+        <file>icons/channel_right.png</file>
+        <file>icons/user.png</file>
+        <file>icons/volume.png</file>
+    </qresource>
+</RCC>

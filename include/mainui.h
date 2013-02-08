@@ -10,6 +10,7 @@
 #include <phonon/AudioOutput>
 #include "douban.h"
 #include "channelbutton.h"
+#include "channelwidget.h"
 
 namespace Ui {
 class MainUI;
@@ -35,6 +36,7 @@ private slots:
     void on_heartButton_clicked();
     void onReceivedImage(QNetworkReply *reply);
     void onReceivedChannels(const QList<DoubanChannel>& channels);
+    void onChannelChanged(qint32 channel_id);
     void recvRateSong(const bool succeed);
     void recvUserLogin(DoubanUser *user);
     void recvUserLogoff();
@@ -48,6 +50,7 @@ private slots:
 
 private:
     Ui::MainUI *ui;
+    ChannelWidget *channelWidget;
 
     QNetworkAccessManager *_networkmgr;
     Douban *_douban;

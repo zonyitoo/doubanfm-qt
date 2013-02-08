@@ -4,13 +4,16 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include "douban_types.h"
+#include "douban.h"
+
+static const unsigned int DOUBAN_MANAGER_ARRAY_SIZE = 9;
 
 class Douban : public QObject
 {
     Q_OBJECT
 public:
     ~Douban();
-    static Douban* getInstance(const DoubanUser& user = DoubanUser());
+    static Douban* getInstance();
 
     void doLogin(const QString &email, const QString &password);
     void userLogout();
@@ -38,7 +41,7 @@ signals:
     void receivedCurrentEnd(const bool succeed);
     void receivedByeSong(const bool succeed);
     void receivedChannels(const QList<DoubanChannel>& channels);
-    void loginSucceed(DoubanUser *user);
+    void loginSucceed(DoubanUser user);
     void loginFailed(const QString &errmsg);
     void logoffSucceed();
     
@@ -70,7 +73,7 @@ private:
      * 7: playing list
      * 8: Login/Logout
      */
-    QNetworkAccessManager *_managers[9];
+    QNetworkAccessManager *_managers[DOUBAN_MANAGER_ARRAY_SIZE];
 
     DoubanUser _user;
 };

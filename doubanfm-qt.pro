@@ -14,7 +14,6 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp\
     src/douban.cpp \
-    src/mainui.cpp \
     src/channelbutton.cpp \
     src/channelwidget.cpp \
     src/controlpanel.cpp \
@@ -26,7 +25,6 @@ SOURCES += src/main.cpp\
 HEADERS  += \
     include/douban.h \
     include/douban_types.h \
-    include/mainui.h \
     include/channelbutton.h \
     include/channelwidget.h \
     include/controlpanel.h \
@@ -36,7 +34,6 @@ HEADERS  += \
     include/userloginwidget.h
 
 FORMS    += \
-    src/mainui.ui \
     src/channelwidget.ui \
     src/controlpanel.ui \
     src/mainwidget.ui \
@@ -50,4 +47,5 @@ INCLUDEPATH += include/
 RESOURCES += \
     icons.qrc
 
-TRANSLATIONS +=
+TRANSLATIONS += lang/China_Chinese.ts \
+                lang/Taiwan_Chinese.ts

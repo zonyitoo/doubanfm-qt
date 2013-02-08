@@ -281,7 +281,11 @@ void ControlPanel::unfreeze() {
     ui->trashButton->setEnabled(true);
 }
 
+static bool isUserNamePanelShowing = false;
+
 void ControlPanel::enterEvent(QEvent *event) {
+    if (isUserNamePanelShowing) return;
+
     QPropertyAnimation *anim = new QPropertyAnimation(this, "geometry");
     anim->setDuration(300);
 
@@ -301,10 +305,8 @@ void ControlPanel::enterEvent(QEvent *event) {
     anim->start();
 }
 
-static bool isUserNamePanelShowing = false;
-
 void ControlPanel::leaveEvent(QEvent *event) {
-    isUserNamePanelShowing = false;
+    if (isUserNamePanelShowing) return;
 
     QPropertyAnimation *anim = new QPropertyAnimation(this, "geometry");
     anim->setDuration(300);

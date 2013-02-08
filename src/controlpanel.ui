@@ -200,7 +200,7 @@ border-radius: 4px;
          </font>
         </property>
         <property name="text">
-         <string>song</string>
+         <string notr="true">song</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -236,7 +236,7 @@ border-radius: 4px;
          </font>
         </property>
         <property name="text">
-         <string>art</string>
+         <string notr="true">art</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

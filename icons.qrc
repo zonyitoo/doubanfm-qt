@@ -9,5 +9,8 @@
         <file>icons/channel_right.png</file>
         <file>icons/user.png</file>
         <file>icons/volume.png</file>
+        <file>lang/China_Chinese.qm</file>
+        <file>lang/Taiwan_Chinese.qm</file>
+        <file>icon.png</file>
     </qresource>
 </RCC>

@@ -1,8 +1,9 @@
 #include <QApplication>
-#include "mainui.h"
 #include "mainwidget.h"
 #include <QTranslator>
 #include <QResource>
+#include <QDebug>
+#include <QTextCodec>
 
 int main(int argc, char *argv[])
 {
@@ -12,8 +13,16 @@ int main(int argc, char *argv[])
 
     //QResource::registerResource("icons.qrc");
 
-    //MainUI ui;
-    //ui.show();
+
+    QTranslator translator;
+    QLocale locale;
+    translator.load(QString(":/lang/")
+                    + QLocale::countryToString(locale.country())
+                    + QString("_")
+                    + QLocale::languageToString(locale.language()));
+
+    a.installTranslator(&translator);
+
     MainWidget mw;
     mw.show();
     

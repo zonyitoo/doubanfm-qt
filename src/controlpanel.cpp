@@ -189,15 +189,6 @@ void ControlPanel::stateChanged(Phonon::State newState, Phonon::State oldState) 
     }
 }
 
-void ControlPanel::on_pauseButton_clicked() {
-    if (pause_state) {
-        emit mediaObject->play();
-    }
-    else {
-        emit mediaObject->pause();
-    }
-}
-
 void ControlPanel::on_nextButton_clicked() {
     if (mediaObject->state() == Phonon::StoppedState) {
         _douban->getNewPlayList(_channel);

@@ -36,7 +36,6 @@ private slots:
     void playTick(qint64 time);
     void sourceChanged(const Phonon::MediaSource &source);
 
-    void on_pauseButton_clicked();
     void on_nextButton_clicked();
     void on_trashButton_clicked();
     void on_heartButton_clicked();

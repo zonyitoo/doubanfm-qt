@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
 
     //QResource::registerResource("icons.qrc");
 
-
     QTranslator translator;
     QLocale locale;
     translator.load(QString(":/lang/")

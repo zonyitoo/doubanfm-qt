@@ -25,9 +25,5 @@ MaskPauseWidget::MaskPauseWidget(QWidget *parent) :
 }
 
 void MaskPauseWidget::mousePressEvent(QMouseEvent *event) {
-    qDebug() << Q_FUNC_INFO;
-    //this->deleteLater();
-    //this->setVisible(false);
-
     emit mousePressed();
 }

@@ -14,7 +14,6 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp\
     src/douban.cpp \
-    src/channelbutton.cpp \
     src/channelwidget.cpp \
     src/controlpanel.cpp \
     src/mainwidget.cpp \
@@ -25,7 +24,6 @@ SOURCES += src/main.cpp\
 HEADERS  += \
     include/douban.h \
     include/douban_types.h \
-    include/channelbutton.h \
     include/channelwidget.h \
     include/controlpanel.h \
     include/mainwidget.h \

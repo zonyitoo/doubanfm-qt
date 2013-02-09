@@ -3,8 +3,9 @@
 
 ## 依赖
 * libqt4-network libqt4-gui libqt4-core
-* libphonon
-* libqjson
+* libphonon, libphonon-dev, phonon, phonon-backend-(gstreamer|vlc)
+* libqjson, libqjson-dev
+* gstreamer0.10-fluendo-mp3
 
 ## 截图
 

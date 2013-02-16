@@ -32,11 +32,11 @@ HEADERS  += \
     include/userloginwidget.h
 
 FORMS    += \
-    src/channelwidget.ui \
-    src/controlpanel.ui \
-    src/mainwidget.ui \
-    src/volumewidget.ui \
-    src/userloginwidget.ui
+    ui/channelwidget.ui \
+    ui/controlpanel.ui \
+    ui/mainwidget.ui \
+    ui/volumewidget.ui \
+    ui/userloginwidget.ui
 
 LIBS     += -lqjson -lphonon
 

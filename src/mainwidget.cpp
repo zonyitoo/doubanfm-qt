@@ -43,6 +43,10 @@ MainWidget::~MainWidget()
 
     delete _channelWidget;
     delete _controlPanel;
+    delete _userLoginWidget;
+    delete pauseShortcut;
+    delete _mpw;
+    delete _networkmgr;
 }
 
 

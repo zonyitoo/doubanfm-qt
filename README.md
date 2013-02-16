@@ -21,18 +21,9 @@ qmake doubanfm-qt.pro
 make
 ```
 
-得到`doubanfm-qt`后直接运行即可，或
+得到`doubanfm-qt`后直接运行即可
 
-```
-mkdir -p /usr/share/QDoubanFM
-cp doubanfm-qt /usr/share/QDoubanFM
-rm -f /usr/bin/doubanfm-qt
-ln -s /usr/share/QDoubanFM/doubanfm-qt /usr/bin/doubanfm-qt
-cp QDoubanFM.desktop /usr/share/applications
-cp QDoubanFM.png /usr/share/pixmaps
-```
-
-或运行`install.sh`脚本同样可以
+或运行`install.sh`脚本来安装到系统中（For Linux Only），安装好后在桌面系中的的启动器中找到`QDoubanFM`运行即可
 
 ## TODO
 * <del>基本播放功能</del>

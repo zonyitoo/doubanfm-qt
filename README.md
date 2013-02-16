@@ -1,20 +1,22 @@
 # DoubanFM 客户端
 使用Qt4编写的DoubanFM客户端
 
-## 依赖
+## 依赖 Dependences
 * libqt4-network libqt4-gui libqt4-core
 * libphonon, libphonon-dev, phonon, phonon-backend-(gstreamer|vlc)
 * libqjson, libqjson-dev
 * gstreamer0.10-fluendo-mp3
 
-## 截图
+## 截图 Screenshot
 
 ![截图](https://gitcafe.com/zonyitoo/doubanfm-qt/raw/master/screenshot.png)
 
-## INSTALL
+## 安装方法 Install Instructions
+
+在Ubuntu 12.10 x86\_64上测试通过
 
 ```bash
-lrelease lang/*.ts
+lrelease lang/*.ts ## 生成*.qm文件
 qmake doubanfm-qt.pro
 make
 ```

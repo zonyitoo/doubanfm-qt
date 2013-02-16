@@ -12,6 +12,7 @@ VolumeWidget::VolumeWidget(QWidget *parent) :
 
     QRect rect(this->geometry());
     rect.setWidth(0);
+    rect.setHeight(63);
     ui->movingWidget->setGeometry(rect);
 
     _isShowing = false;

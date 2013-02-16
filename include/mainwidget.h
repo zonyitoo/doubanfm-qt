@@ -7,6 +7,7 @@
 #include "maskpausewidget.h"
 #include "userloginwidget.h"
 #include <QNetworkAccessManager>
+#include <QShortcut>
 
 namespace Ui {
 class MainWidget;
@@ -30,12 +31,15 @@ private:
 
     QNetworkAccessManager *_networkmgr;
 
+    QShortcut *pauseShortcut;
+
     void mousePressEvent(QMouseEvent *event);
 
 private slots:
     void onRecvImage(QNetworkReply *reply);
     void onImageChanged(const QString& imgurl);
     void onMaskPressed();
+    void onPauseShortcutActivate();
 };
 
 #endif // MAINWIDGET_H

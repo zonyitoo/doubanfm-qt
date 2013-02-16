@@ -32,6 +32,9 @@ MainWidget::MainWidget(QWidget *parent) :
     _userLoginWidget = new UserLoginWidget(this);
     _userLoginWidget->hide();
     connect(_controlPanel, SIGNAL(userButtonClicked()), _userLoginWidget, SLOT(show()));
+
+    pauseShortcut = new QShortcut(QKeySequence("Space"), this);
+    connect(pauseShortcut, SIGNAL(activated()), this, SLOT(onPauseShortcutActivate()));
 }
 
 MainWidget::~MainWidget()
@@ -78,4 +81,15 @@ void MainWidget::mousePressEvent(QMouseEvent *event) {
 void MainWidget::onMaskPressed() {
     _controlPanel->play();
     _mpw->setVisible(false);
+}
+
+void MainWidget::onPauseShortcutActivate() {
+    if (_mpw->isVisible()) {
+        _mpw->setVisible(false);
+        _controlPanel->play();
+    }
+    else {
+        _mpw->setVisible(true);
+        _controlPanel->pause();
+    }
 }

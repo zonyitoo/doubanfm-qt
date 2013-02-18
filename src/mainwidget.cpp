@@ -35,6 +35,14 @@ MainWidget::MainWidget(QWidget *parent) :
 
     pauseShortcut = new QShortcut(QKeySequence("Space"), this);
     connect(pauseShortcut, SIGNAL(activated()), this, SLOT(onPauseShortcutActivate()));
+    nextShortcut = new QShortcut(QKeySequence("Right"), this);
+    connect(nextShortcut, SIGNAL(activated()), _controlPanel, SLOT(next()));
+    heartShortcut = new QShortcut(QKeySequence("Up"), this);
+    connect(heartShortcut, SIGNAL(activated()), _controlPanel, SLOT(heart()));
+    trashShortcut = new QShortcut(QKeySequence("Down"), this);
+    connect(trashShortcut, SIGNAL(activated()), _controlPanel, SLOT(trash()));
+    exitShortcut = new QShortcut(QKeySequence(QKeySequence::Close), this);
+    connect(exitShortcut, SIGNAL(activated()), qApp, SLOT(quit()));
 }
 
 MainWidget::~MainWidget()
@@ -45,6 +53,10 @@ MainWidget::~MainWidget()
     delete _controlPanel;
     delete _userLoginWidget;
     delete pauseShortcut;
+    delete nextShortcut;
+    delete heartShortcut;
+    delete trashShortcut;
+    delete exitShortcut;
     delete _mpw;
     delete _networkmgr;
 }

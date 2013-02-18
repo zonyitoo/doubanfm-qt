@@ -6,6 +6,7 @@
 #include <QPropertyAnimation>
 
 static QTime bktime;
+bool isFreeze = false;
 
 ControlPanel::ControlPanel(QWidget *parent) :
     QWidget(parent),
@@ -66,6 +67,21 @@ void ControlPanel::play() {
 
 void ControlPanel::pause() {
     emit mediaObject->pause();
+}
+
+void ControlPanel::next() {
+    if (isFreeze) return;
+    on_nextButton_clicked();
+}
+
+void ControlPanel::heart() {
+    if (isFreeze) return;
+    on_heartButton_clicked();
+}
+
+void ControlPanel::trash() {
+    if (isFreeze) return;
+    on_trashButton_clicked();
 }
 
 void ControlPanel::loadBackupData() {
@@ -271,12 +287,16 @@ void ControlPanel::freeze() {
     ui->heartButton->setEnabled(false);
     ui->trashButton->setEnabled(false);
     ui->nextButton->setEnabled(false);
+
+    isFreeze = true;
 }
 
 void ControlPanel::unfreeze() {
     ui->heartButton->setEnabled(true);
     ui->trashButton->setEnabled(true);
     ui->nextButton->setEnabled(true);
+
+    isFreeze = false;
 }
 
 static bool isUserNamePanelShowing = false;

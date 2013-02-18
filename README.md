@@ -25,11 +25,22 @@ make
 
 或运行`install.sh`脚本来安装到系统中（For Linux Only），安装好后在桌面系中的的启动器中找到`QDoubanFM`运行即可
 
+## 快捷键 Shortcuts
+`Ctrl` + `W` 退出
+
+`Space` 暂停
+
+`Right Arrow` 下一首
+
+`Up Arrow` 喜欢这首歌
+
+`Down Arrow` 扔掉！
+
 ## TODO
 * <del>基本播放功能</del>
 * <del>频道选择</del>
 * <del>用户登录</del>
-* <del>快捷键</del> 在主界面按箭头右是下一首，空格暂停或播放..其他自探索哦哈
+* <del>快捷键</del>
 * <del>动画</del>
 * <del>i18n支持</del>
 * Linux的播放提示 + DBus

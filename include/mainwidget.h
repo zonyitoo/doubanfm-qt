@@ -32,6 +32,10 @@ private:
     QNetworkAccessManager *_networkmgr;
 
     QShortcut *pauseShortcut;
+    QShortcut *nextShortcut;
+    QShortcut *heartShortcut;
+    QShortcut *trashShortcut;
+    QShortcut *exitShortcut;
 
     void mousePressEvent(QMouseEvent *event);
 

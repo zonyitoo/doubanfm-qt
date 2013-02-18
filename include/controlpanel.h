@@ -24,12 +24,16 @@ public:
     int getVisibleHeight();
     qint32 getCurrentChannel();
 
-    void play();
-    void pause();
-
 signals:
     void gotAlbumImage(const QString& url);
     void userButtonClicked();
+
+public slots:
+    void next();
+    void play();
+    void pause();
+    void heart();
+    void trash();
 
 private slots:
     void stateChanged(Phonon::State newState, Phonon::State oldState);

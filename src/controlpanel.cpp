@@ -38,6 +38,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
     _channel = 2;
     this->loadBackupData();
     _douban->getNewPlayList(_channel);
+    freeze();
 
     bktime.start();
 }
@@ -156,12 +157,14 @@ void ControlPanel::stateChanged(Phonon::State newState, Phonon::State oldState) 
 
         if (mediaSources.indexOf(mediaObject->currentSource()) == mediaSources.size() - 1) {
             _douban->getPlayingList(_channel, songs[songs.size() - 1].sid);
+            freeze();
         }
 
         if (oldState == Phonon::PausedState) {
             if (bktime.restart() > 1800000) {
                 _douban->getPlayingList(_channel,
                                         songs[mediaSources.indexOf(mediaObject->currentSource())].sid);
+                freeze();
             }
         }
 
@@ -192,6 +195,7 @@ void ControlPanel::stateChanged(Phonon::State newState, Phonon::State oldState) 
 void ControlPanel::on_nextButton_clicked() {
     if (mediaObject->state() == Phonon::StoppedState) {
         _douban->getNewPlayList(_channel);
+        freeze();
         return;
     }
     else if (mediaObject->state() == Phonon::PausedState) {
@@ -223,6 +227,7 @@ void ControlPanel::recvPlayingList(const QList<DoubanFMSong> &song) {
     }
     mediaObject->clearQueue();
     mediaObject->setQueue(mediaSources);
+    unfreeze();
 }
 
 void ControlPanel::on_trashButton_clicked() {
@@ -265,11 +270,13 @@ void ControlPanel::recvRateSong(const bool succeed) {
 void ControlPanel::freeze() {
     ui->heartButton->setEnabled(false);
     ui->trashButton->setEnabled(false);
+    ui->nextButton->setEnabled(false);
 }
 
 void ControlPanel::unfreeze() {
     ui->heartButton->setEnabled(true);
     ui->trashButton->setEnabled(true);
+    ui->nextButton->setEnabled(true);
 }
 
 static bool isUserNamePanelShowing = false;

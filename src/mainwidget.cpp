@@ -71,13 +71,10 @@ void MainWidget::onRecvImage(QNetworkReply *reply) {
 void MainWidget::onImageChanged(const QString &imgurl) {
     QString mod_url = imgurl;
     mod_url.replace("mpic", "lpic");
-    qDebug() << Q_FUNC_INFO << mod_url;
     _networkmgr->get(QNetworkRequest(QUrl(mod_url)));
 }
 
 void MainWidget::mousePressEvent(QMouseEvent *event) {
-    qDebug() << Q_FUNC_INFO;
-
     _controlPanel->pause();
     _mpw->setVisible(true);
 }

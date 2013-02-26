@@ -1,7 +1,7 @@
 # DoubanFM 客户端
 使用Qt4编写的DoubanFM客户端
 
-## 依赖 Dependences
+## 依赖 Dependencies
 * libqt4-network libqt4-gui libqt4-core
 * libphonon, libphonon-dev, phonon, phonon-backend-(gstreamer|vlc)
 * libqjson, libqjson-dev
@@ -50,7 +50,7 @@ make
 ## BUGS
 * <del>在长时间暂停后重启播放会崩溃</del>
 * 在网络不好时卡住会崩溃
-* <del>动画有Bug，若打开了频道界面然后鼠标厉害，则会让控制面板滑动位置出错</del>
+* <del>动画有Bug，若打开了频道界面然后鼠标离开，则会让控制面板滑动位置出错</del>
 
 ## LICENSE
 本项目基于MIT协议发布

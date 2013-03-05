@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    a.setApplicationName("豆瓣FM");
+    a.setApplicationName("DoubanFM");
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
     //QResource::registerResource("icons.qrc");
@@ -19,6 +19,10 @@ int main(int argc, char *argv[])
                     + QLocale::countryToString(locale.country())
                     + QString("_")
                     + QLocale::languageToString(locale.language()));
+    qDebug() << QString("Load Language: ")
+                + QLocale::countryToString(locale.country())
+                + QString("_")
+                + QLocale::languageToString(locale.language());
 
     a.installTranslator(&translator);
 

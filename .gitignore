@@ -1,3 +1,5 @@
 *.qm
 *.o
 Makefile
+*.user
+doubanfm-qt

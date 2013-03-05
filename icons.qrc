@@ -12,5 +12,6 @@
         <file>lang/China_Chinese.qm</file>
         <file>lang/Taiwan_Chinese.qm</file>
         <file>icon.png</file>
+        <file>lang/HongKong_Chinese.qm</file>
     </qresource>
 </RCC>

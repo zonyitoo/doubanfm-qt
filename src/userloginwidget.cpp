@@ -10,7 +10,8 @@ UserLoginWidget::UserLoginWidget(QWidget *parent) :
     _douban = Douban::getInstance();
     //ui->loginErrMsg->setVisible(false);
 
-    connect(_douban, SIGNAL(loginSucceed(DoubanUser)), this, SLOT(recvLoginSucceed(DoubanUser)));
+    connect(_douban, SIGNAL(loginSucceed(DoubanUser)),
+            this, SLOT(recvLoginSucceed(DoubanUser)));
 }
 
 UserLoginWidget::~UserLoginWidget()
@@ -51,7 +52,13 @@ void UserLoginWidget::recvLoginFailed(const QString &errmsg) {
     ui->userNameEdit->setEnabled(true);
     ui->passwordEdit->setEnabled(true);
     ui->submitButton->setEnabled(true);
-    ui->submitButton->setText(errmsg);
+    //ui->submitButton->setText(errmsg);
+    ui->userNameEdit->setText("");
+    ui->passwordEdit->setText("");
+    if (errmsg == "invalidate_email")
+        ui->userNameEdit->setPlaceholderText(errmsg);
+    else
+        ui->passwordEdit->setPlaceholderText(errmsg);
 
     //ui->loginErrMsg->setText(QString("<font color='red'>")
     //                         + errmsg + QString("</font>"));

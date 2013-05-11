@@ -22,11 +22,12 @@ public:
 
 signals:
     void loginSucceed(DoubanUser user);
-    
-private slots:
-    void on_submitButton_clicked();
+
+public slots:
     void recvLoginSucceed(DoubanUser user);
     void recvLoginFailed(const QString& errmsg);
+private slots:
+    void on_submitButton_clicked();
 
 private:
     Ui::UserLoginWidget *ui;

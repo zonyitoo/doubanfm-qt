@@ -34,7 +34,14 @@ ControlPanel::ControlPanel(QWidget *parent) :
 
     connect(_douban, SIGNAL(receivedRateSong(bool)), this, SLOT(recvRateSong(bool)));
 
-    connect(ui->userLoginWidget, SIGNAL(loginSucceed(DoubanUser)), this, SLOT(recvUserLoginSucceed(DoubanUser)));
+    connect(ui->userLoginWidget, SIGNAL(loginSucceed(DoubanUser)),
+            this, SLOT(recvUserLoginSucceed(DoubanUser)));
+    connect(_douban, SIGNAL(loginFailed(QString)),
+            ui->userLoginWidget, SLOT(recvLoginFailed(QString)));
+    connect(_douban, SIGNAL(loginFailed(QString)),
+            this, SLOT(recvUserLoginFailed(QString)));
+    connect(ui->userLoginWidget, SIGNAL(loginSucceed(DoubanUser)),
+            this, SLOT(recvUserLoginSucceed(DoubanUser)));
 
     _channel = 2;
     this->loadBackupData();
@@ -304,7 +311,7 @@ void ControlPanel::unfreeze() {
 
 static bool isUserNamePanelShowing = false;
 
-void ControlPanel::enterEvent(QEvent *event) {
+void ControlPanel::enterEvent(QEvent *) {
     if (isUserNamePanelShowing) return;
 
     QPropertyAnimation *anim = new QPropertyAnimation(this, "geometry");
@@ -326,7 +333,7 @@ void ControlPanel::enterEvent(QEvent *event) {
     anim->start();
 }
 
-void ControlPanel::leaveEvent(QEvent *event) {
+void ControlPanel::leaveEvent(QEvent *) {
     if (isUserNamePanelShowing) return;
 
     QPropertyAnimation *anim = new QPropertyAnimation(this, "geometry");
@@ -356,7 +363,7 @@ void ControlPanel::on_volumeSlider_sliderMoved(int position) {
     this->audioOutput->setVolume(position / 100.0);
 }
 
-void ControlPanel::mousePressEvent(QMouseEvent *event) {
+void ControlPanel::mousePressEvent(QMouseEvent *) {
 
 }
 
@@ -421,4 +428,8 @@ void ControlPanel::recvUserLoginSucceed(DoubanUser user) {
     anim->setEndValue(curGeo);
     anim->setEasingCurve(QEasingCurve::OutQuad);
     anim->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void ControlPanel::recvUserLoginFailed(const QString &errmsg) {
+
 }

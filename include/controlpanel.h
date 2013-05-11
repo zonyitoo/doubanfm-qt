@@ -51,6 +51,7 @@ private slots:
     void recvPlayingList(const QList<DoubanFMSong> &song);
     void recvRateSong(const bool succeed);
     void recvUserLoginSucceed(DoubanUser user);
+    void recvUserLoginFailed(const QString& errmsg);
 
     void onChannelChanged(qint32 channel);
 
@@ -74,10 +75,10 @@ private:
     void freeze();
     void unfreeze();
 
-    void enterEvent(QEvent *event);
-    void leaveEvent(QEvent *event);
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
 
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *);
 };
 
 #endif // CONTROLPANEL_H

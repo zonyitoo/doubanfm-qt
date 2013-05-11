@@ -1,6 +1,7 @@
 #include "controlpanel.h"
 #include "ui_controlpanel.h"
 #include <QTime>
+#include <QTimer>
 #include <QSettings>
 #include <QMessageBox>
 #include <QPropertyAnimation>
@@ -153,6 +154,7 @@ void ControlPanel::sourceChanged(const Phonon::MediaSource& source) {
 
 static bool pause_state = false;
 void ControlPanel::stateChanged(Phonon::State newState, Phonon::State oldState) {
+    QTimer *timer = NULL;
     switch (newState) {
     case Phonon::ErrorState:
         qDebug() << Q_FUNC_INFO << "Phonon::ErrorState";
@@ -203,6 +205,12 @@ void ControlPanel::stateChanged(Phonon::State newState, Phonon::State oldState) 
     case Phonon::LoadingState:
         qDebug() << Q_FUNC_INFO << "Phonon::LoadingState";
         freeze();
+        break;
+    case Phonon::BufferingState:
+        qDebug() << Q_FUNC_INFO << "Phonon::BufferingState";
+        timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(next()));
+        timer->start(3000);
         break;
     }
 }
@@ -366,6 +374,9 @@ void ControlPanel::on_userNameButton_clicked() {
                        curGeo.width(),
                        curGeo.height());
         isUserNamePanelShowing = true;
+
+        DoubanUser duser = _douban->getUser();
+        ui->userLoginWidget->setInfo(duser.email, duser.password);
     }
     else {
         curGeo = QRect(curGeo.x(),
@@ -377,9 +388,6 @@ void ControlPanel::on_userNameButton_clicked() {
                        curGeo.height());
 
         isUserNamePanelShowing = false;
-
-        DoubanUser duser = _douban->getUser();
-        ui->userLoginWidget->setInfo(duser.email, duser.password);
     }
     anim->setEndValue(curGeo);
     anim->setEasingCurve(QEasingCurve::OutQuad);

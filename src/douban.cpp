@@ -10,25 +10,22 @@
 
 #include <algorithm>
 
-static Douban *_INSTANCE = NULL;
 static const QString DOUBAN_FM_API_ADDR = "http://www.douban.com/j/app/radio/people";
 static const QString DOUBAN_FM_API_CHANNEL = "http://www.douban.com/j/app/radio/channels";
 static const QString DOUBAN_FM_LOGIN = "http://www.douban.com/j/app/login";
 
 Douban::Douban(QObject *parent) : QObject(parent) {
-    for (int i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
+    for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
         _managers[i] = NULL;
 }
 
 Douban::~Douban() {
-    for (int i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
+    for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
         delete _managers[i];
 }
 
 Douban* Douban::getInstance() {
-    if (_INSTANCE == NULL) {
-        _INSTANCE = new Douban();
-    }
+    static Douban *_INSTANCE = new Douban();
     return _INSTANCE;
 }
 
@@ -196,7 +193,7 @@ void Douban::onReceivedNewList(QNetworkReply *reply) {
             return;
         }
         QVariantList songList = obj["song"].toList();
-        foreach(QVariant item, songList) {
+        foreach(const QVariant& item, songList) {
             QVariantMap song = item.toMap();
             DoubanFMSong s;
             s.album = song["album"].toString();
@@ -259,7 +256,7 @@ void Douban::onReceivedPlayingList(QNetworkReply *reply) {
             return;
         }
         QVariantList songList = obj["song"].toList();
-        foreach(QVariant item, songList) {
+        foreach(const QVariant& item, songList) {
             QVariantMap song = item.toMap();
             DoubanFMSong s;
             s.album = song["album"].toString();
@@ -456,7 +453,7 @@ void Douban::onReceivedChannels(QNetworkReply *reply) {
     if (ok) {
         QVariantMap obj = result.toMap();
         QVariantList chList = obj["channels"].toList();
-        foreach(QVariant item, chList) {
+        foreach(const QVariant& item, chList) {
             QVariantMap ch = item.toMap();
             DoubanChannel dc;
             dc.name = ch["name"].toString();

@@ -136,8 +136,8 @@ void ControlPanel::playTick(qint64 time) {
 
 void ControlPanel::sourceChanged(const Phonon::MediaSource& source) {
     int index = mediaSources.indexOf(source);
+    if (index < 0) return;
     qDebug() << Q_FUNC_INFO << "Switch to" << songs[index].title;
-
 
     ui->artistName->setText(QString("<font color=grey>")
                             + songs[index].artist
@@ -150,10 +150,8 @@ void ControlPanel::sourceChanged(const Phonon::MediaSource& source) {
     ui->songName->setText("<font color='#57463e'>" + songs[index].title + "</font>");
 
     if (songs[index].like)
-        //ui->heartButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_DialogCloseButton)));
         ui->heartButton->setIcon(QIcon(":/icons/heart.png"));
     else
-        //ui->heartButton->setIcon(QIcon(this->style()->standardIcon(QStyle::SP_DialogApplyButton)));
         ui->heartButton->setIcon(QIcon(":/icons/heart_empty.png"));
 
     emit gotAlbumImage(songs[index].picture);

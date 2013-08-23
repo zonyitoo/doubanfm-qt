@@ -1,0 +1,32 @@
+#ifndef LOGINPANEL_H
+#define LOGINPANEL_H
+
+#include <QWidget>
+#include "doubanfm.h"
+#include "douban_types.h"
+
+namespace Ui {
+class LoginPanel;
+}
+
+class LoginPanel : public QWidget
+{
+    Q_OBJECT
+    
+public:
+    explicit LoginPanel(QWidget *parent = 0);
+    ~LoginPanel();
+
+    void animShow();
+    void animHide();
+    
+private slots:
+    void on_submit_clicked();
+
+private:
+    Ui::LoginPanel *ui;
+    int maxheight;
+    DoubanFM *doubanfm;
+};
+
+#endif // LOGINPANEL_H

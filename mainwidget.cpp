@@ -23,10 +23,6 @@ ControlPanel *mainwidget::controlPanel() {
     return ui->controlWidget;
 }
 
-TitleWidget *mainwidget::titleWidget() {
-    return ui->titleWidget;
-}
-
 LoginPanel *mainwidget::loginPanel() {
     return ui->loginWidget;
 }

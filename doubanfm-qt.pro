@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     controlpanel.cpp \
     doubanfm.cpp \
     horizontalslider.cpp \
-    loginpanel.cpp
+    loginpanel.cpp \
+    volumetimepanel.cpp
 
 HEADERS  += mainwidget.h \
     titlewidget.h \
@@ -28,13 +29,15 @@ HEADERS  += mainwidget.h \
     douban_types.h \
     doubanfm.h \
     horizontalslider.h \
-    loginpanel.h
+    loginpanel.h \
+    volumetimepanel.h
 
 FORMS    += mainwidget.ui \
     titlewidget.ui \
     channelwidget.ui \
     controlpanel.ui \
-    loginpanel.ui
+    loginpanel.ui \
+    volumetimepanel.ui
 
 RESOURCES += \
     imgs.qrc

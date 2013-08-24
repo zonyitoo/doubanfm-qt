@@ -22,7 +22,6 @@ public:
 
     ChannelWidget *channelWidget();
     ControlPanel *controlPanel();
-    TitleWidget *titleWidget();
     LoginPanel *loginPanel();
 
     void mousePressEvent(QMouseEvent *);

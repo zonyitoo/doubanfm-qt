@@ -88,9 +88,9 @@
    <property name="geometry">
     <rect>
      <x>232</x>
-     <y>26</y>
+     <y>24</y>
      <width>261</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -109,21 +109,21 @@
    <property name="geometry">
     <rect>
      <x>232</x>
-     <y>54</y>
-     <width>231</width>
+     <y>70</y>
+     <width>291</width>
      <height>21</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>文泉驿微米黑</family>
-     <pointsize>14</pointsize>
+     <pointsize>11</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>
    </property>
    <property name="text">
-    <string>&lt;font color=black&gt;&lt;b&gt;That's All She Wrote&lt;/b&gt;&lt;/font&gt;</string>
+    <string>&lt;font color=black&gt;That's All She Wrote&lt;/font&gt;</string>
    </property>
   </widget>
   <widget class="QToolButton" name="pauseButton">
@@ -155,29 +155,6 @@ QToolButton:hover{border-image: url(:/img/pause_clicked.png);}</string>
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="time">
-   <property name="geometry">
-    <rect>
-     <x>464</x>
-     <y>54</y>
-     <width>61</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>-04:55</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
   <widget class="QSlider" name="seeker">
    <property name="enabled">
     <bool>false</bool>
@@ -185,16 +162,16 @@ QToolButton:hover{border-image: url(:/img/pause_clicked.png);}</string>
    <property name="geometry">
     <rect>
      <x>232</x>
-     <y>80</y>
+     <y>90</y>
      <width>291</width>
-     <height>29</height>
+     <height>16</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">QSlider::groove:horizontal {
 
 background: #727982;
-height: 10px;
+height: 5px;
 border-radius: 4px;
 }
 
@@ -204,14 +181,14 @@ background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,
 background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,
     stop: 0 #bbf, stop: 1 #55f);
 border: 1px solid #777;
-height: 10px;
+height: 5px;
 border-radius: 4px;
 }
 
 QSlider::add-page:horizontal {
 background: #fff;
 border: 1px solid #777;
-height: 10px;
+height: 5px;
 border-radius: 4px;
 }
 
@@ -250,7 +227,7 @@ width: 0px
      <x>230</x>
      <y>130</y>
      <width>291</width>
-     <height>41</height>
+     <height>42</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -351,7 +328,37 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
     </item>
    </layout>
   </widget>
+  <widget class="VolumeTimePanel" name="volumeTime" native="true">
+   <property name="geometry">
+    <rect>
+     <x>435</x>
+     <y>100</y>
+     <width>85</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>85</width>
+     <height>16</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>85</width>
+     <height>16</height>
+    </size>
+   </property>
+  </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>VolumeTimePanel</class>
+   <extends>QWidget</extends>
+   <header>volumetimepanel.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="imgs.qrc"/>
  </resources>

@@ -80,7 +80,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         }
     });
 
-    connect(&player, SIGNAL(positionChanged(qint64)), this, SLOT(setTick(qint64)));
+    connect(&player, SIGNAL(positionChanged(qint64)), ui->volumeTime, SLOT(setTick(qint64)));
     connect(&player, &QMediaPlayer::positionChanged, [this] (qint64 tick) {
         ui->seeker->setValue((qreal) tick / player.duration() * 100);
     });
@@ -151,9 +151,8 @@ ControlPanel::ControlPanel(QWidget *parent) :
         this->channel = channel;
         doubanfm->getNewPlayList(channel);
     });
-
-    connect(dynamic_cast<mainwidget *>(this->parentWidget())->titleWidget(), &TitleWidget::volumeChanged, [this] (int value) {
-        this->player.setVolume(value);
+    connect(ui->volumeTime, &VolumeTimePanel::volumeChanged, [this] (int value) {
+        player.setVolume(value);
     });
 
     if (channel == -3) {
@@ -224,19 +223,19 @@ void ControlPanel::setAlbumImage(const QImage &src) {
 }
 
 void ControlPanel::setSongName(const QString &name) {
-    ui->songName->setText(QString("<font color='black'><b>")
-                          + name + QString("</b></font>"));
+    ui->songName->setText(QString("<font color='#04aaa1'>")
+                          + name + QString("</font>"));
 }
 
 void ControlPanel::setArtistName(const QString &name) {
-    ui->artist->setText(QString("<font color='grey'><b>")
-                          + name + QString("</b></font>"));
+    ui->artist->setText(QString("<font color='grey'>")
+                          + name + QString("</font>"));
 }
 
 void ControlPanel::setTick(qint64 tick) {
     QTime displayTime(0, (tick / 60000) % 60, (tick / 1000) % 60);
-    ui->time->setText(QString("<font color='#04aaa1'>") +
-                             displayTime.toString("mm:ss") + QString("</font>"));
+    //ui->time->setText(QString("<font color='black'>") +
+    //                         displayTime.toString("m:ss") + QString("</font>"));
 }
 
 void ControlPanel::loadConfig() {
@@ -289,9 +288,8 @@ void ControlPanel::on_nextButton_clicked()
     int sindex = player.playlist()->currentIndex();
     doubanfm->skipSong(songs[sindex].sid, channel);
     ui->nextButton->setEnabled(false);
-    ui->seeker->setValue(0);
-
     player.setPosition(player.duration());
+    ui->seeker->setValue(0);
 }
 
 void ControlPanel::on_pauseButton_clicked()
@@ -325,4 +323,6 @@ void ControlPanel::on_trashButton_clicked()
     int sindex = player.playlist()->currentIndex();
     doubanfm->byeSong(songs[sindex].sid, channel);
     ui->trashButton->setEnabled(false);
+    player.setPosition(player.duration());
+    ui->seeker->setValue(0);
 }

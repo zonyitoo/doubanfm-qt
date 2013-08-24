@@ -2,6 +2,7 @@
 #define PAUSEMASK_H
 
 #include <QWidget>
+#include <QShortcut>
 
 namespace Ui {
 class PauseMask;

@@ -7,6 +7,7 @@
 #include "controlpanel.h"
 #include "loginpanel.h"
 #include "pausemask.h"
+#include <QShortcut>
 
 namespace Ui {
 class mainwidget;
@@ -30,6 +31,9 @@ public:
 private:
     Ui::mainwidget *ui;
     QPoint dpos;
+    QShortcut *exitShortcut;
+    QShortcut *pauseShortcut;
+    bool isPaused;
 };
 
 #endif // MAINWIDGET_H

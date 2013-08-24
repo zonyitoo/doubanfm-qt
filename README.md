@@ -1,10 +1,8 @@
 # DoubanFM 客户端
-使用Qt4编写的DoubanFM客户端
+使用Qt5编写的DoubanFM客户端
 
 ## 依赖 Dependencies
-* libqt4-network libqt4-gui libqt4-core
-* libphonon, libphonon-dev, phonon, phonon-backend-(gstreamer|vlc)
-* libqjson, libqjson-dev
+* libqt5network5 libqt5gui5 libqt5core5 libqt5multimedia5 qtmultimedia5-dev
 * gstreamer0.10-fluendo-mp3
 
 ## 截图 Screenshot
@@ -13,10 +11,9 @@
 
 ## 安装方法 Install Instructions
 
-在Ubuntu 12.10 x86\_64上测试通过
+在Ubuntu 13.04 x86\_64上测试通过
 
 ```bash
-lrelease lang/*.ts ## 生成*.qm文件
 qmake doubanfm-qt.pro
 make
 ```
@@ -30,19 +27,13 @@ make
 
 `Space` 暂停
 
-`Right Arrow` 下一首
-
-`Up Arrow` 喜欢这首歌
-
-`Down Arrow` 扔掉！
-
 ## TODO
 * <del>基本播放功能</del>
 * <del>频道选择</del>
 * <del>用户登录</del>
 * <del>快捷键</del>
 * <del>动画</del>
-* <del>i18n支持</del>
+* i18n支持
 * Linux的播放提示 + DBus
 * 后台播放 + 托盘提示 (Ubuntu下是Indicator)
 * 歌词

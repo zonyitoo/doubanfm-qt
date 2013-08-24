@@ -1,6 +1,8 @@
 # DoubanFM 客户端
 使用Qt5编写的DoubanFM客户端
 
+[API接口文档](https://github.com/zonyitoo/doubanfm-qt/wiki/%E8%B1%86%E7%93%A3FM-API)
+
 ## 依赖 Dependencies
 * libqt5network5 libqt5gui5 libqt5core5 libqt5multimedia5 qtmultimedia5-dev
 * gstreamer0.10-fluendo-mp3

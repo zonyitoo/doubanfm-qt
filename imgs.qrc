@@ -8,19 +8,11 @@
         <file>img/trash_can_normal.png</file>
         <file>img/next_clicked.png</file>
         <file>img/next_normal.png</file>
-        <file>img/next.png</file>
         <file>img/pause_clicked.png</file>
         <file>img/pause_normal.png</file>
-        <file>img/radio_player.png</file>
-        <file>img/volume.png</file>
         <file>img/arrow_left.png</file>
         <file>img/arrow_right.png</file>
-        <file>img/heart.png</file>
-        <file>img/trash_can.png</file>
         <file>img/channel.png</file>
-        <file>img/green.png</file>
         <file>img/bg.png</file>
-        <file>img/album_cover.png</file>
-        <file>img/douban_fm_text.png</file>
     </qresource>
 </RCC>

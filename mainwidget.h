@@ -5,8 +5,8 @@
 #include <QMouseEvent>
 #include "channelwidget.h"
 #include "controlpanel.h"
-#include "titlewidget.h"
 #include "loginpanel.h"
+#include "pausemask.h"
 
 namespace Ui {
 class mainwidget;
@@ -23,6 +23,7 @@ public:
     ChannelWidget *channelWidget();
     ControlPanel *controlPanel();
     LoginPanel *loginPanel();
+    PauseMask *pauseMask();
 
     void mousePressEvent(QMouseEvent *);
     

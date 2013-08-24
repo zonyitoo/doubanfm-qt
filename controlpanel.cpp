@@ -32,10 +32,10 @@ ControlPanel::ControlPanel(QWidget *parent) :
     });
 
     setArtistName("Loading");
-    setTick(5);
 
     connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> user) {
         doubanfm->getNewPlayList(channel);
+        ui->userLogin->setText(user->user_name);
         qDebug() << "LoginSucceed. Refreshing Playlist";
     });
     connect(doubanfm, &DoubanFM::receivedNewList, [this] (const QList<DoubanFMSong>& songs) {
@@ -59,6 +59,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
             qDebug() << "Current playing: " << songs[position].artist << ":" << songs[position].title;
             setArtistName(songs[position].artist);
             setSongName(songs[position].title);
+            setAlbumName(songs[position].albumtitle);
             QString mod_url = songs[position].picture;
             mod_url.replace("mpic", "lpic");
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
@@ -72,6 +73,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         if (player.state() != QMediaPlayer::PlayingState) {
             setArtistName(songs[0].artist);
             setSongName(songs[0].title);
+            setAlbumName(songs[0].albumtitle);
             QString mod_url = songs[0].picture;
             mod_url.replace("mpic", "lpic");
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
@@ -124,6 +126,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
             }
             setArtistName(songs[position].artist);
             setSongName(songs[position].title);
+            setAlbumName(songs[position].albumtitle);
             QString mod_url = songs[position].picture;
             mod_url.replace("mpic", "lpic");
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
@@ -139,6 +142,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
             setArtistName(songs[0].artist);
             setSongName(songs[0].title);
             QString mod_url = songs[0].picture;
+            setAlbumName(songs[0].albumtitle);
             mod_url.replace("mpic", "lpic");
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
             player.play();
@@ -160,6 +164,9 @@ ControlPanel::ControlPanel(QWidget *parent) :
             channel = 1;
         doubanfm->getNewPlayList(channel);
     }
+
+    if (doubanfm->hasLogin())
+        ui->userLogin->setText(doubanfm->getUser()->user_name);
 }
 
 ControlPanel::~ControlPanel()
@@ -283,7 +290,6 @@ void ControlPanel::on_nextButton_clicked()
 {
     if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
         dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
-        return;
     }
     int sindex = player.playlist()->currentIndex();
     doubanfm->skipSong(songs[sindex].sid, channel);
@@ -296,18 +302,17 @@ void ControlPanel::on_pauseButton_clicked()
 {
     if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
         dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
-        return;
     }
     if (isPaused) player.play();
     else player.pause();
     isPaused = !isPaused;
+    dynamic_cast<mainwidget *>(this->parentWidget())->pauseMask()->setVisible(true);
 }
 
 void ControlPanel::on_likeButton_clicked()
 {
     if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
         dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
-        return;
     }
     int sindex = player.playlist()->currentIndex();
     doubanfm->rateSong(songs[sindex].sid, channel, !songs[sindex].like);
@@ -325,4 +330,31 @@ void ControlPanel::on_trashButton_clicked()
     ui->trashButton->setEnabled(false);
     player.setPosition(player.duration());
     ui->seeker->setValue(0);
+    if (isPaused) {
+        player.play();
+        isPaused = false;
+    }
+}
+
+void ControlPanel::on_userLogin_clicked()
+{
+    LoginPanel *loginPanel = dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel();
+    if (!loginPanel->isShowing())
+        loginPanel->animShow();
+    else
+        loginPanel->animHide();
+}
+
+void ControlPanel::setAlbumName(const QString &name) {
+    ui->album->setText(QString("<font color=grey>&lt; ") + name + QString(" &gt;</font>"));
+}
+
+void ControlPanel::play() {
+    player.play();
+    isPaused = false;
+}
+
+void ControlPanel::pause() {
+    player.pause();
+    isPaused = true;
 }

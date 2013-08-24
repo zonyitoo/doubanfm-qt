@@ -92,6 +92,16 @@
     </size>
    </property>
   </widget>
+  <widget class="PauseMask" name="pauseWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>544</width>
+     <height>256</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -111,6 +121,12 @@
    <class>LoginPanel</class>
    <extends>QWidget</extends>
    <header>loginpanel.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PauseMask</class>
+   <extends>QWidget</extends>
+   <header>pausemask.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

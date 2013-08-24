@@ -8,6 +8,9 @@ mainwidget::mainwidget(QWidget *parent) :
     ui(new Ui::mainwidget)
 {
     ui->setupUi(this);
+    ui->pauseWidget->setVisible(false);
+
+    connect(ui->pauseWidget, SIGNAL(clicked()), ui->controlWidget, SLOT(play()));
 }
 
 mainwidget::~mainwidget()
@@ -25,6 +28,10 @@ ControlPanel *mainwidget::controlPanel() {
 
 LoginPanel *mainwidget::loginPanel() {
     return ui->loginWidget;
+}
+
+PauseMask *mainwidget::pauseMask() {
+    return ui->pauseWidget;
 }
 
 void mainwidget::mousePressEvent(QMouseEvent *) {

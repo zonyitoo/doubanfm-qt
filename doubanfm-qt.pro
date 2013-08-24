@@ -14,30 +14,30 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwidget.cpp \
-    titlewidget.cpp \
     channelwidget.cpp \
     controlpanel.cpp \
     doubanfm.cpp \
     horizontalslider.cpp \
     loginpanel.cpp \
-    volumetimepanel.cpp
+    volumetimepanel.cpp \
+    pausemask.cpp
 
 HEADERS  += mainwidget.h \
-    titlewidget.h \
     channelwidget.h \
     controlpanel.h \
     douban_types.h \
     doubanfm.h \
     horizontalslider.h \
     loginpanel.h \
-    volumetimepanel.h
+    volumetimepanel.h \
+    pausemask.h
 
 FORMS    += mainwidget.ui \
-    titlewidget.ui \
     channelwidget.ui \
     controlpanel.ui \
     loginpanel.ui \
-    volumetimepanel.ui
+    volumetimepanel.ui \
+    pausemask.ui
 
 RESOURCES += \
     imgs.qrc

@@ -34,16 +34,22 @@ private:
 
     bool isPaused;
 
+public slots:
+    void pause();
+    void play();
+
 private slots:
     void setAlbumImage(const QImage &image);
     void setSongName(const QString &name);
     void setArtistName(const QString &name);
     void setTick(qint64 tick);
+    void setAlbumName(const QString &name);
 
     void on_nextButton_clicked();
     void on_pauseButton_clicked();
     void on_likeButton_clicked();
     void on_trashButton_clicked();
+    void on_userLogin_clicked();
 };
 
 #endif // CONTROLPANEL_H

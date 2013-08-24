@@ -46,14 +46,8 @@
      <height>200</height>
     </size>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel{background:transparent}</string>
-   </property>
    <property name="text">
     <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap resource="imgs.qrc">:/img/bg.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -62,7 +56,7 @@
   <widget class="QLabel" name="albumImg">
    <property name="geometry">
     <rect>
-     <x>24</x>
+     <x>40</x>
      <y>24</y>
      <width>136</width>
      <height>160</height>
@@ -87,7 +81,7 @@
   <widget class="QLabel" name="artist">
    <property name="geometry">
     <rect>
-     <x>232</x>
+     <x>217</x>
      <y>24</y>
      <width>261</width>
      <height>31</height>
@@ -102,16 +96,16 @@
     </font>
    </property>
    <property name="text">
-    <string>&lt;font color=grey&gt;&lt;b&gt;T.I.&lt;/b&gt;&lt;/font&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QLabel" name="songName">
    <property name="geometry">
     <rect>
-     <x>232</x>
-     <y>70</y>
-     <width>291</width>
-     <height>21</height>
+     <x>217</x>
+     <y>71</y>
+     <width>231</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="font">
@@ -123,13 +117,13 @@
     </font>
    </property>
    <property name="text">
-    <string>&lt;font color=black&gt;That's All She Wrote&lt;/font&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QToolButton" name="pauseButton">
    <property name="geometry">
     <rect>
-     <x>507</x>
+     <x>492</x>
      <y>32</y>
      <width>13</width>
      <height>14</height>
@@ -161,7 +155,7 @@ QToolButton:hover{border-image: url(:/img/pause_clicked.png);}</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>232</x>
+     <x>217</x>
      <y>90</y>
      <width>291</width>
      <height>16</height>
@@ -224,9 +218,9 @@ width: 0px
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>325</x>
      <y>130</y>
-     <width>291</width>
+     <width>181</width>
      <height>42</height>
     </rect>
    </property>
@@ -331,7 +325,7 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
   <widget class="VolumeTimePanel" name="volumeTime" native="true">
    <property name="geometry">
     <rect>
-     <x>435</x>
+     <x>420</x>
      <y>100</y>
      <width>85</width>
      <height>16</height>
@@ -350,6 +344,47 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
     </size>
    </property>
   </widget>
+  <widget class="QPushButton" name="userLogin">
+   <property name="geometry">
+    <rect>
+     <x>453</x>
+     <y>70</y>
+     <width>51</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>文泉驿微米黑</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>未登录</string>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="album">
+   <property name="geometry">
+    <rect>
+     <x>218</x>
+     <y>47</y>
+     <width>291</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>文泉驿微米黑</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
@@ -359,8 +394,6 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="imgs.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

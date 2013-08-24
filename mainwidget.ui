@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>douban.fm</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="imgs.qrc">
+    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
+  </property>
   <widget class="ChannelWidget" name="channelWidget" native="true">
    <property name="geometry">
     <rect>
@@ -68,7 +72,6 @@
      <height>200</height>
     </size>
    </property>
-   <zorder>loginWidget</zorder>
   </widget>
   <widget class="LoginPanel" name="loginWidget" native="true">
    <property name="geometry">
@@ -130,6 +133,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="imgs.qrc"/>
+ </resources>
  <connections/>
 </ui>

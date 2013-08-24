@@ -14,5 +14,6 @@
         <file>img/arrow_right.png</file>
         <file>img/channel.png</file>
         <file>img/bg.png</file>
+        <file>icon.png</file>
     </qresource>
 </RCC>

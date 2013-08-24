@@ -10,6 +10,7 @@ HorizontalSlider::HorizontalSlider(QWidget *parent) :
     hbox = new QHBoxLayout(container);
     hbox->setMargin(0);
     hbox->setSpacing(0);
+    hbox->setContentsMargins(0, 0, 0, 0);
     container->setLayout(hbox);
     container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     curIndex = -1;
@@ -28,8 +29,8 @@ void HorizontalSlider::setChildren(const QObjectList& list) {
     }
     container->setMaximumWidth(accu);
     container->setMinimumWidth(accu);
-    container->setMaximumHeight(71);
-    container->setMinimumHeight(71);
+    container->setMaximumHeight(this->height());
+    container->setMinimumHeight(this->height());
     curIndex = 0;
     container->move(QPoint(this->width() / 2 - widths[0] / 2, 0));
     refresh();

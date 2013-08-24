@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QSettings>
 #include <QTimer>
+#include "mainwidget.h"
 
 ChannelWidget::ChannelWidget(QWidget *parent) :
     QWidget(parent),
@@ -38,13 +39,13 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
 
     QSettings settings("QDoubanFM", "QDoubanFM");
     settings.beginGroup("General");
-    channel = settings.value("channel").toInt();
+    channel = settings.value("channel", 1).toInt();
     settings.endGroup();
 
     connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> user) {
         this->ui->slider->scrollToIndex(0);
         QLabel *pnt = dynamic_cast<QLabel *>(labels[0]);
-        pnt->setText(pnt->text().replace("grey", "white"));
+        pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
     });
 }
 
@@ -55,23 +56,31 @@ ChannelWidget::~ChannelWidget()
 
 void ChannelWidget::on_nextButton_clicked()
 {
+    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+        return;
+    }
     if (ui->slider->currentIndex() == 0) return;
     if (!doubanfm->hasLogin() && ui->slider->currentIndex() == 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() - 1);
     QLabel *pnt = dynamic_cast<QLabel *>(labels[ui->slider->currentIndex()]);
-    pnt->setText(pnt->text().replace("white", "grey"));
+    pnt->setText(pnt->text().replace("white", "grey").replace("<b>", "<a>").replace("</b>", "</a>"));
     pnt = dynamic_cast<QLabel *>(labels[ui->slider->currentIndex() - 1]);
-    pnt->setText(pnt->text().replace("grey", "white"));
+    pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
 void ChannelWidget::on_prevButton_clicked()
 {
+    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+        return;
+    }
     if (ui->slider->currentIndex() == ui->slider->numberOfChildren() - 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() + 1);
     QLabel *pnt = dynamic_cast<QLabel *>(labels[ui->slider->currentIndex()]);
-    pnt->setText(pnt->text().replace("white", "grey"));
+    pnt->setText(pnt->text().replace("white", "grey").replace("<b>", "<a>").replace("</b>", "</a>"));
     pnt = dynamic_cast<QLabel *>(labels[ui->slider->currentIndex() + 1]);
-    pnt->setText(pnt->text().replace("grey", "white"));
+    pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
 void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
@@ -80,11 +89,11 @@ void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
     for (int i = 0; i < channels.size(); ++ i) {
         const DoubanChannel& channel = channels[i];
         QLabel *label = new QLabel(ui->slider);
-        QFont font("文泉驿微米黑", 15);
+        QFont font("文泉驿微米黑", 12);
         font.setStyleStrategy(QFont::PreferAntialias);
         label->setFont(font);
-        label->setText(QString("<font color='grey'><b>") +
-                        channel.name + QString("</b></font>MHz"));
+        label->setText(QString("<font color='grey'><a>") +
+                        channel.name + QString("</a></font>MHz"));
         label->setMinimumSize(ui->slider->width() / 3, ui->slider->height());
         label->setMaximumSize(ui->slider->width() / 3, ui->slider->height());
         label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -94,5 +103,6 @@ void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
     ui->slider->setChildren(labels);
     ui->slider->scrollToIndex(curindex);
     QLabel *pnt = dynamic_cast<QLabel *>(labels[curindex]);
-    pnt->setText(pnt->text().replace("grey", "white"));
+    pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
+

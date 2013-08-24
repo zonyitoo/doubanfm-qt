@@ -5,7 +5,8 @@
 
 LoginPanel::LoginPanel(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::LoginPanel)
+    ui(new Ui::LoginPanel),
+    _isShowing(false)
 {
     ui->setupUi(this);
     maxheight = 173;
@@ -44,6 +45,7 @@ void LoginPanel::animShow() {
         ui->name->setVisible(true);
         ui->password->setVisible(true);
         ui->submit->setVisible(true);
+        _isShowing = true;
     });
     ui->bg->setVisible(true);
     this->setVisible(true);
@@ -65,6 +67,7 @@ void LoginPanel::animHide() {
     connect(anim, &QPropertyAnimation::finished, [this] () {
         this->setVisible(false);
         ui->bg->setVisible(false);
+        _isShowing = false;
     });
     anim->start(QAbstractAnimation::DeleteWhenStopped);
 }
@@ -74,4 +77,8 @@ void LoginPanel::on_submit_clicked()
     QString name = ui->name->text().trimmed();
     QString password = ui->password->text().trimmed();
     doubanfm->userLogin(name, password);
+}
+
+bool LoginPanel::isShowing() {
+    return _isShowing;
 }

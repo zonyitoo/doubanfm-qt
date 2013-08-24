@@ -136,7 +136,7 @@ void DoubanFM::userLogout() {
 
 void DoubanFM::setUser(std::shared_ptr<DoubanUser> user) {
     if (!user) return;
-    _user.reset();
+
     _user = user;
 
     QTime time;
@@ -151,9 +151,9 @@ std::shared_ptr<DoubanUser> DoubanFM::getUser() {
 
 void DoubanFM::getNewPlayList(const qint32& channel) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + _user->user_id
-            + QString("&expire=") + _user->expire
-            + QString("&token=") + _user->token
+            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
+            + QString("&expire=") + ((_user) ? _user->expire : QString())
+            + QString("&token=") + ((_user) ? _user->token : QString())
             + QString("&sid=&h=")
             + QString("&channel=") + QString::number(channel, 10)
             + QString("&type=n");
@@ -210,9 +210,9 @@ void DoubanFM::onReceivedNewList(QNetworkReply *reply) {
 
 void DoubanFM::getPlayingList(const qint32 &channel, const quint32 &sid) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + _user->user_id
-            + QString("&expire=") + _user->expire
-            + QString("&token=") + _user->token
+            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
+            + QString("&expire=") + ((_user) ? _user->expire : QString())
+            + QString("&token=") + ((_user) ? _user->token : QString())
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
@@ -271,9 +271,9 @@ void DoubanFM::onReceivedPlayingList(QNetworkReply *reply) {
 
 void DoubanFM::rateSong(const quint32& sid, const qint32 &channel, const bool toRate) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + _user->user_id
-            + QString("&expire=") + _user->expire
-            + QString("&token=") + _user->token
+            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
+            + QString("&expire=") + ((_user) ? _user->expire : QString())
+            + QString("&token=") + ((_user) ? _user->token : QString())
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
@@ -312,9 +312,9 @@ void DoubanFM::onReceivedRateSong(QNetworkReply *reply) {
 
 void DoubanFM::skipSong(const quint32 &sid, const qint32 &channel) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + _user->user_id
-            + QString("&expire=") + _user->expire
-            + QString("&token=") + _user->token
+            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
+            + QString("&expire=") + ((_user) ? _user->expire : QString())
+            + QString("&token=") + ((_user) ? _user->token : QString())
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
@@ -352,9 +352,9 @@ void DoubanFM::onReceivedSkipSong(QNetworkReply *reply) {
 
 void DoubanFM::songEnd(const quint32& sid, const qint32 &channel) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + _user->user_id
-            + QString("&expire=") + _user->expire
-            + QString("&token=") + _user->token
+            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
+            + QString("&expire=") + ((_user) ? _user->expire : QString())
+            + QString("&token=") + ((_user) ? _user->token : QString())
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
@@ -377,9 +377,9 @@ void DoubanFM::onReceivedCurrentEnd(QNetworkReply *reply) {
 
 void DoubanFM::byeSong(const quint32 &sid, const qint32 &channel) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + _user->user_id
-            + QString("&expire=") + _user->expire
-            + QString("&token=") + _user->token
+            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
+            + QString("&expire=") + ((_user) ? _user->expire : QString())
+            + QString("&token=") + ((_user) ? _user->token : QString())
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)

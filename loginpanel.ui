@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
+    <width>400</width>
     <height>173</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
+    <width>400</width>
     <height>0</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>500</width>
+    <width>400</width>
     <height>16777215</height>
    </size>
   </property>
@@ -29,25 +29,43 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>1</y>
-     <width>500</width>
-     <height>170</height>
+     <y>-10</y>
+     <width>400</width>
+     <height>181</height>
     </rect>
    </property>
+   <property name="minimumSize">
+    <size>
+     <width>400</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>400</width>
+     <height>16777215</height>
+    </size>
+   </property>
    <property name="styleSheet">
-    <string notr="true">background: white</string>
+    <string notr="true">QLabel {
+	background: rgba(255, 255, 255, 240);
+	border-radius: 5px
+}</string>
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="submit">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>280</x>
      <y>120</y>
      <width>99</width>
-     <height>27</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -57,9 +75,9 @@
   <widget class="QLabel" name="errmsg">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>30</y>
-     <width>291</width>
+     <x>20</x>
+     <y>110</y>
+     <width>251</width>
      <height>17</height>
     </rect>
    </property>
@@ -70,10 +88,10 @@
   <widget class="QLineEdit" name="name">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>50</y>
-     <width>291</width>
-     <height>27</height>
+     <x>20</x>
+     <y>20</y>
+     <width>361</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="inputMethodHints">
@@ -86,10 +104,10 @@
   <widget class="QLineEdit" name="password">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>80</y>
-     <width>291</width>
-     <height>27</height>
+     <x>20</x>
+     <y>66</y>
+     <width>361</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="maxLength">

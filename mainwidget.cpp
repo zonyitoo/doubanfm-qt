@@ -30,3 +30,8 @@ TitleWidget *mainwidget::titleWidget() {
 LoginPanel *mainwidget::loginPanel() {
     return ui->loginWidget;
 }
+
+void mainwidget::mousePressEvent(QMouseEvent *) {
+    if (this->loginPanel()->isShowing())
+        this->loginPanel()->animHide();
+}

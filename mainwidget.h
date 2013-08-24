@@ -24,6 +24,8 @@ public:
     ControlPanel *controlPanel();
     TitleWidget *titleWidget();
     LoginPanel *loginPanel();
+
+    void mousePressEvent(QMouseEvent *);
     
 private:
     Ui::mainwidget *ui;

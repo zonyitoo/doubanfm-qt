@@ -15,11 +15,17 @@ class TitleWidget : public QWidget
 public:
     explicit TitleWidget(QWidget *parent = 0);
     ~TitleWidget();
+
+    void animShowVolume();
+    void animHideVolume();
+
+signals:
+    void volumeChanged(int);
     
 private slots:
-    void on_toolButton_clicked();
-
     void on_volumeButton_clicked();
+
+    void on_userLogin_clicked();
 
 private:
     Ui::TitleWidget *ui;
@@ -28,6 +34,9 @@ private:
     void mouseMoveEvent(QMouseEvent *event);
     QPoint dpos;
     QWidget *parent;
+
+    bool _isVolumeShowing;
+    bool _isLoginPanelOpen;
 };
 
 #endif // TITLEWIDGET_H

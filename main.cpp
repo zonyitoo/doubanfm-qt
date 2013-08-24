@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     mainwidget w;
-    w.setWindowFlags(Qt::FramelessWindowHint);
+    //w.setWindowFlags(Qt::FramelessWindowHint);
     w.setAttribute(Qt::WA_NoBackground);
     w.setAttribute(Qt::WA_NoSystemBackground);
     w.setAttribute(Qt::WA_TranslucentBackground);

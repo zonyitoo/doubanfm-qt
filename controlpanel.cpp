@@ -15,6 +15,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
 {
     ui->setupUi(this);
     doubanfm = DoubanFM::getInstance();
+    loadConfig();
     imgmgr = new QNetworkAccessManager(this);
     connect(imgmgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
@@ -151,7 +152,15 @@ ControlPanel::ControlPanel(QWidget *parent) :
         doubanfm->getNewPlayList(channel);
     });
 
-    loadConfig();
+    connect(dynamic_cast<mainwidget *>(this->parentWidget())->titleWidget(), &TitleWidget::volumeChanged, [this] (int value) {
+        this->player.setVolume(value);
+    });
+
+    if (channel == -3) {
+        if (!doubanfm->getUser())
+            channel = 1;
+        doubanfm->getNewPlayList(channel);
+    }
 }
 
 ControlPanel::~ControlPanel()
@@ -161,7 +170,7 @@ ControlPanel::~ControlPanel()
 }
 
 void ControlPanel::setAlbumImage(const QImage &src) {
-    static const QSize picsize(170, 170);
+    static const QSize picsize(136, 136);
 
     QImage image = src.scaled(picsize.width(), picsize.height(), Qt::KeepAspectRatioByExpanding)
             .copy(0, 0, picsize.width(), picsize.height());
@@ -234,17 +243,17 @@ void ControlPanel::loadConfig() {
     QSettings settings("QDoubanFM", "QDoubanFM");
 
     settings.beginGroup("General");
-    channel = settings.value("channel", 0).toInt();
-    player.setVolume(settings.value("volume", 50).toInt());
+    channel = settings.value("channel", 1).toInt();
+    player.setVolume(settings.value("volume", 100).toInt());
     settings.endGroup();
     settings.beginGroup("User");
-    std::shared_ptr<DoubanUser> user(new DoubanUser);
-    user->email = settings.value("email").toString();
-    user->expire = settings.value("expire").toString();
-    user->password = settings.value("password").toString();
-    user->token = settings.value("token").toString();
-    user->user_id = settings.value("user_id").toString();
-    user->user_name = settings.value("user_name").toString();
+    std::shared_ptr<DoubanUser> user(new DoubanUser());
+    user->email = settings.value("email", "").toString();
+    user->expire = settings.value("expire", "").toString();
+    user->password = settings.value("password", "").toString();
+    user->token = settings.value("token", "").toString();
+    user->user_id = settings.value("user_id", "").toString();
+    user->user_name = settings.value("user_name", "").toString();
     if (user->email.size() && user->expire.size()
             && user->password.size() && user->token.size()
             && user->user_id.size() && user->user_name.size())
@@ -273,6 +282,10 @@ void ControlPanel::saveConfig() {
 
 void ControlPanel::on_nextButton_clicked()
 {
+    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+        return;
+    }
     int sindex = player.playlist()->currentIndex();
     doubanfm->skipSong(songs[sindex].sid, channel);
     ui->nextButton->setEnabled(false);
@@ -283,6 +296,10 @@ void ControlPanel::on_nextButton_clicked()
 
 void ControlPanel::on_pauseButton_clicked()
 {
+    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+        return;
+    }
     if (isPaused) player.play();
     else player.pause();
     isPaused = !isPaused;
@@ -290,6 +307,10 @@ void ControlPanel::on_pauseButton_clicked()
 
 void ControlPanel::on_likeButton_clicked()
 {
+    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+        return;
+    }
     int sindex = player.playlist()->currentIndex();
     doubanfm->rateSong(songs[sindex].sid, channel, !songs[sindex].like);
     ui->likeButton->setEnabled(false);
@@ -297,6 +318,10 @@ void ControlPanel::on_likeButton_clicked()
 
 void ControlPanel::on_trashButton_clicked()
 {
+    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+        return;
+    }
     int sindex = player.playlist()->currentIndex();
     doubanfm->byeSong(songs[sindex].sid, channel);
     ui->trashButton->setEnabled(false);

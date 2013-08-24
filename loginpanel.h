@@ -19,6 +19,8 @@ public:
 
     void animShow();
     void animHide();
+
+    bool isShowing();
     
 private slots:
     void on_submit_clicked();
@@ -26,6 +28,7 @@ private slots:
 private:
     Ui::LoginPanel *ui;
     int maxheight;
+    bool _isShowing;
     DoubanFM *doubanfm;
 };
 

@@ -5,8 +5,7 @@
 
 mainwidget::mainwidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::mainwidget),
-    isPaused(false)
+    ui(new Ui::mainwidget)
 {
     ui->setupUi(this);
     ui->pauseWidget->setVisible(false);
@@ -16,14 +15,12 @@ mainwidget::mainwidget(QWidget *parent) :
     connect(exitShortcut, SIGNAL(activated()), qApp, SLOT(quit()));
     pauseShortcut = new QShortcut(QKeySequence("Space"), this);
     connect(pauseShortcut, &QShortcut::activated, [this] () {
-        ui->pauseWidget->setVisible(!isPaused);
-        if (isPaused) {
+        bool visiable = ui->pauseWidget->isVisible();
+        if (visiable)
             ui->controlWidget->play();
-        }
-        else {
+        else
             ui->controlWidget->pause();
-        }
-        isPaused = !isPaused;
+        ui->pauseWidget->setVisible(!visiable);
     });
 }
 

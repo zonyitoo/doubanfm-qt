@@ -33,7 +33,6 @@ private:
     QPoint dpos;
     QShortcut *exitShortcut;
     QShortcut *pauseShortcut;
-    bool isPaused;
 };
 
 #endif // MAINWIDGET_H

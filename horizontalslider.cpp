@@ -13,7 +13,7 @@ HorizontalSlider::HorizontalSlider(QWidget *parent) :
     hbox->setContentsMargins(0, 0, 0, 0);
     container->setLayout(hbox);
     container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    curIndex = -1;
+    curIndex = 0;
 }
 
 HorizontalSlider::~HorizontalSlider() {

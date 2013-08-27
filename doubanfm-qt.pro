@@ -20,7 +20,11 @@ SOURCES += main.cpp\
     horizontalslider.cpp \
     loginpanel.cpp \
     volumetimepanel.cpp \
-    pausemask.cpp
+    pausemask.cpp \
+    qlyricparser.cpp \
+    lyricgetter.cpp \
+    lyricwidget.cpp \
+    albumimage.cpp
 
 HEADERS  += mainwidget.h \
     channelwidget.h \
@@ -30,14 +34,19 @@ HEADERS  += mainwidget.h \
     horizontalslider.h \
     loginpanel.h \
     volumetimepanel.h \
-    pausemask.h
+    pausemask.h \
+    qlyricparser.h \
+    lyricgetter.h \
+    lyricwidget.h \
+    albumimage.h
 
 FORMS    += mainwidget.ui \
     channelwidget.ui \
     controlpanel.ui \
     loginpanel.ui \
     volumetimepanel.ui \
-    pausemask.ui
+    pausemask.ui \
+    lyricwidget.ui
 
 RESOURCES += \
     imgs.qrc

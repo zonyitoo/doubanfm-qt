@@ -38,7 +38,7 @@ make
 * i18n支持
 * Linux的播放提示 + DBus
 * 后台播放 + 托盘提示 (Ubuntu下是Indicator)
-* 歌词
+* <del>歌词</del>
 
 ## BUGS
 * <del>在长时间暂停后重启播放会崩溃</del>

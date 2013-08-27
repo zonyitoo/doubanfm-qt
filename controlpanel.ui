@@ -46,6 +46,9 @@
      <height>200</height>
     </size>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background: #e8edea</string>
+   </property>
    <property name="text">
     <string/>
    </property>
@@ -53,7 +56,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="albumImg">
+  <widget class="AlbumImage" name="albumImg">
    <property name="geometry">
     <rect>
      <x>40</x>
@@ -385,6 +388,16 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
     <string/>
    </property>
   </widget>
+  <widget class="LyricWidget" name="lyricWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>19</x>
+     <y>0</y>
+     <width>171</width>
+     <height>201</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
@@ -392,6 +405,17 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
    <extends>QWidget</extends>
    <header>volumetimepanel.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LyricWidget</class>
+   <extends>QWidget</extends>
+   <header>lyricwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>AlbumImage</class>
+   <extends>QLabel</extends>
+   <header>albumimage.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

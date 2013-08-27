@@ -13,6 +13,6 @@ int main(int argc, char *argv[])
     QFont appfont = QApplication::font();
     appfont.setStyleStrategy(QFont::PreferAntialias);
     a.setFont(appfont);
-    
+
     return a.exec();
 }

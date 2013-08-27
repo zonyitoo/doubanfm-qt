@@ -27,7 +27,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         if (!data.size())
             qDebug() << Q_FUNC_INFO << "received pixmap looks like nothing";
         QImage image = QImage::fromData(data);
-        setAlbumImage(image);
+        ui->albumImg->setAlbumImage(image);
         reply->deleteLater();
     });
 
@@ -60,8 +60,10 @@ ControlPanel::ControlPanel(QWidget *parent) :
             setArtistName(songs[position].artist);
             setSongName(songs[position].title);
             setAlbumName(songs[position].albumtitle);
+            lyric_getter->getLyric(songs[position].title, songs[position].artist == "Various Artists" ? "" : songs[position].artist);
             QString mod_url = songs[position].picture;
             mod_url.replace("mpic", "lpic");
+            ui->lyricWidget->clear();
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
             if (songs[position].like) {
                 ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}");
@@ -74,15 +76,18 @@ ControlPanel::ControlPanel(QWidget *parent) :
             setArtistName(songs[0].artist);
             setSongName(songs[0].title);
             setAlbumName(songs[0].albumtitle);
+            lyric_getter->getLyric(songs[0].title, songs[0].artist == "Various Artists" ? "" : songs[0].artist);
             QString mod_url = songs[0].picture;
             mod_url.replace("mpic", "lpic");
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
             player.play();
+            ui->lyricWidget->clear();
             qDebug() << "Current playing: " << songs[0].artist << ":" << songs[0].title;
         }
     });
 
     connect(&player, SIGNAL(positionChanged(qint64)), ui->volumeTime, SLOT(setTick(qint64)));
+    connect(&player, SIGNAL(positionChanged(qint64)), ui->lyricWidget, SLOT(setTick(qint64)));
     connect(&player, &QMediaPlayer::positionChanged, [this] (qint64 tick) {
         ui->seeker->setValue((qreal) tick / player.duration() * 100);
     });
@@ -127,6 +132,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
             setArtistName(songs[position].artist);
             setSongName(songs[position].title);
             setAlbumName(songs[position].albumtitle);
+            lyric_getter->getLyric(songs[position].title, songs[position].artist == "Various Artists" ? "" : songs[position].artist);
             QString mod_url = songs[position].picture;
             mod_url.replace("mpic", "lpic");
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
@@ -136,6 +142,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
             else {
                 ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}");
             }
+            ui->lyricWidget->clear();
             qDebug() << "Current playing: " << songs[position].artist << ":" << songs[position].title;
         });
         if (player.state() != QMediaPlayer::PlayingState) {
@@ -143,7 +150,9 @@ ControlPanel::ControlPanel(QWidget *parent) :
             setSongName(songs[0].title);
             QString mod_url = songs[0].picture;
             setAlbumName(songs[0].albumtitle);
+            lyric_getter->getLyric(songs[0].title, songs[0].artist == "Various Artists" ? "" : songs[0].artist);
             mod_url.replace("mpic", "lpic");
+            ui->lyricWidget->clear();
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
             player.play();
             qDebug() << "Current playing:" << songs[0].artist << ":" << songs[0].title;
@@ -167,66 +176,29 @@ ControlPanel::ControlPanel(QWidget *parent) :
 
     if (doubanfm->hasLogin())
         ui->userLogin->setText(doubanfm->getUser()->user_name);
+
+    lyric_getter = new LyricGetter(this);
+    connect(lyric_getter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
+        qDebug() << "Got lyric";
+        ui->lyricWidget->setLyric(lyric);
+    });
+
+    connect(ui->lyricWidget, &LyricWidget::clicked, [this] () {
+        ui->lyricWidget->setVisible(!ui->lyricWidget->isVisible());
+        ui->albumImg->setVisible(!ui->albumImg->isVisible());
+    });
+    ui->lyricWidget->setVisible(false);
+    connect(ui->albumImg, &AlbumImage::clicked, [this] () {
+        ui->lyricWidget->setVisible(!ui->lyricWidget->isVisible());
+        ui->albumImg->setVisible(!ui->albumImg->isVisible());
+    });
 }
 
 ControlPanel::~ControlPanel()
 {
     delete ui;
     saveConfig();
-}
-
-void ControlPanel::setAlbumImage(const QImage &src) {
-    static const QSize picsize(136, 136);
-
-    QImage image = src.scaled(picsize.width(), picsize.height(), Qt::KeepAspectRatioByExpanding)
-            .copy(0, 0, picsize.width(), picsize.height());
-
-    /*
-    QLinearGradient gardient(QPoint(0, 0), QPoint(0, image.height()));
-    gardient.setColorAt(0, Qt::white);
-    gardient.setColorAt(0.1, Qt::black);
-
-    QImage mask(picsize, image.format());
-    QPainter painter(&mask);
-    painter.fillRect(mask.rect(), gardient);
-    painter.end();
-
-    QImage reflection = image.mirrored();
-    reflection.setAlphaChannel(mask);
-
-    QImage imgdraw(QSize(ui->albumImg->width(), ui->albumImg->height()), QImage::Format_ARGB32_Premultiplied);
-    QPainter album_painter(&imgdraw);
-
-    album_painter.drawImage(0, 0, image);
-    //album_painter.setOpacity(0.5);
-    album_painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-    album_painter.drawImage(0, image.height(), reflection);
-    album_painter.end();
-*/
-    QPixmap mirror(image.width(), ui->albumImg->height() - image.height());
-    mirror.fill(Qt::transparent);
-    QPainter mirrorp(&mirror);
-    QLinearGradient linearGrad(QPoint(mirror.width(), 0), QPoint(mirror.width(), mirror.height() / 2));
-    linearGrad.setColorAt(1, QColor(255,255,255,0));
-    linearGrad.setColorAt(0.8, QColor(255,255,255,20));
-    linearGrad.setColorAt(0, QColor(255,255,255,200));
-    mirrorp.setBrush(linearGrad);
-    mirrorp.fillRect(0, 0, mirror.width(), mirror.height(), QBrush(linearGrad));
-    mirrorp.setCompositionMode(QPainter::CompositionMode_SourceIn);
-    mirrorp.drawPixmap(0, 0, QPixmap::fromImage(image.copy(0, 2 * image.height() - ui->albumImg->height(), image.width(), ui->albumImg->height() - image.height()).mirrored(false, true)));
-    mirrorp.end();
-
-    QImage imgdraw(QSize(ui->albumImg->width(), ui->albumImg->height()), QImage::Format_ARGB32_Premultiplied);
-    imgdraw.fill(Qt::transparent);
-    QPainter album_painter(&imgdraw);
-    album_painter.drawImage(0, 0, image);
-    //album_painter.setOpacity(0.8);
-    album_painter.drawPixmap(0, image.height(), mirror);
-    album_painter.end();
-    QPixmap empty(ui->albumImg->size());
-    empty.fill(Qt::transparent);
-    ui->albumImg->setPixmap(empty);
-    ui->albumImg->setPixmap(QPixmap::fromImage(imgdraw));
+    delete lyric_getter;
 }
 
 void ControlPanel::setSongName(const QString &name) {
@@ -237,12 +209,6 @@ void ControlPanel::setSongName(const QString &name) {
 void ControlPanel::setArtistName(const QString &name) {
     ui->artist->setText(QString("<font color='grey'>")
                           + name + QString("</font>"));
-}
-
-void ControlPanel::setTick(qint64 tick) {
-    QTime displayTime(0, (tick / 60000) % 60, (tick / 1000) % 60);
-    //ui->time->setText(QString("<font color='black'>") +
-    //                         displayTime.toString("m:ss") + QString("</font>"));
 }
 
 void ControlPanel::loadConfig() {

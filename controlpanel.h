@@ -6,6 +6,7 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include <QNetworkAccessManager>
+#include "lyricgetter.h"
 
 namespace Ui {
 class ControlPanel;
@@ -33,16 +34,15 @@ private:
     void saveConfig();
 
     bool isPaused;
+    LyricGetter *lyric_getter;
 
 public slots:
     void pause();
     void play();
 
 private slots:
-    void setAlbumImage(const QImage &image);
     void setSongName(const QString &name);
     void setArtistName(const QString &name);
-    void setTick(qint64 tick);
     void setAlbumName(const QString &name);
 
     void on_nextButton_clicked();

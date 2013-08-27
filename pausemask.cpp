@@ -17,6 +17,6 @@ PauseMask::~PauseMask()
 void PauseMask::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         this->setVisible(false);
+        emit clicked();
     }
-    emit clicked();
 }

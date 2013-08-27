@@ -179,7 +179,6 @@ ControlPanel::ControlPanel(QWidget *parent) :
 
     lyric_getter = new LyricGetter(this);
     connect(lyric_getter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
-        qDebug() << "Got lyric";
         ui->lyricWidget->setLyric(lyric);
     });
 

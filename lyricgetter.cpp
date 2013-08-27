@@ -51,6 +51,5 @@ void LyricGetter::getLyric(const QString &song, const QString &artist) {
     QString fullurl = LYRIC_API + "/" + QUrl::toPercentEncoding(song);
     if (artist.size())
         fullurl += "/" + QUrl::toPercentEncoding(artist);
-    qDebug() << fullurl;
     querymgr->get(QNetworkRequest(QUrl(fullurl)));
 }

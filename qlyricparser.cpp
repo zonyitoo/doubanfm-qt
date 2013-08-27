@@ -7,7 +7,7 @@ QLyricList QLyricParser::parse(QTextStream &stream) {
     QRegExp timeExp;
     timeExp.setPatternSyntax(QRegExp::RegExp);
     timeExp.setCaseSensitivity(Qt::CaseSensitive);
-    timeExp.setPattern("\\[([0-9]{2}):([0-9]{2})\.([0-9]{2})\\]");
+    timeExp.setPattern("\\[([0-9]{2}):([0-9]{2})\\.([0-9]{2})\\]");
 
     QList<QLyric> result;
     while (!stream.atEnd()) {

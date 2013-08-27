@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>173</height>
+    <height>91</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -31,7 +31,7 @@
      <x>0</x>
      <y>-10</y>
      <width>400</width>
-     <height>181</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -62,14 +62,20 @@
   <widget class="QPushButton" name="submit">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>120</y>
+     <x>283</x>
+     <y>53</y>
      <width>99</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
     <string>Submit</string>
+   </property>
+   <property name="autoDefault">
+    <bool>true</bool>
+   </property>
+   <property name="default">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="errmsg">
@@ -85,40 +91,40 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLineEdit" name="name">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>20</y>
      <width>361</width>
-     <height>41</height>
+     <height>31</height>
     </rect>
    </property>
-   <property name="inputMethodHints">
-    <set>Qt::ImhEmailCharactersOnly</set>
-   </property>
-   <property name="placeholderText">
-    <string>e-mail</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="password">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>66</y>
-     <width>361</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="maxLength">
-    <number>16</number>
-   </property>
-   <property name="echoMode">
-    <enum>QLineEdit::Password</enum>
-   </property>
-   <property name="placeholderText">
-    <string>password</string>
-   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QLineEdit" name="name">
+      <property name="inputMethodHints">
+       <set>Qt::ImhEmailCharactersOnly</set>
+      </property>
+      <property name="placeholderText">
+       <string>e-mail</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="password">
+      <property name="maxLength">
+       <number>16</number>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>password</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

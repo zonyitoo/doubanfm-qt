@@ -182,10 +182,6 @@ ControlPanel::ControlPanel(QWidget *parent) :
         ui->lyricWidget->setLyric(lyric);
     });
 
-    connect(ui->lyricWidget, &LyricWidget::clicked, [this] () {
-        ui->lyricWidget->setVisible(!ui->lyricWidget->isVisible());
-        ui->albumImg->setVisible(!ui->albumImg->isVisible());
-    });
     ui->lyricWidget->setVisible(false);
     connect(ui->albumImg, &AlbumImage::clicked, [this] () {
         if (!ui->lyricWidget->isVisible())

@@ -51,7 +51,7 @@ void LyricWidget::setLyric(const QLyricList &lyric) {
         label->setWordWrap(true);
         labels.append(label);
         QRect fsize = label->fontMetrics().boundingRect(label->text());
-        int height = (widgetWidth + fsize.width()) / widgetWidth * fsize.height();
+        int height = (widgetWidth + fsize.width()) / widgetWidth * fsize.height() + 20;
         heights.append(height);
         label->setMinimumHeight(height);
         label->setMaximumHeight(height);

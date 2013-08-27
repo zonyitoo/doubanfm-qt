@@ -107,7 +107,7 @@
     <rect>
      <x>217</x>
      <y>71</y>
-     <width>231</width>
+     <width>211</width>
      <height>20</height>
     </rect>
    </property>
@@ -350,9 +350,9 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
   <widget class="QPushButton" name="userLogin">
    <property name="geometry">
     <rect>
-     <x>453</x>
+     <x>433</x>
      <y>70</y>
-     <width>51</width>
+     <width>71</width>
      <height>22</height>
     </rect>
    </property>
@@ -401,21 +401,21 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
   <widget class="ChannelWidgetTrigger" name="channelWidgetTrigger" native="true">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>100</x>
      <y>0</y>
-     <width>544</width>
-     <height>10</height>
+     <width>415</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="minimumSize">
     <size>
-     <width>544</width>
+     <width>0</width>
      <height>0</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>544</width>
+     <width>16777215</width>
      <height>16777215</height>
     </size>
    </property>
@@ -425,7 +425,7 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>31</width>
+     <width>100</width>
      <height>201</height>
     </rect>
    </property>

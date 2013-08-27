@@ -44,7 +44,7 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
 
     connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> user) {
         this->ui->slider->scrollToIndex(0);
-        QLabel *pnt = dynamic_cast<QLabel *>(labels[0]);
+        QLabel *pnt = static_cast<QLabel *>(labels[0]);
         pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
     });
 }
@@ -56,30 +56,30 @@ ChannelWidget::~ChannelWidget()
 
 void ChannelWidget::on_nextButton_clicked()
 {
-    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
         return;
     }
     if (ui->slider->currentIndex() == 0) return;
     if (!doubanfm->hasLogin() && ui->slider->currentIndex() == 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() - 1);
-    QLabel *pnt = dynamic_cast<QLabel *>(labels[ui->slider->currentIndex()]);
+    QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);
     pnt->setText(pnt->text().replace("white", "grey").replace("<b>", "<a>").replace("</b>", "</a>"));
-    pnt = dynamic_cast<QLabel *>(labels[ui->slider->currentIndex() - 1]);
+    pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex() - 1]);
     pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
 void ChannelWidget::on_prevButton_clicked()
 {
-    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
         return;
     }
     if (ui->slider->currentIndex() == ui->slider->numberOfChildren() - 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() + 1);
-    QLabel *pnt = dynamic_cast<QLabel *>(labels[ui->slider->currentIndex()]);
+    QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);
     pnt->setText(pnt->text().replace("white", "grey").replace("<b>", "<a>").replace("</b>", "</a>"));
-    pnt = dynamic_cast<QLabel *>(labels[ui->slider->currentIndex() + 1]);
+    pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex() + 1]);
     pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
@@ -102,7 +102,10 @@ void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
     }
     ui->slider->setChildren(labels);
     ui->slider->scrollToIndex(curindex);
-    QLabel *pnt = dynamic_cast<QLabel *>(labels[curindex]);
+    QLabel *pnt = static_cast<QLabel *>(labels[curindex]);
     pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
+void ChannelWidget::leaveEvent(QEvent *ev) {
+    emit mouseLeave();
+}

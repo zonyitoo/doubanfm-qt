@@ -31,19 +31,19 @@
      <x>0</x>
      <y>0</y>
      <width>544</width>
-     <height>56</height>
+     <height>58</height>
     </rect>
    </property>
    <property name="minimumSize">
     <size>
      <width>544</width>
-     <height>56</height>
+     <height>58</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
      <width>544</width>
-     <height>56</height>
+     <height>58</height>
     </size>
    </property>
    <property name="text">
@@ -124,13 +124,13 @@
    <property name="minimumSize">
     <size>
      <width>0</width>
-     <height>0</height>
+     <height>56</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
      <width>521</width>
-     <height>71</height>
+     <height>54</height>
     </size>
    </property>
   </widget>

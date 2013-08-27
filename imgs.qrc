@@ -15,5 +15,6 @@
         <file>img/channel.png</file>
         <file>img/bg.png</file>
         <file>icon.png</file>
+        <file>img/album_init.jpg</file>
     </qresource>
 </RCC>

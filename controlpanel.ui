@@ -59,22 +59,22 @@
   <widget class="AlbumImage" name="albumImg">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>24</y>
-     <width>136</width>
-     <height>160</height>
+     <x>0</x>
+     <y>0</y>
+     <width>200</width>
+     <height>200</height>
     </rect>
    </property>
    <property name="minimumSize">
     <size>
-     <width>136</width>
-     <height>160</height>
+     <width>200</width>
+     <height>200</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>136</width>
-     <height>160</height>
+     <width>200</width>
+     <height>200</height>
     </size>
    </property>
    <property name="text">
@@ -391,9 +391,51 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
   <widget class="LyricWidget" name="lyricWidget" native="true">
    <property name="geometry">
     <rect>
-     <x>19</x>
+     <x>10</x>
      <y>0</y>
-     <width>171</width>
+     <width>324</width>
+     <height>200</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="ChannelWidgetTrigger" name="channelWidgetTrigger" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>544</width>
+     <height>10</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>544</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>544</width>
+     <height>16777215</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="LyricWidgetTriggerLeft" name="lyricWidgetTriggerLeft" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>31</width>
+     <height>201</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="LyricWidgetTriggerRight" name="lyricWidgetTriggerRight" native="true">
+   <property name="geometry">
+    <rect>
+     <x>515</x>
+     <y>0</y>
+     <width>31</width>
      <height>201</height>
     </rect>
    </property>
@@ -416,6 +458,24 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
    <class>AlbumImage</class>
    <extends>QLabel</extends>
    <header>albumimage.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ChannelWidgetTrigger</class>
+   <extends>QWidget</extends>
+   <header>channelwidgettrigger.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LyricWidgetTriggerLeft</class>
+   <extends>QWidget</extends>
+   <header>lyricwidgettrigger.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LyricWidgetTriggerRight</class>
+   <extends>QWidget</extends>
+   <header>lyricwidgettrigger.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -20,6 +20,8 @@ public:
     explicit ControlPanel(QWidget *parent = 0);
     ~ControlPanel();
 
+    void enterEvent(QEvent *ev);
+
 private:
     Ui::ControlPanel *ui;
     DoubanFM *doubanfm;

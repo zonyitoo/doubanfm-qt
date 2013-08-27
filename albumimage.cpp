@@ -1,18 +1,39 @@
 #include "albumimage.h"
 #include <QPainter>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
 
 AlbumImage::AlbumImage(QWidget *parent) :
-    QLabel(parent)
+    QLabel(parent),
+    _opacity(0.0)
 {
+    before = QImage(":/img/album_init.jpg").scaled(200, 200, Qt::KeepAspectRatioByExpanding);
+    this->setPixmap(QPixmap::fromImage(before));
 }
 
 void AlbumImage::setAlbumImage(const QImage& src) {
-    static const QSize picsize(136, 136);
+    QPropertyAnimation *anim = new QPropertyAnimation(this, "opacity");
+    anim->setDuration(1000);
+    anim->setStartValue(this->opacity());
+    anim->setEndValue(1.0);
+    now = src.scaled(200, 200, Qt::KeepAspectRatioByExpanding).copy(0, 0, 200, 200);
+
+    connect(anim, &QPropertyAnimation::finished, [this] () {
+        before = now;
+        _opacity = 0.0;
+    });
+    anim->start(QPropertyAnimation::DeleteWhenStopped);
+    //this->setPixmap(QPixmap::fromImage(src.scaled(200, 200, Qt::KeepAspectRatioByExpanding)
+    //                                   .copy(0, 0, 200, 200)));
+    //QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(this);
+    //effect->setOpacity(_opacity);
+    /*
+    static const QSize picsize(170, 170);
 
     QImage image = src.scaled(picsize.width(), picsize.height(), Qt::KeepAspectRatioByExpanding)
             .copy(0, 0, picsize.width(), picsize.height());
 
-    /*
+    // OLD
     QLinearGradient gardient(QPoint(0, 0), QPoint(0, image.height()));
     gardient.setColorAt(0, Qt::white);
     gardient.setColorAt(0.1, Qt::black);
@@ -33,7 +54,8 @@ void AlbumImage::setAlbumImage(const QImage& src) {
     album_painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
     album_painter.drawImage(0, image.height(), reflection);
     album_painter.end();
-*/
+
+    // NEW
     QPixmap mirror(image.width(), this->height() - image.height());
     mirror.fill(Qt::transparent);
     QPainter mirrorp(&mirror);
@@ -58,6 +80,7 @@ void AlbumImage::setAlbumImage(const QImage& src) {
     empty.fill(Qt::transparent);
     this->setPixmap(empty);
     this->setPixmap(QPixmap::fromImage(imgdraw));
+    */
 }
 
 void AlbumImage::mousePressEvent(QMouseEvent *event) {
@@ -65,3 +88,21 @@ void AlbumImage::mousePressEvent(QMouseEvent *event) {
         emit clicked();
     }
 }
+
+qreal AlbumImage::opacity() const {
+    return _opacity;
+}
+
+void AlbumImage::setOpacity(qreal opacity) {
+    _opacity = opacity;
+    QPixmap pixmap(this->size());
+    QPainter painter(&pixmap);
+    painter.setOpacity(_opacity);
+    painter.drawImage(0, 0, now);
+    painter.setOpacity(1.0 - _opacity);
+    painter.drawImage(0, 0, before);
+    painter.end();
+    this->setPixmap(pixmap);
+}
+
+

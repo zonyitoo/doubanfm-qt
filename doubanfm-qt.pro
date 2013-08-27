@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     qlyricparser.cpp \
     lyricgetter.cpp \
     lyricwidget.cpp \
-    albumimage.cpp
+    albumimage.cpp \
+    triggerarea.cpp
 
 HEADERS  += mainwidget.h \
     channelwidget.h \
@@ -38,7 +39,10 @@ HEADERS  += mainwidget.h \
     qlyricparser.h \
     lyricgetter.h \
     lyricwidget.h \
-    albumimage.h
+    albumimage.h \
+    triggerarea.h \
+    channelwidgettrigger.h \
+    lyricwidgettrigger.h
 
 FORMS    += mainwidget.ui \
     channelwidget.ui \

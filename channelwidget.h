@@ -20,11 +20,14 @@ public:
     explicit ChannelWidget(QWidget *parent = 0);
     ~ChannelWidget();
 
+    void leaveEvent(QEvent *ev);
+
 public slots:
     void setChannels(const QList<DoubanChannel>& channels);
 
 signals:
     void channelChanged(qint32 channel);
+    void mouseLeave();
 
 private slots:
     void on_nextButton_clicked();

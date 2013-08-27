@@ -159,7 +159,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         }
     });
 
-    connect(dynamic_cast<mainwidget *>(this->parentWidget())->channelWidget(), &ChannelWidget::channelChanged,
+    connect(static_cast<mainwidget *>(this->parentWidget())->channelWidget(), &ChannelWidget::channelChanged,
             [this] (qint32 channel) {
         this->channel = channel;
         doubanfm->getNewPlayList(channel);
@@ -190,6 +190,69 @@ ControlPanel::ControlPanel(QWidget *parent) :
     connect(ui->albumImg, &AlbumImage::clicked, [this] () {
         ui->lyricWidget->setVisible(!ui->lyricWidget->isVisible());
         ui->albumImg->setVisible(!ui->albumImg->isVisible());
+    });
+
+    connect(ui->channelWidgetTrigger, &ChannelWidgetTrigger::enter,
+            [this] () {
+        if (!static_cast<mainwidget *>(this->parentWidget())->isChannelWidgetShowing())
+            static_cast<mainwidget *>(this->parentWidget())->animShowChannelWidget();
+
+    });
+    connect(ui->lyricWidgetTriggerLeft, &LyricWidgetTriggerLeft::enter, [this] () {
+        QPropertyAnimation *anim = new QPropertyAnimation(ui->albumImg, "geometry");
+        anim->setDuration(400);
+        anim->setStartValue(ui->albumImg->geometry());
+        QRect endval(this->geometry().width() - ui->albumImg->geometry().width(),
+                   ui->albumImg->geometry().y(),
+                   ui->albumImg->geometry().width(),
+                   ui->albumImg->geometry().height());
+        anim->setEndValue(endval);
+        anim->setEasingCurve(QEasingCurve::OutCubic);
+
+        ui->album->setVisible(false);
+        ui->artist->setVisible(false);
+        ui->volumeTime->setVisible(false);
+        ui->userLogin->setVisible(false);
+        ui->trashButton->setVisible(false);
+        ui->songName->setVisible(false);
+        ui->seeker->setVisible(false);
+        ui->pauseButton->setVisible(false);
+        ui->nextButton->setVisible(false);
+        ui->likeButton->setVisible(false);
+
+        connect(anim, &QPropertyAnimation::finished, [this] () {
+            ui->lyricWidget->setVisible(true);
+        });
+
+        anim->start(QPropertyAnimation::DeleteWhenStopped);
+    });
+    connect(ui->lyricWidgetTriggerRight, &LyricWidgetTriggerRight::enter, [this] () {
+        QPropertyAnimation *anim = new QPropertyAnimation(ui->albumImg, "geometry");
+        anim->setDuration(400);
+        anim->setStartValue(ui->albumImg->geometry());
+        QRect endval(0,
+                   ui->albumImg->geometry().y(),
+                   ui->albumImg->geometry().width(),
+                   ui->albumImg->geometry().height());
+        anim->setEndValue(endval);
+        anim->setEasingCurve(QEasingCurve::OutCubic);
+
+        ui->lyricWidget->setVisible(false);
+
+        connect(anim, &QPropertyAnimation::finished, [this] () {
+            ui->album->setVisible(true);
+            ui->artist->setVisible(true);
+            ui->volumeTime->setVisible(true);
+            ui->userLogin->setVisible(true);
+            ui->trashButton->setVisible(true);
+            ui->songName->setVisible(true);
+            ui->seeker->setVisible(true);
+            ui->pauseButton->setVisible(true);
+            ui->nextButton->setVisible(true);
+            ui->likeButton->setVisible(true);
+        });
+
+        anim->start(QPropertyAnimation::DeleteWhenStopped);
     });
 }
 
@@ -253,8 +316,8 @@ void ControlPanel::saveConfig() {
 
 void ControlPanel::on_nextButton_clicked()
 {
-    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
     }
     int sindex = player.playlist()->currentIndex();
     doubanfm->skipSong(songs[sindex].sid, channel);
@@ -265,19 +328,19 @@ void ControlPanel::on_nextButton_clicked()
 
 void ControlPanel::on_pauseButton_clicked()
 {
-    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
     }
     if (isPaused) player.play();
     else player.pause();
     isPaused = !isPaused;
-    dynamic_cast<mainwidget *>(this->parentWidget())->pauseMask()->setVisible(true);
+    static_cast<mainwidget *>(this->parentWidget())->pauseMask()->setVisible(true);
 }
 
 void ControlPanel::on_likeButton_clicked()
 {
-    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
     }
     int sindex = player.playlist()->currentIndex();
     doubanfm->rateSong(songs[sindex].sid, channel, !songs[sindex].like);
@@ -286,8 +349,8 @@ void ControlPanel::on_likeButton_clicked()
 
 void ControlPanel::on_trashButton_clicked()
 {
-    if (dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
+    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
+        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
         return;
     }
     int sindex = player.playlist()->currentIndex();
@@ -303,7 +366,7 @@ void ControlPanel::on_trashButton_clicked()
 
 void ControlPanel::on_userLogin_clicked()
 {
-    LoginPanel *loginPanel = dynamic_cast<mainwidget *>(this->parentWidget())->loginPanel();
+    LoginPanel *loginPanel = static_cast<mainwidget *>(this->parentWidget())->loginPanel();
     if (!loginPanel->isShowing())
         loginPanel->animShow();
     else
@@ -322,4 +385,8 @@ void ControlPanel::play() {
 void ControlPanel::pause() {
     player.pause();
     isPaused = true;
+}
+
+void ControlPanel::enterEvent(QEvent *ev) {
+    static_cast<mainwidget *>(this->parentWidget())->animHideChannelWidget();
 }

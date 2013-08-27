@@ -27,12 +27,19 @@ public:
     PauseMask *pauseMask();
 
     void mousePressEvent(QMouseEvent *);
+    bool isChannelWidgetShowing();
     
 private:
     Ui::mainwidget *ui;
     QPoint dpos;
     QShortcut *exitShortcut;
     QShortcut *pauseShortcut;
+
+    bool _isChannelWidgetShowing;
+
+public slots:
+    void animHideChannelWidget();
+    void animShowChannelWidget();
 };
 
 #endif // MAINWIDGET_H

@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>544</width>
-    <height>256</height>
+    <height>200</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>544</width>
-    <height>256</height>
+    <height>200</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -25,44 +25,58 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>544</width>
-     <height>256</height>
-    </rect>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
    </property>
-   <property name="minimumSize">
-    <size>
-     <width>544</width>
-     <height>256</height>
-    </size>
+   <property name="sizeConstraint">
+    <enum>QLayout::SetNoConstraint</enum>
    </property>
-   <property name="maximumSize">
-    <size>
-     <width>544</width>
-     <height>256</height>
-    </size>
+   <property name="leftMargin">
+    <number>0</number>
    </property>
-   <property name="font">
-    <font>
-     <family>文泉驿微米黑</family>
-    </font>
+   <property name="topMargin">
+    <number>0</number>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel {
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="minimumSize">
+      <size>
+       <width>544</width>
+       <height>200</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>544</width>
+       <height>256</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>文泉驿微米黑</family>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLabel {
 	background: rgba(255, 255, 255, 230);
 }</string>
-   </property>
-   <property name="text">
-    <string>继续播放 &gt;</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
+     </property>
+     <property name="text">
+      <string>继续播放 &gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

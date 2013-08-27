@@ -188,8 +188,10 @@ ControlPanel::ControlPanel(QWidget *parent) :
     });
     ui->lyricWidget->setVisible(false);
     connect(ui->albumImg, &AlbumImage::clicked, [this] () {
-        ui->lyricWidget->setVisible(!ui->lyricWidget->isVisible());
-        ui->albumImg->setVisible(!ui->albumImg->isVisible());
+        if (!ui->lyricWidget->isVisible())
+            emit ui->lyricWidgetTriggerLeft->enter();
+        else
+            emit ui->lyricWidgetTriggerRight->enter();
     });
 
     connect(ui->channelWidgetTrigger, &ChannelWidgetTrigger::enter,

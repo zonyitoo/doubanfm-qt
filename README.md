@@ -50,4 +50,3 @@ make
 
 MIT: [http://rem.mit-license.org](http://rem.mit-license.org)
 
-Read me test!

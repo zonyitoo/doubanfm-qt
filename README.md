@@ -6,6 +6,8 @@
 ## 依赖 Dependencies
 * libqt5network5 libqt5gui5 libqt5core5 libqt5multimedia5 qtmultimedia5-dev
 * gstreamer0.10-fluendo-mp3
+* libpulse0 libpulse-dev
+* libnotify
 
 ## 截图 Screenshot
 

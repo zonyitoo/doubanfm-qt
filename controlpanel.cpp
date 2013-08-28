@@ -82,6 +82,12 @@ ControlPanel::ControlPanel(QWidget *parent) :
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
             player.play();
             ui->lyricWidget->clear();
+            if (songs[0].like) {
+                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            }
+            else {
+                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            }
             qDebug() << "Current playing: " << songs[0].artist << ":" << songs[0].title;
         }
     });
@@ -156,6 +162,12 @@ ControlPanel::ControlPanel(QWidget *parent) :
             ui->lyricWidget->clear();
             imgmgr->get(QNetworkRequest(QUrl(mod_url)));
             player.play();
+            if (songs[0].like) {
+                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            }
+            else {
+                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            }
             qDebug() << "Current playing:" << songs[0].artist << ":" << songs[0].title;
         }
     });

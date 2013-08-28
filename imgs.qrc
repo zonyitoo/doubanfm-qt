@@ -19,5 +19,6 @@
         <file>img/channel_handler.png</file>
         <file>img/arrow_right_clicked.png</file>
         <file>img/arrow_left_clicked.png</file>
+        <file>img/like_disabled.png</file>
     </qresource>
 </RCC>

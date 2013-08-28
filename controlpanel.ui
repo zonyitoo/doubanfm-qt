@@ -244,7 +244,9 @@ width: 0px
       </property>
       <property name="styleSheet">
        <string notr="true">QToolButton{border-image: url(:/img/like.png);}
-QToolButton:hover{border-image: url(:/img/unlike.png);}</string>
+QToolButton:hover{border-image: url(:/img/unlike.png);}
+QToolButton:clicked{border-image: url(:/img/like_disabled.png);}
+QToolButton:disabled{border-image: url(:/img/like_disabled.png);}</string>
       </property>
       <property name="text">
        <string/>
@@ -280,7 +282,9 @@ QToolButton:hover{border-image: url(:/img/unlike.png);}</string>
       </property>
       <property name="styleSheet">
        <string notr="true">QToolButton{border-image: url(:/img/trash_can_normal.png);}
-QToolButton:hover{border-image: url(:/img/trash_can_clicked.png);}</string>
+QToolButton:hover{border-image: url(:/img/trash_can_clicked.png);}
+QToolButton:disabled{border-image: url(:/img/trash_can_clicked.png);}
+QToolButton:clicked{border-image: url(:/img/trash_can_normal.png);}</string>
       </property>
       <property name="text">
        <string/>
@@ -316,7 +320,9 @@ QToolButton:hover{border-image: url(:/img/trash_can_clicked.png);}</string>
       </property>
       <property name="styleSheet">
        <string notr="true">QToolButton{border-image: url(:/img/next_normal.png);}
-QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
+QToolButton:hover{border-image: url(:/img/next_clicked.png);}
+QToolButton:disabled{border-image: url(:/img/next_clicked.png);}
+QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
       </property>
       <property name="text">
        <string/>

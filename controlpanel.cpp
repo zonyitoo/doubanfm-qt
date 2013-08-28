@@ -11,7 +11,7 @@
 ControlPanel::ControlPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ControlPanel),
-    channel(0), isPaused(false)
+    channel(0), isPaused(false), volume(100)
 {
     ui->setupUi(this);
     doubanfm = DoubanFM::getInstance();
@@ -167,6 +167,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
     });
     connect(ui->volumeTime, &VolumeTimePanel::volumeChanged, [this] (int value) {
         player.setVolume(value);
+        volume = value;
     });
 
     if (channel == -3) {
@@ -278,6 +279,7 @@ void ControlPanel::loadConfig() {
     settings.beginGroup("General");
     channel = settings.value("channel", 1).toInt();
     player.setVolume(settings.value("volume", 100).toInt());
+    volume = player.volume();
     settings.endGroup();
     settings.beginGroup("User");
     std::shared_ptr<DoubanUser> user(new DoubanUser());
@@ -298,7 +300,7 @@ void ControlPanel::saveConfig() {
     QSettings settings("QDoubanFM", "QDoubanFM");
     settings.beginGroup("General");
     settings.setValue("channel", channel);
-    settings.setValue("volume", player.volume());
+    settings.setValue("volume", volume);
     settings.endGroup();
     std::shared_ptr<DoubanUser> user = doubanfm->getUser();
     if (!user) user.reset(new DoubanUser);
@@ -330,8 +332,8 @@ void ControlPanel::on_pauseButton_clicked()
     if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
         static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
     }
-    if (isPaused) player.play();
-    else player.pause();
+    if (isPaused) this->play();
+    else this->pause();
     isPaused = !isPaused;
     static_cast<mainwidget *>(this->parentWidget())->pauseMask()->setVisible(true);
 }
@@ -377,12 +379,24 @@ void ControlPanel::setAlbumName(const QString &name) {
 }
 
 void ControlPanel::play() {
+    QPropertyAnimation *fadein = new QPropertyAnimation(&player, "volume");
+    fadein->setDuration(1000);
+    fadein->setStartValue(player.volume());
     player.play();
+    fadein->setEndValue(volume);
+    fadein->start(QPropertyAnimation::DeleteWhenStopped);
     isPaused = false;
 }
 
 void ControlPanel::pause() {
-    player.pause();
+    QPropertyAnimation *fadeout = new QPropertyAnimation(&player, "volume");
+    fadeout->setDuration(1000);
+    fadeout->setStartValue(player.volume());
+    fadeout->setEndValue(0);
+    connect(fadeout, &QPropertyAnimation::finished, [this] () {
+        player.pause();
+    });
+    fadeout->start(QPropertyAnimation::DeleteWhenStopped);
     isPaused = true;
 }
 

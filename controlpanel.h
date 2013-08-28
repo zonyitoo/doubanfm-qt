@@ -38,6 +38,8 @@ private:
     bool isPaused;
     LyricGetter *lyric_getter;
 
+    int volume;
+
 public slots:
     void pause();
     void play();

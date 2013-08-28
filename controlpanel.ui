@@ -401,9 +401,9 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
   <widget class="ChannelWidgetTrigger" name="channelWidgetTrigger" native="true">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>334</x>
      <y>0</y>
-     <width>415</width>
+     <width>181</width>
      <height>20</height>
     </rect>
    </property>
@@ -425,7 +425,7 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>100</width>
+     <width>21</width>
      <height>201</height>
     </rect>
    </property>

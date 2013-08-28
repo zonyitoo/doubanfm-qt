@@ -401,10 +401,10 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
   <widget class="ChannelWidgetTrigger" name="channelWidgetTrigger" native="true">
    <property name="geometry">
     <rect>
-     <x>334</x>
+     <x>384</x>
      <y>0</y>
-     <width>181</width>
-     <height>20</height>
+     <width>131</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -419,13 +419,54 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
      <height>16777215</height>
     </size>
    </property>
+   <widget class="QLabel" name="channelWidgetTrigger_bg">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>131</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="imgs.qrc">:/img/channel_handler.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="channelWidgetTrigger_text">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>131</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>文泉驿微米黑</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>&lt;font color=white&gt;频&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;道&lt;/font&gt;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="LyricWidgetTriggerLeft" name="lyricWidgetTriggerLeft" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>21</width>
+     <width>31</width>
      <height>201</height>
     </rect>
    </property>
@@ -478,6 +519,8 @@ QToolButton:hover{border-image: url(:/img/next_clicked.png);}</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="imgs.qrc"/>
+ </resources>
  <connections/>
 </ui>

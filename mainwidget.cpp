@@ -58,8 +58,8 @@ void mainwidget::mousePressEvent(QMouseEvent *) {
         this->loginPanel()->animHide();
 }
 
-void mainwidget::animHideChannelWidget() {
-    if (!_isChannelWidgetShowing) return;
+void mainwidget::animHideChannelWidget(bool immediately) {
+    if (!_isChannelWidgetShowing && !immediately) return;
 
     QParallelAnimationGroup *animgroup = new QParallelAnimationGroup(this);
     QPropertyAnimation *control_anim = new QPropertyAnimation(ui->controlWidget, "geometry");

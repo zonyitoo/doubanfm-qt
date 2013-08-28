@@ -38,7 +38,7 @@ private:
     bool _isChannelWidgetShowing;
 
 public slots:
-    void animHideChannelWidget();
+    void animHideChannelWidget(bool immediately = false);
     void animShowChannelWidget();
 };
 

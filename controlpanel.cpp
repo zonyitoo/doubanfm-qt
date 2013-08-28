@@ -386,5 +386,5 @@ void ControlPanel::pause() {
 }
 
 void ControlPanel::enterEvent(QEvent *ev) {
-    static_cast<mainwidget *>(this->parentWidget())->animHideChannelWidget();
+    static_cast<mainwidget *>(this->parentWidget())->animHideChannelWidget(true);
 }

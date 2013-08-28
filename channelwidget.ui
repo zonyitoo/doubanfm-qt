@@ -78,7 +78,8 @@
     </size>
    </property>
    <property name="styleSheet">
-    <string notr="true">QToolButton{border-image: url(:/img/arrow_left.png);}</string>
+    <string notr="true">QToolButton{border-image: url(:/img/arrow_left.png);}
+QToolButton:pressed{border-image: url(:/img/arrow_left_clicked.png);}</string>
    </property>
    <property name="text">
     <string/>
@@ -106,7 +107,8 @@
     </size>
    </property>
    <property name="styleSheet">
-    <string notr="true">QToolButton{border-image: url(:/img/arrow_right.png);}</string>
+    <string notr="true">QToolButton{border-image: url(:/img/arrow_right.png);}
+QToolButton:pressed{border-image: url(:/img/arrow_right_clicked.png);}</string>
    </property>
    <property name="text">
     <string/>

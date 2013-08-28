@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network multimedia
+QT       += core gui network multimedia dbus
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     lyricgetter.cpp \
     lyricwidget.cpp \
     albumimage.cpp \
-    triggerarea.cpp
+    triggerarea.cpp \
+    libnotify-qt/Notification.cpp \
+    libnotify-qt/OrgFreedesktopNotificationsInterface.cpp
 
 HEADERS  += mainwidget.h \
     channelwidget.h \
@@ -42,7 +44,9 @@ HEADERS  += mainwidget.h \
     albumimage.h \
     triggerarea.h \
     channelwidgettrigger.h \
-    lyricwidgettrigger.h
+    lyricwidgettrigger.h \
+    libnotify-qt/Notification.h \
+    libnotify-qt/OrgFreedesktopNotificationsInterface.h
 
 FORMS    += mainwidget.ui \
     channelwidget.ui \

@@ -7,6 +7,7 @@
 #include <QMediaPlaylist>
 #include <QNetworkAccessManager>
 #include "lyricgetter.h"
+#include "libnotify-qt/Notification.h"
 
 namespace Ui {
 class ControlPanel;

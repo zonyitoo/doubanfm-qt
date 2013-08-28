@@ -1,9 +1,14 @@
 #include "mainwidget.h"
 #include <QApplication>
 
+#include "libnotify-qt/Notification.h"
+#include <QDBusMetaType>
+#include <QtDBus>
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    Notification::init("douban.fm");
     mainwidget w;
     //w.setWindowFlags(Qt::FramelessWindowHint);
     //w.setAttribute(Qt::WA_NoBackground);
@@ -14,6 +19,16 @@ int main(int argc, char *argv[])
     QFont appfont = QApplication::font();
     appfont.setStyleStrategy(QFont::PreferAntialias);
     a.setFont(appfont);
+
+    a.setApplicationName("douban.fm");
+    a.setApplicationDisplayName("douban.fm");
+
+    //QImage image(":/icon.png");
+    //iiibiiay i = iiibiiay::fromImage(image);
+    //Notification *n = new Notification("Hello", "world");
+    //n->setHint("icon_data", QVariant(qDBusRegisterMetaType<iiibiiay>(), &i));
+    //n->setAutoDelete(true);
+    //n->show();
 
     return a.exec();
 }

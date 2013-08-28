@@ -27,6 +27,17 @@ ControlPanel::ControlPanel(QWidget *parent) :
         if (!data.size())
             qDebug() << Q_FUNC_INFO << "received pixmap looks like nothing";
         QImage image = QImage::fromData(data);
+        if (player.playlist()->currentIndex() >= 0) {
+            int index = player.playlist()->currentIndex();
+            Notification *notify = new Notification(songs[index].artist, songs[index].title);
+            if (data.size() > 0) {
+                iiibiiay notify_icon_data = iiibiiay::fromImage(image);
+                notify->setHint("icon_data",
+                                QVariant(qDBusRegisterMetaType<iiibiiay>(), &notify_icon_data));
+            }
+            notify->setAutoDelete(true);
+            notify->show();
+        }
         ui->albumImg->setAlbumImage(image);
         reply->deleteLater();
     });

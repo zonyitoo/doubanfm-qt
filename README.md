@@ -7,7 +7,7 @@
 * libqt5network5 libqt5gui5 libqt5core5 libqt5multimedia5 qtmultimedia5-dev
 * gstreamer0.10-fluendo-mp3
 * libpulse0 libpulse-dev
-* libnotify
+* libnotify libqt5dbus5
 
 ## 截图 Screenshot
 
@@ -38,7 +38,7 @@ make
 * <del>快捷键</del>
 * <del>动画</del>
 * i18n支持
-* Linux的播放提示 + DBus
+* <del>Linux的播放提示 + DBus</del>
 * 后台播放 + 托盘提示 (Ubuntu下是Indicator)
 * <del>歌词</del>
 

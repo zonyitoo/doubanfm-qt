@@ -8,7 +8,7 @@
 mainwidget::mainwidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::mainwidget),
-    _isChannelWidgetShowing(true)
+    _isChannelWidgetShowing(false)
 {
     ui->setupUi(this);
     ui->pauseWidget->setVisible(false);
@@ -27,7 +27,6 @@ mainwidget::mainwidget(QWidget *parent) :
     });
 
     connect(ui->channelWidget, SIGNAL(mouseLeave()), this, SLOT(animHideChannelWidget()));
-    animHideChannelWidget();
 }
 
 mainwidget::~mainwidget()
@@ -62,12 +61,12 @@ void mainwidget::animHideChannelWidget(bool immediately) {
     if (!_isChannelWidgetShowing && !immediately) return;
 
     QParallelAnimationGroup *animgroup = new QParallelAnimationGroup(this);
-    QPropertyAnimation *control_anim = new QPropertyAnimation(ui->controlWidget, "geometry");
+    QPropertyAnimation *control_anim = new QPropertyAnimation(ui->controlWidget, "pos");
     control_anim->setDuration(400);
-    control_anim->setStartValue(ui->controlWidget->geometry());
-    QRect endval(0, 0, ui->controlWidget->geometry().width(),
-                 ui->controlWidget->geometry().height());
-    control_anim->setEndValue(endval);
+    control_anim->setStartValue(ui->controlWidget->pos());
+    QPoint endpos = ui->controlWidget->pos();
+    endpos.setY(0);
+    control_anim->setEndValue(endpos);
     control_anim->setEasingCurve(QEasingCurve::OutCubic);
 
     animgroup->addAnimation(control_anim);
@@ -75,8 +74,8 @@ void mainwidget::animHideChannelWidget(bool immediately) {
     QPropertyAnimation *main_anim = new QPropertyAnimation(this, "geometry");
     main_anim->setDuration(400);
     main_anim->setStartValue(this->geometry());
-    QRect endval2(this->geometry().x(), this->geometry().y(),
-                  this->geometry().width(), this->geometry().height() - ui->channelWidget->geometry().height());
+    QRect endval2 = this->geometry();
+    endval2.setHeight(ui->controlWidget->geometry().height());
     main_anim->setEndValue(endval2);
     main_anim->setEasingCurve(QEasingCurve::OutCubic);
 
@@ -84,7 +83,10 @@ void mainwidget::animHideChannelWidget(bool immediately) {
 
     connect(animgroup, &QParallelAnimationGroup::finished, [this] () {
         _isChannelWidgetShowing = false;
-        ui->pauseWidget->setGeometry(0, 0, ui->pauseWidget->geometry().width(), this->geometry().height());
+        QRect pauseGeo = ui->pauseWidget->geometry();
+        pauseGeo.setHeight(this->geometry().height());
+        ui->pauseWidget->setGeometry(pauseGeo);
+        this->setMaximumHeight(pauseGeo.height());
     });
     animgroup->start(QAbstractAnimation::DeleteWhenStopped);
 }
@@ -92,13 +94,16 @@ void mainwidget::animHideChannelWidget(bool immediately) {
 void mainwidget::animShowChannelWidget() {
     if (_isChannelWidgetShowing) return;
 
+    this->setMaximumHeight(this->controlPanel()->geometry().height()
+                           + ui->channelWidget->geometry().height());
+
     QParallelAnimationGroup *animgroup = new QParallelAnimationGroup(this);
-    QPropertyAnimation *control_anim = new QPropertyAnimation(ui->controlWidget, "geometry");
+    QPropertyAnimation *control_anim = new QPropertyAnimation(ui->controlWidget, "pos");
     control_anim->setDuration(400);
-    control_anim->setStartValue(ui->controlWidget->geometry());
-    QRect endval(0, ui->channelWidget->geometry().height(), ui->controlWidget->geometry().width(),
-                 ui->controlWidget->geometry().height());
-    control_anim->setEndValue(endval);
+    control_anim->setStartValue(ui->controlWidget->pos());
+    QPoint endpos = ui->controlWidget->pos();
+    endpos.setY(ui->channelWidget->geometry().height());
+    control_anim->setEndValue(endpos);
     control_anim->setEasingCurve(QEasingCurve::OutCubic);
 
     animgroup->addAnimation(control_anim);
@@ -106,8 +111,8 @@ void mainwidget::animShowChannelWidget() {
     QPropertyAnimation *main_anim = new QPropertyAnimation(this, "geometry");
     main_anim->setDuration(400);
     main_anim->setStartValue(this->geometry());
-    QRect endval2(this->geometry().x(), this->geometry().y(),
-                  this->geometry().width(), this->geometry().height() + ui->channelWidget->geometry().height());
+    QRect endval2 = this->geometry();
+    endval2.setHeight(endval2.height() + ui->channelWidget->geometry().height());
     main_anim->setEndValue(endval2);
     main_anim->setEasingCurve(QEasingCurve::OutCubic);
 

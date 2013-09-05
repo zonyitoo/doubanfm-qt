@@ -8,6 +8,21 @@
 #include <QNetworkReply>
 #include "mainwidget.h"
 
+#include <QRegExp>
+
+QString convert_to_192k(const QString& url) {
+    static QRegExp rx("^http://mr\\d\\.douban\\.com/\\w+/\\w+/view/song/small/p(\\d+)\\.mp3$");
+    rx.setMinimal(true);
+    int ret = rx.indexIn(url);
+    if (ret >= 0) {
+        QString newurl = "http://n.douban.com/view/song/small/p" + rx.cap(1) + "_192k.mp3";
+        qDebug() << newurl;
+        return newurl;
+    }
+
+    return url;
+}
+
 ControlPanel::ControlPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ControlPanel),
@@ -54,7 +69,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         qDebug() << "Received new playlist with" << songs.size() << "songs";
         QMediaPlaylist *playlist = new QMediaPlaylist;
         for (const DoubanFMSong& song : this->songs) {
-            playlist->addMedia(QUrl(song.url));
+            playlist->addMedia(QUrl(convert_to_192k(song.url)));
         }
         player.setPlaylist(playlist);
         connect(playlist, &QMediaPlaylist::currentIndexChanged, [=] (int position) {
@@ -134,7 +149,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         qDebug() << "Received new playlist with" << songs.size() << "songs";
         QMediaPlaylist *playlist = new QMediaPlaylist;
         for (const DoubanFMSong& song : this->songs) {
-            playlist->addMedia(QUrl(song.url));
+            playlist->addMedia(QUrl(convert_to_192k(song.url)));
         }
         player.setPlaylist(playlist);
         connect(playlist, &QMediaPlaylist::currentIndexChanged, [=] (int position) {

@@ -76,6 +76,33 @@ ControlPanel::ControlPanel(QWidget *parent) :
         ui->albumImg->setAlbumImage(image);
         reply->deleteLater();
     });
+    
+    player.setPlaylist(new QMediaPlaylist(&player));
+    connect(player.playlist(), &QMediaPlaylist::currentIndexChanged, [=] (int position) {
+        if (position < 0) {
+            if (songs.size() > 0)
+                doubanfm->getPlayingList(channel, songs.back().sid);
+            else
+                doubanfm->getNewPlayList(channel);
+            return;
+        }
+
+        qDebug() << "Current playing: " << songs[position].artist << ":" << songs[position].title;
+        setArtistName(songs[position].artist);
+        setSongName(songs[position].title);
+        setAlbumName(songs[position].albumtitle);
+        lyric_getter->getLyric(songs[position].title, songs[position].artist == "Various Artists" ? "" : songs[position].artist);
+        QString mod_url = songs[position].picture;
+        mod_url.replace("mpic", "lpic");
+        ui->lyricWidget->clear();
+        imgmgr->get(QNetworkRequest(QUrl(mod_url)));
+        if (songs[position].like) {
+            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+        }
+        else {
+            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+        }
+    });
 
     setArtistName("Loading");
 
@@ -87,7 +114,8 @@ ControlPanel::ControlPanel(QWidget *parent) :
     connect(doubanfm, &DoubanFM::receivedNewList, [this] (const QList<DoubanFMSong>& songs) {
         this->songs = songs;
         qDebug() << "Received new playlist with" << songs.size() << "songs";
-        QMediaPlaylist *playlist = new QMediaPlaylist;
+        QMediaPlaylist *playlist = player.playlist();
+        playlist->clear();
         for (const DoubanFMSong& song : this->songs) {
 #ifdef CRACK_PRO_192K
             playlist->addMedia(QUrl(convert_to_192k(song.url)));
@@ -95,51 +123,8 @@ ControlPanel::ControlPanel(QWidget *parent) :
             playlist->addMedia(QUrl(song.url));
 #endif
         }
-        player.setPlaylist(playlist);
-        connect(playlist, &QMediaPlaylist::currentIndexChanged, [=] (int position) {
-            if (position < 0) {
-                if (songs.size() > 0) {
-                    doubanfm->getPlayingList(channel, songs.back().sid);
-                }
-                else {
-                    doubanfm->getNewPlayList(channel);
-                }
-                return;
-            }
-            qDebug() << "Current playing: " << songs[position].artist << ":" << songs[position].title;
-            setArtistName(songs[position].artist);
-            setSongName(songs[position].title);
-            setAlbumName(songs[position].albumtitle);
-            lyric_getter->getLyric(songs[position].title, songs[position].artist == "Various Artists" ? "" : songs[position].artist);
-            QString mod_url = songs[position].picture;
-            mod_url.replace("mpic", "lpic");
-            ui->lyricWidget->clear();
-            imgmgr->get(QNetworkRequest(QUrl(mod_url)));
-            if (songs[position].like) {
-                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
-            }
-            else {
-                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
-            }
-        });
-        if (player.state() != QMediaPlayer::PlayingState) {
-            setArtistName(songs[0].artist);
-            setSongName(songs[0].title);
-            setAlbumName(songs[0].albumtitle);
-            lyric_getter->getLyric(songs[0].title, songs[0].artist == "Various Artists" ? "" : songs[0].artist);
-            QString mod_url = songs[0].picture;
-            mod_url.replace("mpic", "lpic");
-            imgmgr->get(QNetworkRequest(QUrl(mod_url)));
+        if (player.state() != QMediaPlayer::PlayingState)
             player.play();
-            ui->lyricWidget->clear();
-            if (songs[0].like) {
-                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
-            }
-            else {
-                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
-            }
-            qDebug() << "Current playing: " << songs[0].artist << ":" << songs[0].title;
-        }
     });
 
     connect(&player, SIGNAL(positionChanged(qint64)), ui->volumeTime, SLOT(setTick(qint64)));
@@ -171,7 +156,9 @@ ControlPanel::ControlPanel(QWidget *parent) :
     connect(doubanfm, &DoubanFM::receivedPlayingList, [this] (const QList<DoubanFMSong>& songs) {
         this->songs = songs;
         qDebug() << "Received new playlist with" << songs.size() << "songs";
-        QMediaPlaylist *playlist = new QMediaPlaylist;
+        QMediaPlaylist *playlist = player.playlist();
+        playlist->clear();
+            
         for (const DoubanFMSong& song : this->songs) {
 #ifdef CRACK_PRO_192K
             playlist->addMedia(QUrl(convert_to_192k(song.url)));
@@ -179,51 +166,9 @@ ControlPanel::ControlPanel(QWidget *parent) :
             playlist->addMedia(QUrl(song.url));
 #endif
         }
-        player.setPlaylist(playlist);
-        connect(playlist, &QMediaPlaylist::currentIndexChanged, [=] (int position) {
-            if (position < 0) {
-                if (songs.size() > 0) {
-                    doubanfm->getPlayingList(channel, songs.back().sid);
-                }
-                else {
-                    doubanfm->getNewPlayList(channel);
-                }
-                return;
-            }
-            setArtistName(songs[position].artist);
-            setSongName(songs[position].title);
-            setAlbumName(songs[position].albumtitle);
-            lyric_getter->getLyric(songs[position].title, songs[position].artist == "Various Artists" ? "" : songs[position].artist);
-            QString mod_url = songs[position].picture;
-            mod_url.replace("mpic", "lpic");
-            imgmgr->get(QNetworkRequest(QUrl(mod_url)));
-            if (songs[position].like) {
-                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
-            }
-            else {
-                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
-            }
-            ui->lyricWidget->clear();
-            qDebug() << "Current playing: " << songs[position].artist << ":" << songs[position].title;
-        });
-        if (player.state() != QMediaPlayer::PlayingState) {
-            setArtistName(songs[0].artist);
-            setSongName(songs[0].title);
-            QString mod_url = songs[0].picture;
-            setAlbumName(songs[0].albumtitle);
-            lyric_getter->getLyric(songs[0].title, songs[0].artist == "Various Artists" ? "" : songs[0].artist);
-            mod_url.replace("mpic", "lpic");
-            ui->lyricWidget->clear();
-            imgmgr->get(QNetworkRequest(QUrl(mod_url)));
+
+        if (player.state() != QMediaPlayer::PlayingState)
             player.play();
-            if (songs[0].like) {
-                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
-            }
-            else {
-                ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
-            }
-            qDebug() << "Current playing:" << songs[0].artist << ":" << songs[0].title;
-        }
     });
 
     connect(static_cast<mainwidget *>(this->parentWidget())->channelWidget(), &ChannelWidget::channelChanged,

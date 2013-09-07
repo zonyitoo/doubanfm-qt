@@ -9,13 +9,28 @@
 #include "mainwidget.h"
 
 #include <QRegExp>
+#include <QEventLoop>
 
-QString convert_to_192k(const QString& url) {
+QString ControlPanel::convert_to_192k(const QString& url) {
     static QRegExp rx("^http://mr\\d\\.douban\\.com/\\w+/\\w+/view/song/small/p(\\d+)\\.mp3$");
     rx.setMinimal(true);
     int ret = rx.indexIn(url);
     if (ret >= 0) {
         QString newurl = "http://n.douban.com/view/song/small/p" + rx.cap(1) + "_192k.mp3";
+        auto replyfunc = [&] (QNetworkReply *reply) {
+            qDebug() << reply->error();
+            if (reply->error() != QNetworkReply::NoError) {
+                newurl = url;
+            }
+            reply->deleteLater();
+        };
+        auto connection = connect(url_validator, &QNetworkAccessManager::finished, replyfunc);
+        QEventLoop eventloop;
+        connect(url_validator, SIGNAL(finished(QNetworkReply *)), &eventloop, SLOT(quit()));
+        url_validator->head(QNetworkRequest(QUrl(newurl)));
+        eventloop.exec();
+        disconnect(url_validator, SIGNAL(finished(QNetworkReply*)), &eventloop, SLOT(quit()));
+        disconnect(connection);
         qDebug() << newurl;
         return newurl;
     }
@@ -31,6 +46,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
     ui->setupUi(this);
     doubanfm = DoubanFM::getInstance();
     loadConfig();
+    url_validator = new QNetworkAccessManager(this);
     imgmgr = new QNetworkAccessManager(this);
     connect(imgmgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
@@ -60,9 +76,9 @@ ControlPanel::ControlPanel(QWidget *parent) :
     setArtistName("Loading");
 
     connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> user) {
-        doubanfm->getNewPlayList(channel);
+        //doubanfm->getNewPlayList(channel);
         ui->userLogin->setText(user->user_name);
-        qDebug() << "LoginSucceed. Refreshing Playlist";
+        qDebug() << user->user_name << "LoginSucceed. Refreshing Playlist";
     });
     connect(doubanfm, &DoubanFM::receivedNewList, [this] (const QList<DoubanFMSong>& songs) {
         this->songs = songs;

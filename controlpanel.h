@@ -41,6 +41,8 @@ private:
 
     int volume;
 
+    QString convert_to_192k(const QString&);
+    QNetworkAccessManager *url_validator;
 public slots:
     void pause();
     void play();

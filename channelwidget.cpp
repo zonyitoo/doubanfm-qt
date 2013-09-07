@@ -18,21 +18,15 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
             this, SLOT(setChannels(QList<DoubanChannel>)));
     doubanfm->getChannels();
 
-    timer = nullptr;
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [=] () {
+        qDebug() << "Switch to channel" << channels[ui->slider->currentIndex()].name;
+        emit channelChanged(channels[ui->slider->currentIndex()].channel_id);
+    });
     connect(ui->slider, &HorizontalSlider::scrollFinished, [this] () {
         channel = channels[ui->slider->currentIndex()].channel_id;
-        if (timer) {
-            if (timer->isActive()) timer->stop();
-            delete timer;
-            timer = nullptr;
-        }
-        if (!timer) {
-            timer = new QTimer(this);
-            connect(timer, &QTimer::timeout, [=] () {
-                qDebug() << "Switch to channel" << channels[ui->slider->currentIndex()].name;
-                emit channelChanged(channels[ui->slider->currentIndex()].channel_id);
-            });
-        }
+        if (timer && timer->isActive()) 
+            timer->stop();
         timer->setSingleShot(true);
         timer->start(2000);
     });
@@ -43,7 +37,11 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
     settings.endGroup();
 
     connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> user) {
-        this->ui->slider->scrollToIndex(0);
+        if (ui->slider->currentIndex() != 0)
+            this->ui->slider->scrollToIndex(0);
+        else
+            doubanfm->getNewPlayList(-3);
+        qDebug() << "LoginSucceed. Refreshing Playlist";
         QLabel *pnt = static_cast<QLabel *>(labels[0]);
         pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
     });

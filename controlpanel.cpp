@@ -11,12 +11,14 @@
 #include <QRegExp>
 #include <QEventLoop>
 
+#ifdef CRACK_PRO_192K
 QString ControlPanel::convert_to_192k(const QString& url) {
     static QRegExp rx("^http://mr\\d\\.douban\\.com/\\w+/\\w+/view/song/small/p(\\d+)\\.mp3$");
     rx.setMinimal(true);
     int ret = rx.indexIn(url);
     if (ret >= 0) {
         QString newurl = "http://n.douban.com/view/song/small/p" + rx.cap(1) + "_192k.mp3";
+        /*
         auto replyfunc = [&] (QNetworkReply *reply) {
             qDebug() << reply->error();
             if (reply->error() != QNetworkReply::NoError) {
@@ -31,12 +33,14 @@ QString ControlPanel::convert_to_192k(const QString& url) {
         eventloop.exec();
         disconnect(url_validator, SIGNAL(finished(QNetworkReply*)), &eventloop, SLOT(quit()));
         disconnect(connection);
+        */
         qDebug() << newurl;
         return newurl;
     }
 
     return url;
 }
+#endif
 
 ControlPanel::ControlPanel(QWidget *parent) :
     QWidget(parent),
@@ -46,7 +50,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
     ui->setupUi(this);
     doubanfm = DoubanFM::getInstance();
     loadConfig();
-    url_validator = new QNetworkAccessManager(this);
+    //url_validator = new QNetworkAccessManager(this);
     imgmgr = new QNetworkAccessManager(this);
     connect(imgmgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
@@ -85,7 +89,11 @@ ControlPanel::ControlPanel(QWidget *parent) :
         qDebug() << "Received new playlist with" << songs.size() << "songs";
         QMediaPlaylist *playlist = new QMediaPlaylist;
         for (const DoubanFMSong& song : this->songs) {
+#ifdef CRACK_PRO_192K
             playlist->addMedia(QUrl(convert_to_192k(song.url)));
+#else
+            playlist->addMedia(QUrl(song.url));
+#endif
         }
         player.setPlaylist(playlist);
         connect(playlist, &QMediaPlaylist::currentIndexChanged, [=] (int position) {
@@ -165,7 +173,11 @@ ControlPanel::ControlPanel(QWidget *parent) :
         qDebug() << "Received new playlist with" << songs.size() << "songs";
         QMediaPlaylist *playlist = new QMediaPlaylist;
         for (const DoubanFMSong& song : this->songs) {
+#ifdef CRACK_PRO_192K
             playlist->addMedia(QUrl(convert_to_192k(song.url)));
+#else
+            playlist->addMedia(QUrl(song.url));
+#endif
         }
         player.setPlaylist(playlist);
         connect(playlist, &QMediaPlaylist::currentIndexChanged, [=] (int position) {

@@ -9,6 +9,8 @@
 #include "lyricgetter.h"
 #include "libnotify-qt/Notification.h"
 
+#define CRACK_PRO_192K
+
 namespace Ui {
 class ControlPanel;
 }
@@ -41,8 +43,10 @@ private:
 
     int volume;
 
+#ifdef CRACK_PRO_192K
     QString convert_to_192k(const QString&);
-    QNetworkAccessManager *url_validator;
+#endif
+//    QNetworkAccessManager *url_validator;
 public slots:
     void pause();
     void play();

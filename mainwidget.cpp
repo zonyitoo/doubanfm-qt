@@ -25,6 +25,18 @@ mainwidget::mainwidget(QWidget *parent) :
             ui->controlWidget->pause();
         ui->pauseWidget->setVisible(!visiable);
     });
+    nextShortcut = new QShortcut(QKeySequence("Ctrl+s"), this);
+    connect(nextShortcut, &QShortcut::activated, [this] () {
+        this->controlPanel()->on_nextButton_clicked();
+    });
+    deleteShortcut = new QShortcut(QKeySequence("Ctrl+d"), this);
+    connect(deleteShortcut, &QShortcut::activated, [this] () {
+        this->controlPanel()->on_trashButton_clicked();
+    });
+    likeShortcut = new QShortcut(QKeySequence("Ctrl+f"), this);
+    connect(likeShortcut, &QShortcut::activated, [this] () {
+        this->controlPanel()->on_likeButton_clicked();
+    });
 
     connect(ui->channelWidget, SIGNAL(mouseLeave()), this, SLOT(animHideChannelWidget()));
 }

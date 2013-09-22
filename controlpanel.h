@@ -32,6 +32,7 @@ private:
     QMediaPlayer player;
 
     QNetworkAccessManager *imgmgr;
+    Notification *notify;
 
     void loadConfig();
     void saveConfig();
@@ -45,16 +46,16 @@ public slots:
     void pause();
     void play();
 
-private slots:
-    void setSongName(const QString &name);
-    void setArtistName(const QString &name);
-    void setAlbumName(const QString &name);
-
     void on_nextButton_clicked();
     void on_pauseButton_clicked();
     void on_likeButton_clicked();
     void on_trashButton_clicked();
     void on_userLogin_clicked();
+
+private slots:
+    void setSongName(const QString &name);
+    void setArtistName(const QString &name);
+    void setAlbumName(const QString &name);
 };
 
 #endif // CONTROLPANEL_H

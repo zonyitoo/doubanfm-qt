@@ -11,7 +11,8 @@
 ControlPanel::ControlPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ControlPanel),
-    channel(0), isPaused(false), volume(100)
+    channel(0), isPaused(false), volume(100),
+    notify(nullptr)
 {
     ui->setupUi(this);
     doubanfm = DoubanFM::getInstance();
@@ -29,13 +30,17 @@ ControlPanel::ControlPanel(QWidget *parent) :
         QImage image = QImage::fromData(data);
         if (player.playlist()->currentIndex() >= 0) {
             int index = player.playlist()->currentIndex();
-            Notification *notify = new Notification(songs[index].artist, songs[index].title);
+            if (notify) {
+                notify->close();
+                delete notify;
+                notify = nullptr;
+            }
+            notify = new Notification(songs[index].artist, songs[index].title);
             if (data.size() > 0) {
                 iiibiiay notify_icon_data = iiibiiay::fromImage(image);
                 notify->setHint("icon_data",
                                 QVariant(qDBusRegisterMetaType<iiibiiay>(), &notify_icon_data));
             }
-            notify->setAutoDelete(true);
             notify->show();
         }
         ui->albumImg->setAlbumImage(image);

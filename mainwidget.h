@@ -34,6 +34,9 @@ private:
     QPoint dpos;
     QShortcut *exitShortcut;
     QShortcut *pauseShortcut;
+    QShortcut *nextShortcut;
+    QShortcut *deleteShortcut;
+    QShortcut *likeShortcut;
 
     bool _isChannelWidgetShowing;
 

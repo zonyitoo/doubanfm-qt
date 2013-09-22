@@ -15,6 +15,7 @@ public:
     void getLyric(const QString& song, const QString& artist);
 signals:
     void gotLyric(const QLyricList& lyric);
+    void gotLyricError(const QString& errmsg);
 private:
     QNetworkAccessManager *querymgr;
     QNetworkAccessManager *getmgr;

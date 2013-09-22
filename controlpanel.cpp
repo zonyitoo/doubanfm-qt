@@ -41,6 +41,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
                 notify->setHint("icon_data",
                                 QVariant(qDBusRegisterMetaType<iiibiiay>(), &notify_icon_data));
             }
+            notify->setAutoDelete(false);
             notify->show();
         }
         ui->albumImg->setAlbumImage(image);
@@ -61,7 +62,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         setArtistName(songs[position].artist);
         setSongName(songs[position].title);
         setAlbumName(songs[position].albumtitle);
-        lyric_getter->getLyric(songs[position].title, songs[position].artist == "Various Artists" ? "" : songs[position].artist);
+        lyric_getter->getLyric(songs[position].title, songs[position].artist);
         QString mod_url = songs[position].picture;
         mod_url.replace("mpic", "lpic");
         ui->lyricWidget->clear();
@@ -153,6 +154,10 @@ ControlPanel::ControlPanel(QWidget *parent) :
     lyric_getter = new LyricGetter(this);
     connect(lyric_getter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
         ui->lyricWidget->setLyric(lyric);
+    });
+    connect(lyric_getter, &LyricGetter::gotLyricError, [this] (const QString& errmsg) {
+        if (ui->lyricWidget->isVisible())
+            emit ui->lyricWidgetTriggerRight->enter();
     });
 
     ui->lyricWidget->setVisible(false);

@@ -14,6 +14,7 @@ LyricGetter::LyricGetter(QObject *parent) :
         if (QNetworkReply::NoError != reply->error()) {
             qDebug() << "Err: Get lyric error";
             reply->deleteLater();
+            emit gotLyricError("Lyric doesn't exist.");
             return;
         }
         QTextCodec *codec = QTextCodec::codecForName("utf-8");

@@ -31,6 +31,12 @@ make
 
 `Space` 暂停
 
+`Ctrl` + `S` 跳过
+
+`Ctrl` + `D` 不再播放
+
+`Ctrl` + `F` 标记/取消标记红心
+
 ## TODO
 * <del>基本播放功能</del>
 * <del>频道选择</del>

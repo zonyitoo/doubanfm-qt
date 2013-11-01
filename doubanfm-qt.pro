@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     albumimage.cpp \
     triggerarea.cpp \
     libnotify-qt/Notification.cpp \
-    libnotify-qt/OrgFreedesktopNotificationsInterface.cpp
+    libnotify-qt/OrgFreedesktopNotificationsInterface.cpp \
+    albumwidget.cpp
 
 HEADERS  += mainwidget.h \
     channelwidget.h \
@@ -46,7 +47,8 @@ HEADERS  += mainwidget.h \
     channelwidgettrigger.h \
     lyricwidgettrigger.h \
     libnotify-qt/Notification.h \
-    libnotify-qt/OrgFreedesktopNotificationsInterface.h
+    libnotify-qt/OrgFreedesktopNotificationsInterface.h \
+    albumwidget.h
 
 FORMS    += mainwidget.ui \
     channelwidget.ui \
@@ -54,7 +56,8 @@ FORMS    += mainwidget.ui \
     loginpanel.ui \
     volumetimepanel.ui \
     pausemask.ui \
-    lyricwidget.ui
+    lyricwidget.ui \
+    albumwidget.ui
 
 RESOURCES += \
     imgs.qrc

@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QNetworkReply>
 #include "mainwidget.h"
+#include <QDesktopServices>
 
 ControlPanel::ControlPanel(QWidget *parent) :
     QWidget(parent),
@@ -95,7 +96,10 @@ ControlPanel::ControlPanel(QWidget *parent) :
     connect(&player, SIGNAL(positionChanged(qint64)), ui->volumeTime, SLOT(setTick(qint64)));
     connect(&player, SIGNAL(positionChanged(qint64)), ui->lyricWidget, SLOT(setTick(qint64)));
     connect(&player, &QMediaPlayer::positionChanged, [this] (qint64 tick) {
-        ui->seeker->setValue((qreal) tick / player.duration() * 100);
+        ui->seeker->setValue((qreal) tick / player.duration() * ui->seeker->maximum());
+    });
+    connect(&player, &QMediaPlayer::volumeChanged, [this] (int vol) {
+        qDebug() << vol;
     });
 
     connect(doubanfm, &DoubanFM::receivedSkipSong, [this] (bool succeed) {
@@ -156,16 +160,18 @@ ControlPanel::ControlPanel(QWidget *parent) :
         ui->lyricWidget->setLyric(lyric);
     });
     connect(lyric_getter, &LyricGetter::gotLyricError, [this] (const QString& errmsg) {
-        if (ui->lyricWidget->isVisible())
-            emit ui->lyricWidgetTriggerRight->enter();
+        /*if (ui->lyricWidget->isVisible())
+            emit ui->lyricWidgetTriggerRight->enter();*/
     });
 
-    ui->lyricWidget->setVisible(false);
-    connect(ui->albumImg, &AlbumImage::clicked, [this] () {
-        if (!ui->lyricWidget->isVisible())
+    //ui->lyricWidget->setVisible(false);
+    connect(ui->albumImg, &AlbumWidget::clicked, [this] () {
+        /*if (!ui->lyricWidget->isVisible())
             emit ui->lyricWidgetTriggerLeft->enter();
         else
-            emit ui->lyricWidgetTriggerRight->enter();
+            emit ui->lyricWidgetTriggerRight->enter();*/
+        int index = player.playlist()->currentIndex();
+        QDesktopServices::openUrl(QUrl("http://www.douban.com" + songs[index].album));
     });
 
     connect(ui->channelWidgetTrigger, &ChannelWidgetTrigger::enter,
@@ -174,6 +180,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
             static_cast<mainwidget *>(this->parentWidget())->animShowChannelWidget();
 
     });
+    /*
     connect(ui->lyricWidgetTriggerLeft, &LyricWidgetTriggerLeft::enter, [this] () {
         QPropertyAnimation *anim = new QPropertyAnimation(ui->albumImg, "geometry");
         anim->setDuration(400);
@@ -230,6 +237,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
 
         anim->start(QPropertyAnimation::DeleteWhenStopped);
     });
+    */
 }
 
 ControlPanel::~ControlPanel()
@@ -254,7 +262,8 @@ void ControlPanel::loadConfig() {
 
     settings.beginGroup("General");
     channel = settings.value("channel", 1).toInt();
-    player.setVolume(settings.value("volume", 100).toInt());
+    //player.setVolume(settings.value("volume", 100).toInt());
+    player.setVolume(0.5);
     volume = player.volume();
     settings.endGroup();
     settings.beginGroup("User");
@@ -276,7 +285,8 @@ void ControlPanel::saveConfig() {
     QSettings settings("QDoubanFM", "QDoubanFM");
     settings.beginGroup("General");
     settings.setValue("channel", channel);
-    settings.setValue("volume", volume);
+    settings.setValue("volume", player.volume());
+    qDebug() << "Save " << player.volume();
     settings.endGroup();
     std::shared_ptr<DoubanUser> user = doubanfm->getUser();
     if (!user) user.reset(new DoubanUser);
@@ -368,6 +378,7 @@ void ControlPanel::pause() {
     QPropertyAnimation *fadeout = new QPropertyAnimation(&player, "volume");
     fadeout->setDuration(1000);
     fadeout->setStartValue(player.volume());
+    volume = player.volume();
     fadeout->setEndValue(0);
     connect(fadeout, &QPropertyAnimation::finished, [this] () {
         player.pause();

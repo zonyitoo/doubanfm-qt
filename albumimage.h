@@ -8,7 +8,7 @@
 class AlbumImage : public QLabel
 {
     Q_OBJECT
-    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged);
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
 
 public:
     explicit AlbumImage(QWidget *parent = 0);

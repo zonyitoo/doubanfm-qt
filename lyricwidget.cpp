@@ -20,6 +20,7 @@ void LyricWidget::setLyric(const QLyricList &lyric) {
     if (animWidget) delete animWidget;
     animWidget = new QWidget(this);
     animWidget->lower();
+    ui->bg->raise();
     QRect geo = this->geometry();
     animWidget->setMinimumWidth(geo.width());
     animWidget->setMaximumWidth(geo.width());
@@ -40,7 +41,7 @@ void LyricWidget::setLyric(const QLyricList &lyric) {
     int accuHeight = 0;
     for (const QLyric& lyr : lyric) {
         QLabel *label = new QLabel(animWidget);
-        QFont font("文泉驿微米黑", 9);
+        QFont font("文泉驿微米黑", 11);
         font.setStyleStrategy(QFont::PreferAntialias);
         label->setFont(font);
         label->setText(QString("<font color='grey'>") +
@@ -109,9 +110,9 @@ void LyricWidget::setTime(const QTime &time) {
     QRect endval(0, accuHeight, animWidget->width(), animWidget->height());
     anim->setEndValue(endval);
     anim->setEasingCurve(QEasingCurve::OutCubic);
-    labels[befind]->setText(labels[befind]->text().replace("black", "grey"));
+    labels[befind]->setText(labels[befind]->text().replace("white", "grey"));
     connect(anim, &QPropertyAnimation::finished, [this] () {
-        labels[curInd]->setText(labels[curInd]->text().replace("grey", "black"));
+        labels[curInd]->setText(labels[curInd]->text().replace("grey", "white"));
     });
     anim->start(QPropertyAnimation::DeleteWhenStopped);
 }

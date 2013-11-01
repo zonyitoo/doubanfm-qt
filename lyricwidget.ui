@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>324</width>
-    <height>200</height>
+    <width>544</width>
+    <height>151</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,18 +18,23 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>324</width>
-     <height>200</height>
+     <width>544</width>
+     <height>151</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>文泉驿微米黑</family>
-     <pointsize>9</pointsize>
+     <pointsize>10</pointsize>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(232, 237, 234, 255), stop:0.2 rgba(232, 237, 234, 0), stop: 0.8 rgba(232, 237, 234, 0), stop: 1 rgba(232, 237, 234, 255))</string>
+    <string notr="true">border-style: solid;
+border-width: 10px;
+border-top-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(0,0,0,80), stop: 1 rgba(0,0,0,0));
+border-bottom-color: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 rgba(0,0,0,80), stop: 1 rgba(0,0,0,0));
+border-left-color: rgba(0,0,0,0);
+border-right-color: rgba(0,0,0,0);</string>
    </property>
    <property name="text">
     <string/>

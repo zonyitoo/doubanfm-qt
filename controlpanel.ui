@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>544</width>
-    <height>200</height>
+    <height>347</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -19,7 +19,7 @@
   <property name="maximumSize">
    <size>
     <width>544</width>
-    <height>200</height>
+    <height>400</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -54,31 +54,6 @@
    </property>
    <property name="scaledContents">
     <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="AlbumImage" name="albumImg">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>200</width>
-     <height>200</height>
-    </rect>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>200</width>
-     <height>200</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>200</width>
-     <height>200</height>
-    </size>
-   </property>
-   <property name="text">
-    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="artist">
@@ -164,55 +139,8 @@ QToolButton:hover{border-image: url(:/img/pause_clicked.png);}</string>
      <height>16</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QSlider::groove:horizontal {
-
-background: #727982;
-height: 5px;
-border-radius: 4px;
-}
-
-QSlider::sub-page:horizontal {
-background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,
-    stop: 0 #66e, stop: 1 #bbf);
-background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,
-    stop: 0 #bbf, stop: 1 #55f);
-border: 1px solid #777;
-height: 5px;
-border-radius: 4px;
-}
-
-QSlider::add-page:horizontal {
-background: #fff;
-border: 1px solid #777;
-height: 5px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal {
-width:0px
-}
-
-QSlider::handle:horizontal:hover {
-width: 0px
-}
-
-QSlider::sub-page:horizontal:disabled {
-background: #94ad6b;
-border-color: #999;
-}
-
-QSlider::add-page:horizontal:disabled {
-background: #eee;
-border-color: #999;
-}
-
-QSlider::handle:horizontal:disabled {
-width: 0px
-}</string>
-   </property>
    <property name="maximum">
-    <number>100</number>
+    <number>1000000</number>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -335,7 +263,7 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
    <property name="geometry">
     <rect>
      <x>420</x>
-     <y>100</y>
+     <y>105</y>
      <width>85</width>
      <height>16</height>
     </rect>
@@ -392,16 +320,6 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
    </property>
    <property name="text">
     <string/>
-   </property>
-  </widget>
-  <widget class="LyricWidget" name="lyricWidget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>0</y>
-     <width>324</width>
-     <height>200</height>
-    </rect>
    </property>
   </widget>
   <widget class="ChannelWidgetTrigger" name="channelWidgetTrigger" native="true">
@@ -467,24 +385,55 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
     </property>
    </widget>
   </widget>
-  <widget class="LyricWidgetTriggerLeft" name="lyricWidgetTriggerLeft" native="true">
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>200</y>
+     <width>544</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="imgs.qrc">:/img/channel.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="LyricWidget" name="lyricWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>200</y>
+     <width>544</width>
+     <height>151</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="AlbumWidget" name="albumImg" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>31</width>
-     <height>201</height>
+     <width>200</width>
+     <height>200</height>
     </rect>
    </property>
-  </widget>
-  <widget class="LyricWidgetTriggerRight" name="lyricWidgetTriggerRight" native="true">
-   <property name="geometry">
-    <rect>
-     <x>515</x>
-     <y>0</y>
-     <width>31</width>
-     <height>201</height>
-    </rect>
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>200</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>200</width>
+     <height>200</height>
+    </size>
    </property>
   </widget>
  </widget>
@@ -502,26 +451,15 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>AlbumImage</class>
-   <extends>QLabel</extends>
-   <header>albumimage.h</header>
-  </customwidget>
-  <customwidget>
    <class>ChannelWidgetTrigger</class>
    <extends>QWidget</extends>
    <header>channelwidgettrigger.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LyricWidgetTriggerLeft</class>
+   <class>AlbumWidget</class>
    <extends>QWidget</extends>
-   <header>lyricwidgettrigger.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>LyricWidgetTriggerRight</class>
-   <extends>QWidget</extends>
-   <header>lyricwidgettrigger.h</header>
+   <header>albumwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

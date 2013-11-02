@@ -9,6 +9,7 @@
 #include "libs/doubanplayer.h"
 #include "libs/lyricgetter.h"
 #include "libnotify-qt/Notification.h"
+#include "settingdialog.h"
 
 namespace Ui {
 class ControlPanel;
@@ -40,9 +41,11 @@ private:
     void saveConfig();
 
     //bool isPaused;
-    LyricGetter *lyric_getter;
+    LyricGetter *lyricGetter;
 
     //int volume;
+
+    SettingDialog *settingDialog;
 
 public slots:
     void pause();
@@ -52,12 +55,12 @@ public slots:
     void on_pauseButton_clicked();
     void on_likeButton_clicked();
     void on_trashButton_clicked();
-    void on_userLogin_clicked();
 
 private slots:
     void setSongName(const QString &name);
     void setArtistName(const QString &name);
     void setAlbumName(const QString &name);
+    void on_settingButton_clicked();
 };
 
 #endif // CONTROLPANEL_H

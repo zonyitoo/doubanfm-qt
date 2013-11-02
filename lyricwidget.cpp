@@ -41,7 +41,7 @@ void LyricWidget::setLyric(const QLyricList &lyric) {
     int accuHeight = 0;
     for (const QLyric& lyr : lyric) {
         QLabel *label = new QLabel(animWidget);
-        QFont font("文泉驿微米黑", 11);
+        QFont font("Sans", 11);
         font.setStyleStrategy(QFont::PreferAntialias);
         label->setFont(font);
         label->setText(QString("<font color='grey'>") +

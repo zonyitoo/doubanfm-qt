@@ -9,6 +9,7 @@
 #include "mainwidget.h"
 #include <QDesktopServices>
 #include "libs/douban_types.h"
+#include "settingdialog.h"
 
 ControlPanel::ControlPanel(QWidget *parent) :
     QWidget(parent),
@@ -16,7 +17,8 @@ ControlPanel::ControlPanel(QWidget *parent) :
     doubanfm(DoubanFM::getInstance()),
     player(DoubanPlayer::getInstance()),
     imgmgr(new QNetworkAccessManager(this)),
-    lyric_getter(new LyricGetter(this))
+    lyricGetter(new LyricGetter(this)),
+    settingDialog(new SettingDialog(this))
 {
     ui->setupUi(this);
     loadConfig();
@@ -60,7 +62,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         setAlbumName(song.albumtitle);
 
         ui->lyricWidget->clear();
-        this->lyric_getter->getLyric(song.title, song.artist);
+        this->lyricGetter->getLyric(song.title, song.artist);
         QString mod_url = song.picture;
         mod_url.replace("mpic", "lpic");
         imgmgr->get(QNetworkRequest(QUrl(mod_url)));
@@ -79,10 +81,6 @@ ControlPanel::ControlPanel(QWidget *parent) :
     });
 
     setArtistName("Loading");
-
-    connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> user) {
-        ui->userLogin->setText(user->user_name);
-    });
 
     connect(player, SIGNAL(positionChanged(qint64)), ui->volumeTime, SLOT(setTick(qint64)));
     connect(player, SIGNAL(positionChanged(qint64)), ui->lyricWidget, SLOT(setTick(qint64)));
@@ -123,14 +121,10 @@ ControlPanel::ControlPanel(QWidget *parent) :
             player->setChannel(1);
     }*/
 
-    if (doubanfm->hasLogin())
-        ui->userLogin->setText(doubanfm->getUser()->user_name);
-
-
-    connect(lyric_getter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
+    connect(lyricGetter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
         ui->lyricWidget->setLyric(lyric);
     });
-    connect(lyric_getter, &LyricGetter::gotLyricError, [this] (const QString& errmsg) {
+    connect(lyricGetter, &LyricGetter::gotLyricError, [this] (const QString& errmsg) {
         /*if (ui->lyricWidget->isVisible())
             emit ui->lyricWidgetTriggerRight->enter();*/
     });
@@ -223,7 +217,8 @@ ControlPanel::~ControlPanel()
 {
     delete ui;
     saveConfig();
-    delete lyric_getter;
+    delete lyricGetter;
+    delete settingDialog;
 }
 
 void ControlPanel::setSongName(const QString &name) {
@@ -259,27 +254,18 @@ void ControlPanel::saveConfig() {
 
 void ControlPanel::on_nextButton_clicked()
 {
-    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
-    }
     ui->seeker->setValue(0);
     player->next();
 }
 
 void ControlPanel::on_pauseButton_clicked()
 {
-    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
-    }
     player->pause();
     static_cast<mainwidget *>(this->parentWidget())->pauseMask()->setVisible(true);
 }
 
 void ControlPanel::on_likeButton_clicked()
 {
-    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
-    }
     bool is_liked = player->currentSong().like;
     if (is_liked)
         player->unrateCurrentSong();
@@ -289,21 +275,7 @@ void ControlPanel::on_likeButton_clicked()
 
 void ControlPanel::on_trashButton_clicked()
 {
-    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
-        return;
-    }
-
     player->trashCurrentSong();
-}
-
-void ControlPanel::on_userLogin_clicked()
-{
-    LoginPanel *loginPanel = static_cast<mainwidget *>(this->parentWidget())->loginPanel();
-    if (!loginPanel->isShowing())
-        loginPanel->animShow();
-    else
-        loginPanel->animHide();
 }
 
 void ControlPanel::setAlbumName(const QString &name) {
@@ -337,4 +309,9 @@ void ControlPanel::pause() {
 
 void ControlPanel::enterEvent(QEvent *ev) {
     static_cast<mainwidget *>(this->parentWidget())->animHideChannelWidget(true);
+}
+
+void ControlPanel::on_settingButton_clicked()
+{
+    settingDialog->show();
 }

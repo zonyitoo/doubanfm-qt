@@ -34,8 +34,5 @@ int main(int argc, char *argv[])
 
     new DoubanMprisPlugin();
 
-    SettingDialog d(&w);
-    d.show();
-
     return a.exec();
 }

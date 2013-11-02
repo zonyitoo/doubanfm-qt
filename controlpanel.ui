@@ -281,28 +281,6 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="userLogin">
-   <property name="geometry">
-    <rect>
-     <x>433</x>
-     <y>70</y>
-     <width>71</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>文泉驿微米黑</family>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>未登录</string>
-   </property>
-   <property name="flat">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QLabel" name="album">
    <property name="geometry">
     <rect>
@@ -434,6 +412,19 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
      <width>200</width>
      <height>200</height>
     </size>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="settingButton">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>170</y>
+     <width>29</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>...</string>
    </property>
   </widget>
  </widget>

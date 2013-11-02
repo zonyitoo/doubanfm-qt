@@ -135,7 +135,7 @@ void DoubanMprisPlugin::Stop() {
 }
 
 void DoubanMprisPlugin::Quit() {
-    qApp->exit();
+    qApp->quit();
 }
 
 void DoubanMprisPlugin::Raise() {

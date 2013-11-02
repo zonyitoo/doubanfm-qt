@@ -23,7 +23,6 @@ public:
 
     ChannelWidget *channelWidget();
     ControlPanel *controlPanel();
-    LoginPanel *loginPanel();
     PauseMask *pauseMask();
 
     void mousePressEvent(QMouseEvent *);

@@ -79,28 +79,6 @@
     </size>
    </property>
   </widget>
-  <widget class="LoginPanel" name="loginWidget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>70</x>
-     <y>0</y>
-     <width>400</width>
-     <height>0</height>
-    </rect>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>400</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>400</width>
-     <height>16777215</height>
-    </size>
-   </property>
-  </widget>
   <widget class="PauseMask" name="pauseWidget" native="true">
    <property name="geometry">
     <rect>
@@ -124,12 +102,6 @@
    <class>ControlPanel</class>
    <extends>QWidget</extends>
    <header>controlpanel.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>LoginPanel</class>
-   <extends>QWidget</extends>
-   <header>loginpanel.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

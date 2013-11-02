@@ -56,17 +56,12 @@ ControlPanel *mainwidget::controlPanel() {
     return ui->controlWidget;
 }
 
-LoginPanel *mainwidget::loginPanel() {
-    return ui->loginWidget;
-}
-
 PauseMask *mainwidget::pauseMask() {
     return ui->pauseWidget;
 }
 
 void mainwidget::mousePressEvent(QMouseEvent *) {
-    if (this->loginPanel()->isShowing())
-        this->loginPanel()->animHide();
+
 }
 
 void mainwidget::animHideChannelWidget(bool immediately) {

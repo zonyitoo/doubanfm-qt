@@ -141,6 +141,7 @@ void DoubanFM::onReceivedAuth(QNetworkReply *reply) {
         if (obj["r"].toInt() != 0) {
             qDebug() << Q_FUNC_INFO << "Err" << obj["err"].toString();
             emit loginFailed(obj["err"].toString());
+            this->_user.reset();
             reply->deleteLater();
             return;
         }

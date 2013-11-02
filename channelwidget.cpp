@@ -58,10 +58,6 @@ ChannelWidget::~ChannelWidget()
 
 void ChannelWidget::on_nextButton_clicked()
 {
-    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
-        return;
-    }
     if (ui->slider->currentIndex() == 0) return;
     if (!doubanfm->hasLogin() && ui->slider->currentIndex() == 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() - 1);
@@ -73,10 +69,6 @@ void ChannelWidget::on_nextButton_clicked()
 
 void ChannelWidget::on_prevButton_clicked()
 {
-    if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
-        static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
-        return;
-    }
     if (ui->slider->currentIndex() == ui->slider->numberOfChildren() - 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() + 1);
     QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);

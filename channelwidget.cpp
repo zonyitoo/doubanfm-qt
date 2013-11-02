@@ -12,6 +12,9 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->nextButton->raise();
+    ui->prevButton->raise();
+
     doubanfm = DoubanFM::getInstance();
 
     connect(doubanfm, SIGNAL(receivedChannels(QList<DoubanChannel>)),

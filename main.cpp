@@ -1,9 +1,7 @@
 #include "mainwidget.h"
 #include <QApplication>
 
-#include "libnotify-qt/Notification.h"
-#include <QDBusMetaType>
-#include <QtDBus>
+#include "doubanmprisplugin.h"
 
 int main(int argc, char *argv[])
 {
@@ -29,6 +27,8 @@ int main(int argc, char *argv[])
     //n->setHint("icon_data", QVariant(qDBusRegisterMetaType<iiibiiay>(), &i));
     //n->setAutoDelete(true);
     //n->show();
+
+    new DoubanMprisPlugin();
 
     return a.exec();
 }

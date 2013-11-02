@@ -63,7 +63,7 @@ public:
     QByteArray image;
 };
 
-Q_DECLARE_METATYPE(iiibiiay);
+Q_DECLARE_METATYPE(iiibiiay)
 
 QDBusArgument &operator<<(QDBusArgument &a, const iiibiiay &i);
 const QDBusArgument &operator>>(const QDBusArgument &a,  iiibiiay &i);

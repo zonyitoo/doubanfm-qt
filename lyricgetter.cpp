@@ -12,7 +12,7 @@ LyricGetter::LyricGetter(QObject *parent) :
     getmgr = new QNetworkAccessManager(this);
     connect(querymgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
-            qDebug() << "Err: Get lyric error";
+            qDebug() << "Lyric not found.";
             reply->deleteLater();
             emit gotLyricError("Lyric doesn't exist.");
             return;
@@ -32,7 +32,7 @@ LyricGetter::LyricGetter(QObject *parent) :
     });
     connect(getmgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
-            qDebug() << "Err: Get lyric error";
+            qDebug() << "Lyric not found.";
             reply->deleteLater();
             return;
         }

@@ -28,7 +28,11 @@ SOURCES += main.cpp\
     triggerarea.cpp \
     libnotify-qt/Notification.cpp \
     libnotify-qt/OrgFreedesktopNotificationsInterface.cpp \
-    albumwidget.cpp
+    albumwidget.cpp \
+    mprisplayeradapter.cpp \
+    mprisadapter.cpp \
+    doubanplayer.cpp \
+    doubanmprisplugin.cpp
 
 HEADERS  += mainwidget.h \
     channelwidget.h \
@@ -48,7 +52,11 @@ HEADERS  += mainwidget.h \
     lyricwidgettrigger.h \
     libnotify-qt/Notification.h \
     libnotify-qt/OrgFreedesktopNotificationsInterface.h \
-    albumwidget.h
+    albumwidget.h \
+    mprisplayeradapter.h \
+    mprisadapter.h \
+    doubanplayer.h \
+    doubanmprisplugin.h
 
 FORMS    += mainwidget.ui \
     channelwidget.ui \
@@ -63,3 +71,8 @@ RESOURCES += \
     imgs.qrc
 
 CONFIG += c++11
+
+OTHER_FILES += \
+    org.mpris.MediaPlayer2.xml \
+    org.mpris.MediaPlayer2.Player.xml \
+    org.freedesktop.DBus.Properties.xml

@@ -8,17 +8,18 @@
 #include <QNetworkReply>
 #include "mainwidget.h"
 #include <QDesktopServices>
+#include "douban_types.h"
 
 ControlPanel::ControlPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ControlPanel),
-    channel(0), isPaused(false), volume(100),
-    notify(nullptr)
+    doubanfm(DoubanFM::getInstance()),
+    player(DoubanPlayer::getInstance()),
+    imgmgr(new QNetworkAccessManager(this)),
+    lyric_getter(new LyricGetter(this))
 {
     ui->setupUi(this);
-    doubanfm = DoubanFM::getInstance();
     loadConfig();
-    imgmgr = new QNetworkAccessManager(this);
     connect(imgmgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
             qDebug() << "Err: Album image receive error";
@@ -29,6 +30,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         if (!data.size())
             qDebug() << Q_FUNC_INFO << "received pixmap looks like nothing";
         QImage image = QImage::fromData(data);
+        /*
         if (player.playlist()->currentIndex() >= 0) {
             int index = player.playlist()->currentIndex();
             if (notify) {
@@ -45,34 +47,33 @@ ControlPanel::ControlPanel(QWidget *parent) :
             notify->setAutoDelete(false);
             notify->show();
         }
+        */
         ui->albumImg->setAlbumImage(image);
         reply->deleteLater();
     });
     
-    player.setPlaylist(new QMediaPlaylist(&player));
-    connect(player.playlist(), &QMediaPlaylist::currentIndexChanged, [=] (int position) {
-        if (position < 0) {
-            if (songs.size() > 0)
-                doubanfm->getPlayingList(channel, songs.back().sid);
-            else
-                doubanfm->getNewPlayList(channel);
-            return;
-        }
+    //player.setPlaylist(new QMediaPlaylist(&player));
+    connect(player, &DoubanPlayer::currentSongChanged, [=] (const DoubanFMSong& song) {
+        setArtistName(song.artist);
+        setSongName(song.title);
+        setAlbumName(song.albumtitle);
 
-        qDebug() << "Current playing: " << songs[position].artist << ":" << songs[position].title;
-        setArtistName(songs[position].artist);
-        setSongName(songs[position].title);
-        setAlbumName(songs[position].albumtitle);
-        lyric_getter->getLyric(songs[position].title, songs[position].artist);
-        QString mod_url = songs[position].picture;
-        mod_url.replace("mpic", "lpic");
         ui->lyricWidget->clear();
+        this->lyric_getter->getLyric(song.title, song.artist);
+        QString mod_url = song.picture;
+        mod_url.replace("mpic", "lpic");
         imgmgr->get(QNetworkRequest(QUrl(mod_url)));
-        if (songs[position].like) {
-            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+        if (song.like) {
+            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}"
+                                          "QToolButton:hover{border-image: url(:/img/unlike.png);}"
+                                          "QToolButton:clicked{border-image: url(:/img/like_disabled.png);}"
+                                          "QToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
         }
         else {
-            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}"
+                                          "QToolButton:hover{border-image: url(:/img/like.png);}"
+                                          "QToolButton:clicked{border-image: url(:/img/like_disabled.png);}"
+                                          "QToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
         }
     });
 
@@ -81,40 +82,28 @@ ControlPanel::ControlPanel(QWidget *parent) :
     connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> user) {
         ui->userLogin->setText(user->user_name);
     });
-    connect(doubanfm, &DoubanFM::receivedNewList, [this] (const QList<DoubanFMSong>& songs) {
-        this->songs = songs;
-        qDebug() << "Received new playlist with" << songs.size() << "songs";
-        QMediaPlaylist *playlist = player.playlist();
-        playlist->clear();
-        for (const DoubanFMSong& song : this->songs) {
-            playlist->addMedia(QUrl(song.url));
-        }
-        if (player.state() != QMediaPlayer::PlayingState)
-            player.play();
-    });
 
-    connect(&player, SIGNAL(positionChanged(qint64)), ui->volumeTime, SLOT(setTick(qint64)));
-    connect(&player, SIGNAL(positionChanged(qint64)), ui->lyricWidget, SLOT(setTick(qint64)));
-    connect(&player, &QMediaPlayer::positionChanged, [this] (qint64 tick) {
-        ui->seeker->setValue((qreal) tick / player.duration() * ui->seeker->maximum());
+    connect(player, SIGNAL(positionChanged(qint64)), ui->volumeTime, SLOT(setTick(qint64)));
+    connect(player, SIGNAL(positionChanged(qint64)), ui->lyricWidget, SLOT(setTick(qint64)));
+    connect(player, &DoubanPlayer::positionChanged, [this] (qint64 tick) {
+        ui->seeker->setValue((qreal) tick / player->duration() * ui->seeker->maximum());
     });
-    connect(&player, &QMediaPlayer::volumeChanged, [this] (int vol) {
-        qDebug() << vol;
-    });
+    //connect(player, &QMediaPlayer::volumeChanged, [this] (int vol) {
+    //    qDebug() << vol;
+    //});
 
-    connect(doubanfm, &DoubanFM::receivedSkipSong, [this] (bool succeed) {
+    connect(player, &DoubanPlayer::receivedSkipSong, [this] (bool succeed) {
         ui->nextButton->setEnabled(true);
     });
-    connect(doubanfm, &DoubanFM::receivedByeSong, [this] (bool succeed) {
+    connect(player, &DoubanPlayer::receivedTrashSong, [this] (bool succeed) {
         ui->trashButton->setEnabled(true);
-        player.playlist()->setCurrentIndex(player.playlist()->nextIndex());
+        //player.playlist()->setCurrentIndex(player.playlist()->nextIndex());
     });
-    connect(doubanfm, &DoubanFM::receivedRateSong, [this] (bool succeed) {
+    connect(player, &DoubanPlayer::receivedRateSong, [this] (bool succeed) {
         ui->likeButton->setEnabled(true);
         if (!succeed) return;
-        int index = player.playlist()->currentIndex();
-        songs[index].like = !songs[index].like;
-        if (songs[index].like) {
+
+        if (player->currentSong().like) {
             ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
         }
         else {
@@ -122,40 +111,23 @@ ControlPanel::ControlPanel(QWidget *parent) :
         }
     });
 
-    connect(doubanfm, &DoubanFM::receivedPlayingList, [this] (const QList<DoubanFMSong>& songs) {
-        this->songs = songs;
-        qDebug() << "Received new playlist with" << songs.size() << "songs";
-        QMediaPlaylist *playlist = player.playlist();
-        playlist->clear();
-            
-        for (const DoubanFMSong& song : this->songs) {
-            playlist->addMedia(QUrl(song.url));
-        }
-
-        if (player.state() != QMediaPlayer::PlayingState)
-            player.play();
-    });
-
     connect(static_cast<mainwidget *>(this->parentWidget())->channelWidget(), &ChannelWidget::channelChanged,
             [this] (qint32 channel) {
-        this->channel = channel;
-        doubanfm->getNewPlayList(channel);
+        this->player->setChannel(channel);
     });
     connect(ui->volumeTime, &VolumeTimePanel::volumeChanged, [this] (int value) {
-        player.setVolume(value);
-        volume = value;
+        this->player->setVolume(value);
     });
 
-    if (channel == -3) {
+    /*if (player->channel() == -3) {
         if (!doubanfm->getUser())
-            channel = 1;
-        doubanfm->getNewPlayList(channel);
-    }
+            player->setChannel(1);
+    }*/
 
     if (doubanfm->hasLogin())
         ui->userLogin->setText(doubanfm->getUser()->user_name);
 
-    lyric_getter = new LyricGetter(this);
+
     connect(lyric_getter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
         ui->lyricWidget->setLyric(lyric);
     });
@@ -170,8 +142,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
             emit ui->lyricWidgetTriggerLeft->enter();
         else
             emit ui->lyricWidgetTriggerRight->enter();*/
-        int index = player.playlist()->currentIndex();
-        QDesktopServices::openUrl(QUrl("http://www.douban.com" + songs[index].album));
+        QDesktopServices::openUrl(QUrl("http://www.douban.com" + player->currentSong().album));
     });
 
     connect(ui->channelWidgetTrigger, &ChannelWidgetTrigger::enter,
@@ -260,11 +231,11 @@ void ControlPanel::setArtistName(const QString &name) {
 void ControlPanel::loadConfig() {
     QSettings settings("QDoubanFM", "QDoubanFM");
 
+    qint32 _channel = settings.value("channel", 1).toInt();
     settings.beginGroup("General");
-    channel = settings.value("channel", 1).toInt();
     //player.setVolume(settings.value("volume", 100).toInt());
-    player.setVolume(0.5);
-    volume = player.volume();
+    player->setVolume(0.5);
+
     settings.endGroup();
     settings.beginGroup("User");
     std::shared_ptr<DoubanUser> user(new DoubanUser());
@@ -279,14 +250,15 @@ void ControlPanel::loadConfig() {
             && user->user_id.size() && user->user_name.size())
         doubanfm->setUser(user);
     settings.endGroup();
+
+    player->setChannel(_channel);
 }
 
 void ControlPanel::saveConfig() {
     QSettings settings("QDoubanFM", "QDoubanFM");
     settings.beginGroup("General");
-    settings.setValue("channel", channel);
-    settings.setValue("volume", player.volume());
-    qDebug() << "Save " << player.volume();
+    settings.setValue("channel", player->channel());
+    settings.setValue("volume", player->volume());
     settings.endGroup();
     std::shared_ptr<DoubanUser> user = doubanfm->getUser();
     if (!user) user.reset(new DoubanUser);
@@ -306,11 +278,9 @@ void ControlPanel::on_nextButton_clicked()
     if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
         static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
     }
-    int sindex = player.playlist()->currentIndex();
-    doubanfm->skipSong(songs[sindex].sid, channel);
     ui->nextButton->setEnabled(false);
-    player.setPosition(player.duration());
     ui->seeker->setValue(0);
+    player->next();
 }
 
 void ControlPanel::on_pauseButton_clicked()
@@ -318,9 +288,7 @@ void ControlPanel::on_pauseButton_clicked()
     if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
         static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
     }
-    if (isPaused) this->play();
-    else this->pause();
-    isPaused = !isPaused;
+    player->pause();
     static_cast<mainwidget *>(this->parentWidget())->pauseMask()->setVisible(true);
 }
 
@@ -329,8 +297,12 @@ void ControlPanel::on_likeButton_clicked()
     if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
         static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
     }
-    int sindex = player.playlist()->currentIndex();
-    doubanfm->rateSong(songs[sindex].sid, channel, !songs[sindex].like);
+    bool is_liked = player->currentSong().like;
+    if (is_liked)
+        player->unrateCurrentSong();
+    else
+        player->rateCurrentSong();
+
     ui->likeButton->setEnabled(false);
 }
 
@@ -340,15 +312,9 @@ void ControlPanel::on_trashButton_clicked()
         static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
         return;
     }
-    int sindex = player.playlist()->currentIndex();
-    doubanfm->byeSong(songs[sindex].sid, channel);
+
     ui->trashButton->setEnabled(false);
-    player.setPosition(player.duration());
-    ui->seeker->setValue(0);
-    if (isPaused) {
-        player.play();
-        isPaused = false;
-    }
+    player->trashCurrentSong();
 }
 
 void ControlPanel::on_userLogin_clicked()
@@ -365,17 +331,18 @@ void ControlPanel::setAlbumName(const QString &name) {
 }
 
 void ControlPanel::play() {
-    QPropertyAnimation *fadein = new QPropertyAnimation(&player, "volume");
+    /*QPropertyAnimation *fadein = new QPropertyAnimation(&player, "volume");
     fadein->setDuration(1000);
     fadein->setStartValue(player.volume());
     player.play();
     fadein->setEndValue(volume);
     fadein->start(QPropertyAnimation::DeleteWhenStopped);
-    isPaused = false;
+    isPaused = false;*/
+    player->play();
 }
 
 void ControlPanel::pause() {
-    QPropertyAnimation *fadeout = new QPropertyAnimation(&player, "volume");
+    /*QPropertyAnimation *fadeout = new QPropertyAnimation(&player, "volume");
     fadeout->setDuration(1000);
     fadeout->setStartValue(player.volume());
     volume = player.volume();
@@ -384,7 +351,8 @@ void ControlPanel::pause() {
         player.pause();
     });
     fadeout->start(QPropertyAnimation::DeleteWhenStopped);
-    isPaused = true;
+    isPaused = true;*/
+    player->pause();
 }
 
 void ControlPanel::enterEvent(QEvent *ev) {

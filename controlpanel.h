@@ -6,6 +6,7 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include <QNetworkAccessManager>
+#include "doubanplayer.h"
 #include "lyricgetter.h"
 #include "libnotify-qt/Notification.h"
 
@@ -26,21 +27,22 @@ public:
 private:
     Ui::ControlPanel *ui;
     DoubanFM *doubanfm;
-    qint32 channel;
-    QList<DoubanChannel> channels;
-    QList<DoubanFMSong> songs;
-    QMediaPlayer player;
+    //qint32 channel;
+    //QList<DoubanChannel> channels;
+    //QList<DoubanFMSong> songs;
+    //QMediaPlayer player;
+    DoubanPlayer *player;
 
     QNetworkAccessManager *imgmgr;
-    Notification *notify;
+    //Notification *notify;
 
     void loadConfig();
     void saveConfig();
 
-    bool isPaused;
+    //bool isPaused;
     LyricGetter *lyric_getter;
 
-    int volume;
+    //int volume;
 
 public slots:
     void pause();

@@ -2,7 +2,7 @@
 #define LYRICWIDGET_H
 
 #include <QWidget>
-#include "qlyricparser.h"
+#include "libs/qlyricparser.h"
 #include <QTime>
 #include <QLabel>
 #include "ui_lyricwidget.h"

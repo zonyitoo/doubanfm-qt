@@ -6,7 +6,7 @@
 static const QString PLAYER_SERVICE_NAME = "org.mpris.MediaPlayer2.doubanfm";
 static const QString PLAYER_OBJECT_PATH = "/org/mpris/MediaPlayer2";
 
-static bool DBUS_NOTIFY_PROPERTIES_CHANGED(QString iface, QVariantMap changed, QStringList invalidated) {
+static bool DBUS_NOTIFY_PROPERTIES_CHANGED(QString iface, QVariantMap changed, QStringList invalidated = QStringList()) {
     auto dbus_msg = QDBusMessage::createSignal(PLAYER_OBJECT_PATH,
                                                "org.freedesktop.DBus.Properties",
                                                "PropertiesChanged");
@@ -27,7 +27,7 @@ DoubanMprisPlugin::DoubanMprisPlugin(QObject *parent) :
     connect(player, &DoubanPlayer::stateChanged, [=] (QMediaPlayer::State state) {
         QVariantMap changedMap;
         changedMap.insert("PlaybackStatus", this->PlaybackStatus());
-        DBUS_NOTIFY_PROPERTIES_CHANGED("org.mpris.MediaPlayer2.Player", changedMap, QStringList());
+        DBUS_NOTIFY_PROPERTIES_CHANGED("org.mpris.MediaPlayer2.Player", changedMap);
     });
 
     connect(player, &DoubanPlayer::currentSongChanged, [=] (const DoubanFMSong& song) {
@@ -44,8 +44,7 @@ DoubanMprisPlugin::DoubanMprisPlugin(QObject *parent) :
         map.insert("xesam:url", song.url);
         QVariantMap changedMap;
         changedMap.insert("Metadata", map);
-        qDebug() << Q_FUNC_INFO << changedMap;
-        DBUS_NOTIFY_PROPERTIES_CHANGED("org.mpris.MediaPlayer2.Player", changedMap, QStringList());
+        DBUS_NOTIFY_PROPERTIES_CHANGED("org.mpris.MediaPlayer2.Player", changedMap);
     });
 }
 
@@ -122,7 +121,13 @@ void DoubanMprisPlugin::Play() {
 }
 
 void DoubanMprisPlugin::PlayPause() {
-    this->player->play();
+    switch (player->state()) {
+    case QMediaPlayer::PlayingState:
+        player->pause();
+        break;
+    default:
+        player->play();
+    }
 }
 
 void DoubanMprisPlugin::Stop() {

@@ -2,7 +2,7 @@
 #define DOUBANPLAYER_H
 
 #include <QObject>
-#include <doubanfm.h>
+#include <libs/doubanfm.h>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 
@@ -20,6 +20,9 @@ public:
     int volume() const;
     QMediaPlayer::State state() const;
 
+    bool canControl() const;
+    void setCanControl(bool);
+
 signals:
 
     void currentSongChanged(const DoubanFMSong& song);
@@ -30,6 +33,8 @@ signals:
     void receivedTrashSong(bool);
 
     void stateChanged(QMediaPlayer::State);
+
+    void canControlChanged(bool);
 
 public slots:
     void next();
@@ -52,6 +57,7 @@ private:
     DoubanFM *doubanfm;
     qint32 _channel;
     qint32 _volume;
+    bool _can_control;
 };
 
 #endif // DOUBANPLAYER_H

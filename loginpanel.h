@@ -2,8 +2,8 @@
 #define LOGINPANEL_H
 
 #include <QWidget>
-#include "doubanfm.h"
-#include "douban_types.h"
+#include "libs/doubanfm.h"
+#include "libs/douban_types.h"
 
 namespace Ui {
 class LoginPanel;

@@ -10,7 +10,7 @@ DoubanPlayer *DoubanPlayer::getInstance() {
 DoubanPlayer::DoubanPlayer(QObject *parent) :
     QObject(parent),
     doubanfm(DoubanFM::getInstance()),
-    _channel(-3), _volume(0)
+    _channel(-INT_MAX), _volume(0), _can_control(true)
 {
     player.setPlaylist(new QMediaPlaylist(&player));
     connect(player.playlist(), &QMediaPlaylist::currentIndexChanged, [=] (int position) {
@@ -23,6 +23,8 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
         }*/
         if (position < 0) {
             doubanfm->getNewPlayList(_channel);
+            setCanControl(false);
+            qDebug() << Q_FUNC_INFO;
             return;
         }
         else if (position == songs.size() - 1) {
@@ -53,6 +55,7 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
         }
         if (player.state() != QMediaPlayer::PlayingState)
             player.play();
+        setCanControl(true);
     });
 
     connect(doubanfm, &DoubanFM::receivedPlayingList, [this] (const QList<DoubanFMSong>& rcvsongs) {
@@ -66,8 +69,8 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
         else {
             DoubanFMSong curSong = songs[curIndex];
             if (curIndex != 0) playlist->removeMedia(0, curIndex - 1);
+            playlist->setCurrentIndex(0);
             if (curIndex != songs.size() - 1) playlist->removeMedia(curIndex + 1, songs.size() - 1);
-            songs.clear();
             songs = rcvsongs;
             songs.insert(0, curSong);
         }
@@ -75,6 +78,7 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
         for (const DoubanFMSong& song : this->songs) {
             playlist->addMedia(QUrl(song.url));
         }
+        setCanControl(true);
 
         //if (player.state() != QMediaPlayer::PlayingState)
         //    player.play();
@@ -83,14 +87,28 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
     connect(&player, &QMediaPlayer::positionChanged, [this] (qint64 tick) { emit this->positionChanged(tick); });
     connect(doubanfm, &DoubanFM::receivedByeSong, [this] (bool suc) {
         emit this->receivedTrashSong(suc);
+        setCanControl(true);
     });
     connect(doubanfm, &DoubanFM::receivedRateSong, [this] (bool suc) {
         int curIndex = player.playlist()->currentIndex();
         songs[curIndex].like = !songs[curIndex].like;
         emit this->receivedRateSong(suc);
+        setCanControl(true);
     });
-    connect(doubanfm, &DoubanFM::receivedSkipSong, [this] (bool suc) { emit this->receivedSkipSong(suc); });
+    connect(doubanfm, &DoubanFM::receivedSkipSong, [this] (bool suc) {
+        emit this->receivedSkipSong(suc);
+        setCanControl(true);
+    });
     connect(&player, &QMediaPlayer::stateChanged, [this] (QMediaPlayer::State s) { emit this->stateChanged(s); });
+}
+
+bool DoubanPlayer::canControl() const {
+    return _can_control;
+}
+
+void DoubanPlayer::setCanControl(bool can) {
+    _can_control = can;
+    emit canControlChanged(can);
 }
 
 void DoubanPlayer::play() {
@@ -103,6 +121,7 @@ void DoubanPlayer::play() {
 }
 
 void DoubanPlayer::pause() {
+    qDebug() << Q_FUNC_INFO;
     QPropertyAnimation *fadeout = new QPropertyAnimation(&player, "volume");
     fadeout->setDuration(1000);
     fadeout->setStartValue(player.volume());
@@ -126,6 +145,10 @@ qint64 DoubanPlayer::position() const {
 
 void DoubanPlayer::next() {
     int sindex = player.playlist()->currentIndex();
+    if (sindex < 0) {
+        doubanfm->getNewPlayList(this->_channel);
+        return;
+    }
     doubanfm->skipSong(songs[sindex].sid, _channel);
     player.playlist()->next();
 }
@@ -137,22 +160,26 @@ void DoubanPlayer::stop() {
 void DoubanPlayer::rateCurrentSong() {
     int sindex = player.playlist()->currentIndex();
     doubanfm->rateSong(songs[sindex].sid, _channel, true);
+    setCanControl(false);
 }
 
 void DoubanPlayer::unrateCurrentSong() {
     int sindex = player.playlist()->currentIndex();
     doubanfm->rateSong(songs[sindex].sid, _channel, false);
+    setCanControl(false);
 }
 
 void DoubanPlayer::trashCurrentSong() {
     int sindex = player.playlist()->currentIndex();
     doubanfm->byeSong(songs[sindex].sid, _channel);
+    setCanControl(false);
 }
 
 void DoubanPlayer::setChannel(qint32 chanid) {
     if (chanid == _channel) return;
     this->_channel = chanid;
     doubanfm->getNewPlayList(chanid);
+    setCanControl(false);
 }
 
 void DoubanPlayer::setVolume(int v) {

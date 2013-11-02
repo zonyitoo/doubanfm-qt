@@ -2,7 +2,7 @@
 #define DOUBANMPRISPLUGIN_H
 
 #include <QObject>
-#include "doubanplayer.h"
+#include "libs/doubanplayer.h"
 #include <QDBusMessage>
 #include <memory>
 

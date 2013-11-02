@@ -2,10 +2,10 @@
 #define CHANNELWIDGET_H
 
 #include <QWidget>
-#include "douban_types.h"
+#include "libs/douban_types.h"
 #include <QList>
 #include <QLabel>
-#include "doubanfm.h"
+#include "libs/doubanfm.h"
 #include <QTimer>
 
 namespace Ui {

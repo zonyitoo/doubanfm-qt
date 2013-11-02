@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
-#include "douban_types.h"
+#include "libs/douban_types.h"
 #include <memory>
 
 static const unsigned int DOUBAN_MANAGER_ARRAY_SIZE = 9;

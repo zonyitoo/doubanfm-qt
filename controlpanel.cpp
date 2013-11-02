@@ -8,7 +8,7 @@
 #include <QNetworkReply>
 #include "mainwidget.h"
 #include <QDesktopServices>
-#include "douban_types.h"
+#include "libs/douban_types.h"
 
 ControlPanel::ControlPanel(QWidget *parent) :
     QWidget(parent),
@@ -20,6 +20,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
 {
     ui->setupUi(this);
     loadConfig();
+
     connect(imgmgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
             qDebug() << "Err: Album image receive error";
@@ -92,22 +93,20 @@ ControlPanel::ControlPanel(QWidget *parent) :
     //    qDebug() << vol;
     //});
 
-    connect(player, &DoubanPlayer::receivedSkipSong, [this] (bool succeed) {
-        ui->nextButton->setEnabled(true);
-    });
-    connect(player, &DoubanPlayer::receivedTrashSong, [this] (bool succeed) {
-        ui->trashButton->setEnabled(true);
-        //player.playlist()->setCurrentIndex(player.playlist()->nextIndex());
-    });
     connect(player, &DoubanPlayer::receivedRateSong, [this] (bool succeed) {
-        ui->likeButton->setEnabled(true);
         if (!succeed) return;
 
         if (player->currentSong().like) {
-            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}\nQToolButton:hover{border-image: url(:/img/unlike.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}"
+                                          "QToolButton:hover{border-image: url(:/img/unlike.png);}"
+                                          "QToolButton:clicked{border-image: url(:/img/like_disabled.png);}"
+                                          "QToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
         }
         else {
-            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}\nQToolButton:hover{border-image: url(:/img/like.png);}\nQToolButton:clicked{border-image: url(:/img/like_disabled.png);}\nQToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}"
+                                          "QToolButton:hover{border-image: url(:/img/like.png);}"
+                                          "QToolButton:clicked{border-image: url(:/img/like_disabled.png);}"
+                                          "QToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
         }
     });
 
@@ -150,6 +149,15 @@ ControlPanel::ControlPanel(QWidget *parent) :
         if (!static_cast<mainwidget *>(this->parentWidget())->isChannelWidgetShowing())
             static_cast<mainwidget *>(this->parentWidget())->animShowChannelWidget();
 
+    });
+    connect(dynamic_cast<mainwidget *>(this->parentWidget())->channelWidget(),
+            &ChannelWidget::channelChanged, [=] (qint32 chanid) {
+        this->player->setChannel(chanid);
+    });
+    connect(player, &DoubanPlayer::canControlChanged, [=] (bool can) {
+        ui->nextButton->setEnabled(can);
+        ui->trashButton->setEnabled(can);
+        ui->likeButton->setEnabled(can);
     });
     /*
     connect(ui->lyricWidgetTriggerLeft, &LyricWidgetTriggerLeft::enter, [this] () {
@@ -231,27 +239,14 @@ void ControlPanel::setArtistName(const QString &name) {
 void ControlPanel::loadConfig() {
     QSettings settings("QDoubanFM", "QDoubanFM");
 
-    qint32 _channel = settings.value("channel", 1).toInt();
     settings.beginGroup("General");
-    //player.setVolume(settings.value("volume", 100).toInt());
-    player->setVolume(0.5);
-
-    settings.endGroup();
-    settings.beginGroup("User");
-    std::shared_ptr<DoubanUser> user(new DoubanUser());
-    user->email = settings.value("email", "").toString();
-    user->expire = settings.value("expire", "").toString();
-    user->password = settings.value("password", "").toString();
-    user->token = settings.value("token", "").toString();
-    user->user_id = settings.value("user_id", "").toString();
-    user->user_name = settings.value("user_name", "").toString();
-    if (user->email.size() && user->expire.size()
-            && user->password.size() && user->token.size()
-            && user->user_id.size() && user->user_name.size())
-        doubanfm->setUser(user);
+    player->setVolume(settings.value("volume", 100).toInt());
+    qint32 _channel = settings.value("channel", 1).toInt();
     settings.endGroup();
 
-    player->setChannel(_channel);
+    if (_channel == -3 && doubanfm->hasLogin()) {
+        player->setChannel(_channel);
+    }
 }
 
 void ControlPanel::saveConfig() {
@@ -260,17 +255,6 @@ void ControlPanel::saveConfig() {
     settings.setValue("channel", player->channel());
     settings.setValue("volume", player->volume());
     settings.endGroup();
-    std::shared_ptr<DoubanUser> user = doubanfm->getUser();
-    if (!user) user.reset(new DoubanUser);
-    settings.beginGroup("User");
-    settings.setValue("email", user->email);
-    settings.setValue("expire", user->expire);
-    settings.setValue("password", user->password);
-    settings.setValue("token", user->token);
-    settings.setValue("user_id", user->user_id);
-    settings.setValue("user_name", user->user_name);
-    settings.endGroup();
-    settings.sync();
 }
 
 void ControlPanel::on_nextButton_clicked()
@@ -278,7 +262,6 @@ void ControlPanel::on_nextButton_clicked()
     if (static_cast<mainwidget *>(this->parentWidget())->loginPanel()->isShowing()) {
         static_cast<mainwidget *>(this->parentWidget())->loginPanel()->animHide();
     }
-    ui->nextButton->setEnabled(false);
     ui->seeker->setValue(0);
     player->next();
 }
@@ -302,8 +285,6 @@ void ControlPanel::on_likeButton_clicked()
         player->unrateCurrentSong();
     else
         player->rateCurrentSong();
-
-    ui->likeButton->setEnabled(false);
 }
 
 void ControlPanel::on_trashButton_clicked()
@@ -313,7 +294,6 @@ void ControlPanel::on_trashButton_clicked()
         return;
     }
 
-    ui->trashButton->setEnabled(false);
     player->trashCurrentSong();
 }
 

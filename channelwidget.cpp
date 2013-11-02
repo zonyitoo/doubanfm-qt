@@ -37,6 +37,7 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
     QSettings settings("QDoubanFM", "QDoubanFM");
     settings.beginGroup("General");
     channel = settings.value("channel", 1).toInt();
+    if (!doubanfm->hasLogin() && channel == -3) channel = 1;
     settings.endGroup();
 
     connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> user) {

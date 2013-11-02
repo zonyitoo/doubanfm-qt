@@ -2,12 +2,12 @@
 #define CONTROLPANEL_H
 
 #include <QWidget>
-#include "doubanfm.h"
+#include "libs/doubanfm.h"
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include <QNetworkAccessManager>
-#include "doubanplayer.h"
-#include "lyricgetter.h"
+#include "libs/doubanplayer.h"
+#include "libs/lyricgetter.h"
 #include "libnotify-qt/Notification.h"
 
 namespace Ui {

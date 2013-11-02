@@ -15,11 +15,39 @@ static const QString DOUBAN_FM_LOGIN = "http://www.douban.com/j/app/login";
 DoubanFM::DoubanFM(QObject *parent) : QObject(parent) {
     for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
         _managers[i] = nullptr;
+
+    QSettings settings("QDoubanFM", "QDoubanFM");
+    settings.beginGroup("User");
+    std::shared_ptr<DoubanUser> user(new DoubanUser());
+    user->email = settings.value("email", "").toString();
+    user->expire = settings.value("expire", "").toString();
+    user->password = settings.value("password", "").toString();
+    user->token = settings.value("token", "").toString();
+    user->user_id = settings.value("user_id", "").toString();
+    user->user_name = settings.value("user_name", "").toString();
+    if (user->email.size() && user->expire.size()
+            && user->password.size() && user->token.size()
+            && user->user_id.size() && user->user_name.size())
+        this->setUser(user);
+    settings.endGroup();
 }
 
 DoubanFM::~DoubanFM() {
     for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
         delete _managers[i];
+
+    QSettings settings("QDoubanFM", "QDoubanFM");
+    std::shared_ptr<DoubanUser> user = this->getUser();
+    if (!user) user.reset(new DoubanUser);
+    settings.beginGroup("User");
+    settings.setValue("email", user->email);
+    settings.setValue("expire", user->expire);
+    settings.setValue("password", user->password);
+    settings.setValue("token", user->token);
+    settings.setValue("user_id", user->user_id);
+    settings.setValue("user_name", user->user_name);
+    settings.endGroup();
+    settings.sync();
 }
 
 DoubanFM* DoubanFM::getInstance() {

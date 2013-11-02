@@ -1,12 +1,16 @@
 #include "mainwidget.h"
 #include <QApplication>
 
-#include "doubanmprisplugin.h"
+#include "plugins/mpris/doubanmprisplugin.h"
+
+#include "settingdialog.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Notification::init("douban.fm");
+
+    DoubanFM::getInstance();
+
     mainwidget w;
     //w.setWindowFlags(Qt::FramelessWindowHint);
     //w.setAttribute(Qt::WA_NoBackground);
@@ -18,8 +22,8 @@ int main(int argc, char *argv[])
     appfont.setStyleStrategy(QFont::PreferAntialias);
     a.setFont(appfont);
 
-    a.setApplicationName("douban.fm");
-    a.setApplicationDisplayName("douban.fm");
+    a.setApplicationName("QDoubanFM");
+    a.setApplicationDisplayName("QDoubanFM");
 
     //QImage image(":/icon.png");
     //iiibiiay i = iiibiiay::fromImage(image);
@@ -29,6 +33,9 @@ int main(int argc, char *argv[])
     //n->show();
 
     new DoubanMprisPlugin();
+
+    SettingDialog d(&w);
+    d.show();
 
     return a.exec();
 }

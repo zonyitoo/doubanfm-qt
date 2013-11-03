@@ -5,7 +5,6 @@
 #include <QMouseEvent>
 #include "channelwidget.h"
 #include "controlpanel.h"
-#include "loginpanel.h"
 #include "pausemask.h"
 #include "lyricwidget.h"
 #include <QShortcut>

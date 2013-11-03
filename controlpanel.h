@@ -8,7 +8,6 @@
 #include <QNetworkAccessManager>
 #include "libs/doubanplayer.h"
 #include "libs/lyricgetter.h"
-#include "libnotify-qt/Notification.h"
 #include "settingdialog.h"
 
 namespace Ui {

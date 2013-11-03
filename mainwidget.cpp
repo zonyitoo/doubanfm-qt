@@ -19,13 +19,11 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->lyricWidget->lower();
     ui->channelWidget->raise();
     ui->controlWidget->raise();
-    ui->pauseWidget->raise();
-    ui->pauseWidget->setVisible(false);
 
     // Configure borders
-    topBorder->setMaximumSize(this->width(), 10);
-    topBorder->setMinimumSize(this->width(), 10);
-    topBorder->setStyleSheet("background: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 rgba(0,0,0,120), stop: 1 rgba(0,0,0,0));");
+    topBorder->setMaximumSize(this->width(), 5);
+    topBorder->setMinimumSize(this->width(), 5);
+    topBorder->setStyleSheet("background: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 rgba(0,0,0,80), stop: 1 rgba(0,0,0,0));");
     topBorder->raise();
     topBorder->move(0, -topBorder->height());
     bottomBorder->setMaximumSize(this->width(), 10);
@@ -33,6 +31,9 @@ MainWidget::MainWidget(QWidget *parent) :
     bottomBorder->setStyleSheet("background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(0,0,0,120), stop: 1 rgba(0,0,0,0));");
     bottomBorder->raise();
     bottomBorder->move(0, ui->controlWidget->height());
+
+    ui->pauseWidget->raise();
+    ui->pauseWidget->setVisible(false);
 
     connect(ui->pauseWidget, SIGNAL(clicked()), ui->controlWidget, SLOT(play()));
     exitShortcut = new QShortcut(QKeySequence::Close, this);
@@ -57,10 +58,6 @@ MainWidget::MainWidget(QWidget *parent) :
 
     connect(ui->controlWidget, SIGNAL(openChannelPanel()), this, SLOT(animShowChannelWidget()));
     connect(ui->controlWidget, SIGNAL(closeChannelPanel()), this, SLOT(animHideChannelWidget()));
-
-    connect(DoubanPlayer::getInstance(), &DoubanPlayer::paused, [=] () {
-        ui->pauseWidget->setVisible(true);
-    });
 
     connect(ui->controlWidget, SIGNAL(openLyricPanel()), this, SLOT(animShowLyricWidget()));
     connect(ui->controlWidget, SIGNAL(closeLyricPanel()), this, SLOT(animHideLyricWidget()));

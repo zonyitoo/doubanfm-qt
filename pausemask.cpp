@@ -11,6 +11,9 @@ PauseMask::PauseMask(QWidget *parent) :
     connect(DoubanPlayer::getInstance(), &DoubanPlayer::playing, [=] () {
         this->setVisible(false);
     });
+    connect(DoubanPlayer::getInstance(), &DoubanPlayer::paused, [=] () {
+        this->setVisible(true);
+    });
 }
 
 PauseMask::~PauseMask()

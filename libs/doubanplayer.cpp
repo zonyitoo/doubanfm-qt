@@ -122,7 +122,7 @@ void DoubanPlayer::play() {
 }
 
 void DoubanPlayer::pause() {
-    qDebug() << Q_FUNC_INFO;
+    emit paused();
     QPropertyAnimation *fadeout = new QPropertyAnimation(&player, "volume");
     fadeout->setDuration(1000);
     fadeout->setStartValue(player.volume());
@@ -130,7 +130,6 @@ void DoubanPlayer::pause() {
     fadeout->setEndValue(0);
     connect(fadeout, &QPropertyAnimation::finished, [this] () {
         player.pause();
-        emit paused();
     });
     fadeout->start(QPropertyAnimation::DeleteWhenStopped);
 }

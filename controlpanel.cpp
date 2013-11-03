@@ -85,7 +85,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
     connect(player, SIGNAL(positionChanged(qint64)), ui->volumeTime, SLOT(setTick(qint64)));
     connect(player, SIGNAL(positionChanged(qint64)), ui->lyricWidget, SLOT(setTick(qint64)));
     connect(player, &DoubanPlayer::positionChanged, [this] (qint64 tick) {
-        ui->seeker->setValue((qreal) tick / player->duration() * ui->seeker->maximum());
+        ui->seeker->setValue(tick / player->duration() * ui->seeker->maximum());
     });
     //connect(player, &QMediaPlayer::volumeChanged, [this] (int vol) {
     //    qDebug() << vol;

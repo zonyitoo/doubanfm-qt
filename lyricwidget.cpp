@@ -41,7 +41,7 @@ void LyricWidget::setLyric(const QLyricList &lyric) {
     int accuHeight = 0;
     for (const QLyric& lyr : lyric) {
         QLabel *label = new QLabel(animWidget);
-        QFont font("Sans", 11);
+        QFont font("文泉驿微米黑", 11);
         font.setStyleStrategy(QFont::PreferAntialias);
         label->setFont(font);
         label->setText(QString("<font color='grey'>") +
@@ -70,8 +70,12 @@ void LyricWidget::setLyric(const QLyricList &lyric) {
 }
 
 void LyricWidget::setTick(qint64 tick) {
-    QTime time(0, (tick / 60000) % 60, (tick / 1000) % 60, tick % 1000);
-    setTime(time);
+    if (tick != 0) {
+        QTime time(0, (tick / 60000) % 60, (tick / 1000) % 60, tick % 1000);
+        setTime(time);
+    }
+    else
+        setTime(QTime(0, 0, 0, 0));
 }
 
 void LyricWidget::setTime(const QTime &time) {

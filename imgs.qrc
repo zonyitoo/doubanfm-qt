@@ -21,5 +21,6 @@
         <file>img/arrow_left_clicked.png</file>
         <file>img/like_disabled.png</file>
         <file>img/user_man_circle.png</file>
+        <file>img/setting-icon.png</file>
     </qresource>
 </RCC>

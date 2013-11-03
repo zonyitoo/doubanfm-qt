@@ -19,7 +19,7 @@
   <property name="maximumSize">
    <size>
     <width>544</width>
-    <height>400</height>
+    <height>347</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -81,8 +81,8 @@
    <property name="geometry">
     <rect>
      <x>217</x>
-     <y>71</y>
-     <width>211</width>
+     <y>69</y>
+     <width>261</width>
      <height>20</height>
     </rect>
    </property>
@@ -136,7 +136,7 @@ QToolButton:hover{border-image: url(:/img/pause_clicked.png);}</string>
      <x>217</x>
      <y>90</y>
      <width>291</width>
-     <height>16</height>
+     <height>18</height>
     </rect>
    </property>
    <property name="maximum">
@@ -263,7 +263,7 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
    <property name="geometry">
     <rect>
      <x>420</x>
-     <y>105</y>
+     <y>107</y>
      <width>85</width>
      <height>16</height>
     </rect>
@@ -388,7 +388,7 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
      <x>0</x>
      <y>200</y>
      <width>544</width>
-     <height>151</height>
+     <height>147</height>
     </rect>
    </property>
   </widget>
@@ -417,14 +417,24 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
   <widget class="QToolButton" name="settingButton">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>170</y>
+     <x>480</x>
+     <y>60</y>
      <width>29</width>
-     <height>25</height>
+     <height>29</height>
     </rect>
    </property>
    <property name="text">
     <string>...</string>
+   </property>
+   <property name="icon">
+    <iconset resource="imgs.qrc">
+     <normaloff>:/img/setting-icon.png</normaloff>:/img/setting-icon.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
    </property>
   </widget>
  </widget>

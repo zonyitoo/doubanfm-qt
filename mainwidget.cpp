@@ -23,14 +23,14 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->pauseWidget->setVisible(false);
 
     // Configure borders
-    topBorder->setMaximumSize(this->width(), 5);
-    topBorder->setMinimumSize(this->width(), 5);
-    topBorder->setStyleSheet("background: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 rgba(0,0,0,50), stop: 1 rgba(0,0,0,0));");
+    topBorder->setMaximumSize(this->width(), 10);
+    topBorder->setMinimumSize(this->width(), 10);
+    topBorder->setStyleSheet("background: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 rgba(0,0,0,120), stop: 1 rgba(0,0,0,0));");
     topBorder->raise();
-    topBorder->move(0, -5);
-    bottomBorder->setMaximumSize(this->width(), 5);
-    bottomBorder->setMinimumSize(this->width(), 5);
-    bottomBorder->setStyleSheet("background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(0,0,0,50), stop: 1 rgba(0,0,0,0));");
+    topBorder->move(0, -topBorder->height());
+    bottomBorder->setMaximumSize(this->width(), 10);
+    bottomBorder->setMinimumSize(this->width(), 10);
+    bottomBorder->setStyleSheet("background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(0,0,0,120), stop: 1 rgba(0,0,0,0));");
     bottomBorder->raise();
     bottomBorder->move(0, ui->controlWidget->height());
 

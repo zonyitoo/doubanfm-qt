@@ -133,7 +133,7 @@ QToolButton:pressed{border-image: url(:/img/arrow_right_clicked.png);}</string>
     </size>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="border">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -145,8 +145,8 @@ QToolButton:pressed{border-image: url(:/img/arrow_right_clicked.png);}</string>
    <property name="styleSheet">
     <string notr="true">border-style: solid;
 border-width: 5px;
-border-top-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(0,0,0,50), stop: 1 rgba(0,0,0,0));
-border-bottom-color: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 rgba(0,0,0,50), stop: 1 rgba(0,0,0,0));
+border-top-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(0,0,0,80), stop: 1 rgba(0,0,0,0));
+border-bottom-color: rgba(0,0,0,0);
 border-left-color: rgba(0,0,0,0);
 border-right-color: rgba(0,0,0,0);</string>
    </property>

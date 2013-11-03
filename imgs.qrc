@@ -24,5 +24,7 @@
         <file>img/setting-icon.png</file>
         <file>img/apple-ios-linen-texture.jpg</file>
         <file>img/icon_lyrics.png</file>
+        <file>img/lyric_handler_normal.png</file>
+        <file>img/lyric_handler_pressed.png</file>
     </qresource>
 </RCC>

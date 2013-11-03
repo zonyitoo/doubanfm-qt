@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     DoubanFM::getInstance();
 
-    mainwidget w;
+    MainWidget w;
     //w.setWindowFlags(Qt::FramelessWindowHint);
     //w.setAttribute(Qt::WA_NoBackground);
     //w.setAttribute(Qt::WA_NoSystemBackground);

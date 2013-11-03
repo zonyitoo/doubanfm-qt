@@ -36,6 +36,10 @@ signals:
 
     void canControlChanged(bool);
 
+    void playing();
+    void paused();
+    void stopped();
+
 public slots:
     void next();
     void pause();

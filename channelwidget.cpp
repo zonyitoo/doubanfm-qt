@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QTimer>
 #include "mainwidget.h"
+#include "libs/doubanplayer.h"
 
 ChannelWidget::ChannelWidget(QWidget *parent) :
     QWidget(parent),
@@ -40,7 +41,7 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
     if (!doubanfm->hasLogin() && channel == -3) channel = 1;
     settings.endGroup();
 
-    connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> user) {
+    connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> ) {
         if (ui->slider->currentIndex() != 0)
             this->ui->slider->scrollToIndex(0);
         else
@@ -49,6 +50,9 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
         QLabel *pnt = static_cast<QLabel *>(labels[0]);
         pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
     });
+
+    connect(this, SIGNAL(channelChanged(qint32)),
+            DoubanPlayer::getInstance(), SLOT(setChannel(qint32)));
 }
 
 ChannelWidget::~ChannelWidget()
@@ -100,6 +104,6 @@ void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
     pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
-void ChannelWidget::leaveEvent(QEvent *ev) {
+void ChannelWidget::leaveEvent(QEvent *) {
     emit mouseLeave();
 }

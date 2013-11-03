@@ -1,5 +1,5 @@
-#ifndef MAINWIDGET_H
-#define MAINWIDGET_H
+#ifndef MainWidget_H
+#define MainWidget_H
 
 #include <QWidget>
 #include <QMouseEvent>
@@ -7,29 +7,33 @@
 #include "controlpanel.h"
 #include "loginpanel.h"
 #include "pausemask.h"
+#include "lyricwidget.h"
 #include <QShortcut>
+#include <QLabel>
 
 namespace Ui {
-class mainwidget;
+class MainWidget;
 }
 
-class mainwidget : public QWidget
+class MainWidget : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit mainwidget(QWidget *parent = 0);
-    ~mainwidget();
-
-    ChannelWidget *channelWidget();
-    ControlPanel *controlPanel();
-    PauseMask *pauseMask();
+    explicit MainWidget(QWidget *parent = 0);
+    ~MainWidget();
 
     void mousePressEvent(QMouseEvent *);
-    bool isChannelWidgetShowing();
+    bool isChannelWidgetShowing() const;
+    bool isAnimationStarted() const;
+    bool isLyricWidgetShowing() const;
+
+signals:
+    void animationStart();
+    void animationFinish();
     
 private:
-    Ui::mainwidget *ui;
+    Ui::MainWidget *ui;
     QPoint dpos;
     QShortcut *exitShortcut;
     QShortcut *pauseShortcut;
@@ -38,10 +42,21 @@ private:
     QShortcut *likeShortcut;
 
     bool _isChannelWidgetShowing;
+    bool _isAnimStarted;
+    bool _isLyricWidgetShowing;
+
+    QLabel *topBorder;
+    QLabel *bottomBorder;
+
+    void animStart();
+    void animFinish();
 
 public slots:
-    void animHideChannelWidget(bool immediately = false);
+    void animHideChannelWidget();
     void animShowChannelWidget();
+
+    void animHideLyricWidget();
+    void animShowLyricWidget();
 };
 
-#endif // MAINWIDGET_H
+#endif // MainWidget_H

@@ -61,8 +61,6 @@ ControlPanel::ControlPanel(QWidget *parent) :
         setSongName(song.title);
         setAlbumName(song.albumtitle);
 
-        ui->lyricWidget->clear();
-        this->lyricGetter->getLyric(song.title, song.artist);
         QString mod_url = song.picture;
         mod_url.replace("mpic", "lpic");
         imgmgr->get(QNetworkRequest(QUrl(mod_url)));
@@ -83,9 +81,8 @@ ControlPanel::ControlPanel(QWidget *parent) :
     setArtistName("Loading");
 
     connect(player, SIGNAL(positionChanged(qint64)), ui->volumeTime, SLOT(setTick(qint64)));
-    connect(player, SIGNAL(positionChanged(qint64)), ui->lyricWidget, SLOT(setTick(qint64)));
     connect(player, &DoubanPlayer::positionChanged, [this] (qint64 tick) {
-        ui->seeker->setValue(tick / player->duration() * ui->seeker->maximum());
+        ui->seeker->setValue((qreal) tick / player->duration() * ui->seeker->maximum());
     });
     //connect(player, &QMediaPlayer::volumeChanged, [this] (int vol) {
     //    qDebug() << vol;
@@ -108,10 +105,6 @@ ControlPanel::ControlPanel(QWidget *parent) :
         }
     });
 
-    connect(static_cast<mainwidget *>(this->parentWidget())->channelWidget(), &ChannelWidget::channelChanged,
-            [this] (qint32 channel) {
-        this->player->setChannel(channel);
-    });
     connect(ui->volumeTime, &VolumeTimePanel::volumeChanged, [this] (int value) {
         this->player->setVolume(value);
     });
@@ -121,33 +114,21 @@ ControlPanel::ControlPanel(QWidget *parent) :
             player->setChannel(1);
     }*/
 
-    connect(lyricGetter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
-        ui->lyricWidget->setLyric(lyric);
-    });
-    connect(lyricGetter, &LyricGetter::gotLyricError, [this] (const QString& errmsg) {
+    connect(lyricGetter, &LyricGetter::gotLyricError, [this] (const QString& ) {
         /*if (ui->lyricWidget->isVisible())
             emit ui->lyricWidgetTriggerRight->enter();*/
     });
 
     //ui->lyricWidget->setVisible(false);
     connect(ui->albumImg, &AlbumWidget::clicked, [this] () {
-        /*if (!ui->lyricWidget->isVisible())
-            emit ui->lyricWidgetTriggerLeft->enter();
-        else
-            emit ui->lyricWidgetTriggerRight->enter();*/
         QDesktopServices::openUrl(QUrl("http://www.douban.com" + player->currentSong().album));
     });
 
     connect(ui->channelWidgetTrigger, &ChannelWidgetTrigger::enter,
             [this] () {
-        if (!static_cast<mainwidget *>(this->parentWidget())->isChannelWidgetShowing())
-            static_cast<mainwidget *>(this->parentWidget())->animShowChannelWidget();
+        emit this->openChannelPanel();
+    });
 
-    });
-    connect(dynamic_cast<mainwidget *>(this->parentWidget())->channelWidget(),
-            &ChannelWidget::channelChanged, [=] (qint32 chanid) {
-        this->player->setChannel(chanid);
-    });
     connect(player, &DoubanPlayer::canControlChanged, [=] (bool can) {
         ui->nextButton->setEnabled(can);
         ui->trashButton->setEnabled(can);
@@ -261,7 +242,6 @@ void ControlPanel::on_nextButton_clicked()
 void ControlPanel::on_pauseButton_clicked()
 {
     player->pause();
-    static_cast<mainwidget *>(this->parentWidget())->pauseMask()->setVisible(true);
 }
 
 void ControlPanel::on_likeButton_clicked()
@@ -307,11 +287,19 @@ void ControlPanel::pause() {
     player->pause();
 }
 
-void ControlPanel::enterEvent(QEvent *ev) {
-    static_cast<mainwidget *>(this->parentWidget())->animHideChannelWidget(true);
+void ControlPanel::enterEvent(QEvent *) {
+    emit closeChannelPanel();
 }
 
 void ControlPanel::on_settingButton_clicked()
 {
     settingDialog->show();
+}
+
+void ControlPanel::on_lyricButton_clicked(bool checked)
+{
+    if (checked)
+        emit openLyricPanel();
+    else
+        emit closeLyricPanel();
 }

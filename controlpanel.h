@@ -23,7 +23,13 @@ public:
     explicit ControlPanel(QWidget *parent = 0);
     ~ControlPanel();
 
-    void enterEvent(QEvent *ev);
+    void enterEvent(QEvent *);
+
+signals:
+    void openChannelPanel();
+    void closeChannelPanel();
+    void openLyricPanel();
+    void closeLyricPanel();
 
 private:
     Ui::ControlPanel *ui;
@@ -61,6 +67,7 @@ private slots:
     void setArtistName(const QString &name);
     void setAlbumName(const QString &name);
     void on_settingButton_clicked();
+    void on_lyricButton_clicked(bool checked);
 };
 
 #endif // CONTROLPANEL_H

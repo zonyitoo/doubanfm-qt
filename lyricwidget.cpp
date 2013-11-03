@@ -1,26 +1,44 @@
 #include "lyricwidget.h"
+#include "libs/doubanplayer.h"
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QPropertyAnimation>
+#include <QDebug>
 
 LyricWidget::LyricWidget(QWidget *parent) :
-    QWidget(parent), animWidget(nullptr),
+    QWidget(parent), ui(new Ui_LyricWidget),
+    animWidget(nullptr),
     firstShowing(false),
-    ui(new Ui_LyricWidget)
+    lyricGetter(new LyricGetter(this)),
+    isShowing(false), haveSearchedLyric(false), saveTick(0)
 {
     ui->setupUi(this);
-    ui->bg->setText(QString("<font color='grey'>") + tr("无歌词") + QString("</font>"));
+    ui->border->setText(QString("<font color='grey'>") + tr("无歌词") + QString("</font>"));
+    ui->bg->lower();
+
+    connect(DoubanPlayer::getInstance(), SIGNAL(positionChanged(qint64)),
+            this, SLOT(setTick(qint64)));
+    connect(lyricGetter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
+        this->setLyric(lyric);
+    });
+    connect(lyricGetter, &LyricGetter::gotLyricError, [this] (const QString& errmsg) {
+        this->clear();
+    });
+    connect(DoubanPlayer::getInstance(), SIGNAL(currentSongChanged(DoubanFMSong)),
+            this, SLOT(setSong(DoubanFMSong)));
 }
 
 LyricWidget::~LyricWidget() {
     if (animWidget) delete animWidget;
+    delete lyricGetter;
+    delete ui;
 }
 
 void LyricWidget::setLyric(const QLyricList &lyric) {
     if (animWidget) delete animWidget;
     animWidget = new QWidget(this);
-    animWidget->lower();
-    ui->bg->raise();
+    animWidget->raise();
+    ui->border->raise();
     QRect geo = this->geometry();
     animWidget->setMinimumWidth(geo.width());
     animWidget->setMaximumWidth(geo.width());
@@ -66,10 +84,14 @@ void LyricWidget::setLyric(const QLyricList &lyric) {
                                 this->geometry().width(), accuHeight);
     }
     animWidget->show();
-    ui->bg->setText("");
+    ui->border->setText("");
 }
 
 void LyricWidget::setTick(qint64 tick) {
+    if (!isShowing) {
+        saveTick = tick;
+        return;
+    }
     if (tick != 0) {
         QTime time(0, (tick / 60000) % 60, (tick / 1000) % 60, tick % 1000);
         setTime(time);
@@ -132,11 +154,36 @@ void LyricWidget::clear() {
     labels.clear();
     heights.clear();
     firstShowing = false;
-    ui->bg->setText(QString("<font color='grey'>") + tr("无歌词") + QString("</font>"));
+    ui->border->setText(QString("<font color='grey'>") + tr("无歌词") + QString("</font>"));
 }
 
 void LyricWidget::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         emit clicked();
+    }
+}
+
+void LyricWidget::setSong(const DoubanFMSong &song) {
+    this->clear();
+    if (isShowing) {
+        lyricGetter->getLyric(song.title, song.artist);
+        this->haveSearchedLyric = true;
+    }
+    else {
+        this->saveCurrentSong = song;
+        this->haveSearchedLyric = false;
+    }
+}
+
+void LyricWidget::setShowing(bool s) {
+    isShowing = s;
+    if (s) {
+        if (!haveSearchedLyric) {
+            this->haveSearchedLyric = true;
+            lyricGetter->getLyric(saveCurrentSong.title, saveCurrentSong.artist);
+        }
+        else {
+            this->setTick(saveTick);
+        }
     }
 }

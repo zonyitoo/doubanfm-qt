@@ -50,10 +50,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="imgs.qrc">:/img/channel.png</pixmap>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
+    <pixmap resource="imgs.qrc">:/img/apple-ios-linen-texture.jpg</pixmap>
    </property>
   </widget>
   <widget class="QToolButton" name="prevButton">

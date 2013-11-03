@@ -7,6 +7,9 @@
 #include <QLabel>
 #include "ui_lyricwidget.h"
 #include <QMouseEvent>
+#include "libs/doubanfm.h"
+#include "libs/lyricgetter.h"
+#include "libs/douban_types.h"
 
 class LyricWidget : public QWidget
 {
@@ -15,7 +18,7 @@ public:
     explicit LyricWidget(QWidget *parent = 0);
     ~LyricWidget();
 
-    void setLyric(const QLyricList& lyric);
+
     void clear();
 
     void mousePressEvent(QMouseEvent *event);
@@ -26,16 +29,23 @@ signals:
 public slots:
     void setTick(qint64 tick);
     void setTime(const QTime& time);
+    void setLyric(const QLyricList& lyric);
+    void setSong(const DoubanFMSong& song);
+    void setShowing(bool);
 
 private:
+    Ui_LyricWidget *ui;
     QWidget *animWidget;
     int curInd;
     QLyricList lyric;
     QList<QLabel *> labels;
     QList<int> heights;
     bool firstShowing;
-
-    Ui_LyricWidget *ui;
+    LyricGetter *lyricGetter;
+    bool isShowing;
+    DoubanFMSong saveCurrentSong;
+    bool haveSearchedLyric;
+    qint64 saveTick;
 };
 
 #endif // LYRICWIDGET_H

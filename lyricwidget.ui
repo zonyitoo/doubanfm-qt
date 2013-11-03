@@ -22,6 +22,37 @@
      <height>151</height>
     </rect>
    </property>
+   <property name="minimumSize">
+    <size>
+     <width>544</width>
+     <height>151</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>544</width>
+     <height>151</height>
+    </size>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="imgs.qrc">:/img/apple-ios-linen-texture.jpg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="border">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>544</width>
+     <height>151</height>
+    </rect>
+   </property>
    <property name="font">
     <font>
      <family>文泉驿微米黑</family>
@@ -44,6 +75,8 @@ border-right-color: rgba(0,0,0,0);</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="imgs.qrc"/>
+ </resources>
  <connections/>
 </ui>

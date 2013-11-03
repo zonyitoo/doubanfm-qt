@@ -22,5 +22,7 @@
         <file>img/like_disabled.png</file>
         <file>img/user_man_circle.png</file>
         <file>img/setting-icon.png</file>
+        <file>img/apple-ios-linen-texture.jpg</file>
+        <file>img/icon_lyrics.png</file>
     </qresource>
 </RCC>

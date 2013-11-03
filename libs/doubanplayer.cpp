@@ -118,6 +118,7 @@ void DoubanPlayer::play() {
     player.play();
     fadein->setEndValue(_volume);
     fadein->start(QPropertyAnimation::DeleteWhenStopped);
+    emit playing();
 }
 
 void DoubanPlayer::pause() {
@@ -129,6 +130,7 @@ void DoubanPlayer::pause() {
     fadeout->setEndValue(0);
     connect(fadeout, &QPropertyAnimation::finished, [this] () {
         player.pause();
+        emit paused();
     });
     fadeout->start(QPropertyAnimation::DeleteWhenStopped);
 }
@@ -155,6 +157,7 @@ void DoubanPlayer::next() {
 
 void DoubanPlayer::stop() {
     this->player.stop();
+    emit stopped();
 }
 
 void DoubanPlayer::rateCurrentSong() {

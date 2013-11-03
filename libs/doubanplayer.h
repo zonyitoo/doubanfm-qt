@@ -53,6 +53,9 @@ public slots:
     void setChannel(qint32);
     void setVolume(int);
 
+private slots:
+    void currentIndexChanged(int position);
+
 private:
     explicit DoubanPlayer(QObject *parent = 0);
 
@@ -62,6 +65,11 @@ private:
     qint32 _channel;
     qint32 _volume;
     bool _can_control;
+
+    QMediaPlaylist *bufplaylist;
+    QList<DoubanFMSong> bufsongs;
+
+    QTime lastPausedTime;
 };
 
 #endif // DOUBANPLAYER_H

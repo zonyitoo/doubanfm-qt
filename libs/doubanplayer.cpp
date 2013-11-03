@@ -10,40 +10,11 @@ DoubanPlayer *DoubanPlayer::getInstance() {
 DoubanPlayer::DoubanPlayer(QObject *parent) :
     QObject(parent),
     doubanfm(DoubanFM::getInstance()),
-    _channel(-INT_MAX), _volume(0), _can_control(true)
+    _channel(-INT_MAX), _volume(0), _can_control(true),
+    bufplaylist(nullptr)
 {
     player.setPlaylist(new QMediaPlaylist(&player));
-    connect(player.playlist(), &QMediaPlaylist::currentIndexChanged, [=] (int position) {
-        /*if (position < 0) {
-            if (songs.size() > 0)
-                doubanfm->getPlayingList(channel, songs.back().sid);
-            else
-                doubanfm->getNewPlayList(channel);
-            return;
-        }*/
-        if (position < 0) {
-            doubanfm->getNewPlayList(_channel);
-            setCanControl(false);
-            qDebug() << Q_FUNC_INFO;
-            return;
-        }
-        else if (position == songs.size() - 1) {
-            doubanfm->getPlayingList(_channel, songs.back().sid);
-        }
-        emit this->currentSongChanged(songs[position]);
-
-        qDebug() << "CurrentPlaying: ";
-        qDebug() << "    artist: " << songs[position].artist;
-        qDebug() << "    title: " << songs[position].title;
-        qDebug() << "    album: " << songs[position].albumtitle;
-        qDebug() << "    publicTime: " << songs[position].public_time;
-        qDebug() << "    company: " << songs[position].company;
-        qDebug() << "    kbps: " << songs[position].kbps;
-        qDebug() << "    like: " << songs[position].like;
-        qDebug() << "    sid: " << songs[position].sid;
-        qDebug() << "    subType: " << songs[position].subtype;
-
-    });
+    connect(player.playlist(), SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
 
     connect(doubanfm, &DoubanFM::receivedNewList, [this] (const QList<DoubanFMSong>& rcvsongs) {
         this->songs = rcvsongs;
@@ -60,23 +31,11 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
 
     connect(doubanfm, &DoubanFM::receivedPlayingList, [this] (const QList<DoubanFMSong>& rcvsongs) {
         qDebug() << "Received new playlist with" << rcvsongs.size() << "songs";
-        QMediaPlaylist *playlist = player.playlist();
-        int curIndex = playlist->currentIndex();
-        if (curIndex < 0) {
-            playlist->clear();
-            this->songs = rcvsongs;
-        }
-        else {
-            DoubanFMSong curSong = songs[curIndex];
-            if (curIndex != 0) playlist->removeMedia(0, curIndex - 1);
-            playlist->setCurrentIndex(0);
-            if (curIndex != songs.size() - 1) playlist->removeMedia(curIndex + 1, songs.size() - 1);
-            songs = rcvsongs;
-            songs.insert(0, curSong);
-        }
+        this->bufplaylist = new QMediaPlaylist(&player);
+        bufsongs = rcvsongs;
 
-        for (const DoubanFMSong& song : this->songs) {
-            playlist->addMedia(QUrl(song.url));
+        for (const DoubanFMSong& song : rcvsongs) {
+            bufplaylist->addMedia(QUrl(song.url));
         }
         setCanControl(true);
 
@@ -102,6 +61,66 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
     connect(&player, &QMediaPlayer::stateChanged, [this] (QMediaPlayer::State s) { emit this->stateChanged(s); });
 }
 
+void DoubanPlayer::currentIndexChanged(int position) {
+    /*if (position < 0) {
+        if (songs.size() > 0)
+            doubanfm->getPlayingList(channel, songs.back().sid);
+        else
+            doubanfm->getNewPlayList(channel);
+        return;
+    }*/
+    // Jump out of playlist
+    if (position < 0) {
+        if (bufplaylist == nullptr) {
+            doubanfm->getNewPlayList(_channel);
+            setCanControl(false);
+        }
+        else {
+            player.playlist()->deleteLater();
+            player.setPlaylist(bufplaylist);
+            disconnect(player.playlist(), SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+            connect(bufplaylist, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+            songs = bufsongs;
+            bufplaylist = nullptr;
+            if (player.state() != QMediaPlayer::PlayingState)
+                player.play();
+            player.playlist()->next();
+        }
+        qDebug() << Q_FUNC_INFO << "Deployed new playlist";
+        return;
+    }
+    // Currently playing the last song in the list
+    else if (position == songs.size() - 1) {
+        doubanfm->getPlayingList(_channel, songs.back().sid);
+    }
+    // Got update playlist
+    else if (bufplaylist != nullptr) {
+        player.playlist()->deleteLater();
+        player.setPlaylist(bufplaylist);
+        disconnect(player.playlist(), SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+        connect(bufplaylist, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+        songs = bufsongs;
+        bufplaylist = nullptr;
+        if (player.state() != QMediaPlayer::PlayingState)
+            player.play();
+        player.playlist()->next();
+        qDebug() << Q_FUNC_INFO << "Got updated playlist";
+        return;
+    }
+    emit this->currentSongChanged(songs[position]);
+
+    qDebug() << "CurrentPlaying: ";
+    qDebug() << "    artist: " << songs[position].artist;
+    qDebug() << "    title: " << songs[position].title;
+    qDebug() << "    album: " << songs[position].albumtitle;
+    qDebug() << "    publicTime: " << songs[position].public_time;
+    qDebug() << "    company: " << songs[position].company;
+    qDebug() << "    kbps: " << songs[position].kbps;
+    qDebug() << "    like: " << songs[position].like;
+    qDebug() << "    sid: " << songs[position].sid;
+    qDebug() << "    subType: " << songs[position].subtype;
+}
+
 bool DoubanPlayer::canControl() const {
     return _can_control;
 }
@@ -119,10 +138,18 @@ void DoubanPlayer::play() {
     fadein->setEndValue(_volume);
     fadein->start(QPropertyAnimation::DeleteWhenStopped);
     emit playing();
+
+    QTime cur = QTime::currentTime();
+    if (cur.msec() - lastPausedTime.msec() >= 30 * 60 * 1000) {
+        doubanfm->getPlayingList(_channel, this->currentSong().sid);
+        qDebug() << "Have paused for a long time, getting a new playlist";
+    }
+    lastPausedTime = cur;
 }
 
 void DoubanPlayer::pause() {
     emit paused();
+    this->lastPausedTime = QTime::currentTime();
     QPropertyAnimation *fadeout = new QPropertyAnimation(&player, "volume");
     fadeout->setDuration(1000);
     fadeout->setStartValue(player.volume());

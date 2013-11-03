@@ -24,7 +24,7 @@ DoubanMprisPlugin::DoubanMprisPlugin(QObject *parent) :
     new MprisPlayerAdapter(this);
     con.registerObject(PLAYER_OBJECT_PATH, this);
 
-    connect(player, &DoubanPlayer::stateChanged, [=] (QMediaPlayer::State state) {
+    connect(player, &DoubanPlayer::stateChanged, [=] (QMediaPlayer::State) {
         QVariantMap changedMap;
         changedMap.insert("PlaybackStatus", this->PlaybackStatus());
         DBUS_NOTIFY_PROPERTIES_CHANGED("org.mpris.MediaPlayer2.Player", changedMap);

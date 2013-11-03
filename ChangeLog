@@ -1,3 +1,7 @@
+2013-11-04  Y. T. Chung   <zonyitoo@gmail.com>
+
+	* libs/doubanplayer (DoubanFM Player): Update playlist without waiting.
+
 2013-11-04  Y. T. Chung  <zonyitoo@gmail.com>
 
 	* libs/doubanplayer (DoubanFM Player): Seperated the player from Control

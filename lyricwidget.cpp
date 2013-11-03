@@ -21,7 +21,7 @@ LyricWidget::LyricWidget(QWidget *parent) :
     connect(lyricGetter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
         this->setLyric(lyric);
     });
-    connect(lyricGetter, &LyricGetter::gotLyricError, [this] (const QString& errmsg) {
+    connect(lyricGetter, &LyricGetter::gotLyricError, [this] (const QString&) {
         this->clear();
     });
     connect(DoubanPlayer::getInstance(), SIGNAL(currentSongChanged(DoubanFMSong)),

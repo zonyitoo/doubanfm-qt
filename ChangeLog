@@ -1,0 +1,24 @@
+2013-11-04  Y. T. Chung  <zonyitoo@gmail.com>
+
+	* libs/doubanplayer (DoubanFM Player): Seperated the player from Control
+	Panel and provided APIs to control the player.
+
+	* plugins/mpris/* (DBus MPRIS): MPRIS service. 
+
+	* mainwidget: Broke the UI into 3 parts: Channel Widget, Control Panel,
+	Lyric Widget. Add linear gadient to Control Panel's border.
+
+	* contorlpanel: Removed trigger areas in left and right sides. Add a
+	lyric widget trigger button and a setting button.
+
+	* lyricwidget: Modified background image. Automatically stop updating UI
+	if the lyric widget is not showing.
+
+	* settingdialog: The setting dialog.
+
+	* albumimage: Click the image will open the link of album in your
+	default web browser.
+
+	* loginpanel: Removed.
+
+	* libnotify: Removed.

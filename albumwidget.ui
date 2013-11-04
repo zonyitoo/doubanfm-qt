@@ -18,23 +18,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>90</y>
-     <width>81</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background: rgba(0,0,0,80);
-border-radius: 2px;</string>
-   </property>
-   <property name="text">
-    <string>&lt;font color=&quot;white&quot;&gt;查看专辑信息&lt;/font&gt;</string>
-   </property>
-  </widget>
   <widget class="AlbumImage" name="albimImage">
    <property name="geometry">
     <rect>
@@ -47,6 +30,93 @@ border-radius: 2px;</string>
    <property name="text">
     <string/>
    </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>5</y>
+     <width>201</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <family>文泉驿微米黑</family>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background: rgba(0,0,0,80);
+border-radius: 2px;</string>
+        </property>
+        <property name="text">
+         <string>&lt;font color=&quot;white&quot;&gt;&amp;nbsp;&amp;nbsp;查看专辑信息&amp;nbsp;&amp;nbsp;&lt;/font&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
   </widget>
  </widget>
  <customwidgets>

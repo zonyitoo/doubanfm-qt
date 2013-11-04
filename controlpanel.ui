@@ -388,7 +388,7 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
   <widget class="QPushButton" name="lyricButton">
    <property name="geometry">
     <rect>
-     <x>32</x>
+     <x>384</x>
      <y>184</y>
      <width>131</width>
      <height>16</height>
@@ -437,7 +437,7 @@ QPushButton:checked {
    <property name="geometry">
     <rect>
      <x>480</x>
-     <y>65</y>
+     <y>60</y>
      <width>31</width>
      <height>27</height>
     </rect>

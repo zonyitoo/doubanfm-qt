@@ -10,6 +10,14 @@
 class DoubanPlayer : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(qint64 position READ position NOTIFY positionChanged)
+    Q_PROPERTY(qint64 duration READ duration)
+    Q_PROPERTY(DoubanFMSong currentSong READ currentSong NOTIFY currentSongChanged)
+    Q_PROPERTY(qint32 channel READ channel WRITE setChannel)
+    Q_PROPERTY(int volume READ volume WRITE setVolume)
+    Q_PROPERTY(QMediaPlayer::State state READ state NOTIFY stateChanged)
+    Q_PROPERTY(bool canControl READ canControl NOTIFY canControlChanged)
+    Q_PROPERTY(qint32 kbps READ kbps WRITE setKbps)
 public:
     static DoubanPlayer *getInstance();
 
@@ -21,8 +29,8 @@ public:
     int volume() const;
     QMediaPlayer::State state() const;
 
+    qint32 kbps() const;
     bool canControl() const;
-    void setCanControl(bool);
 
 signals:
 
@@ -54,6 +62,9 @@ public slots:
     void setChannel(qint32);
     void setVolume(int);
 
+    void setKbps(qint32);
+    void setCanControl(bool);
+
 private slots:
     void currentIndexChanged(int position);
 
@@ -71,6 +82,7 @@ private:
     QList<DoubanFMSong> bufsongs;
 
     time_t lastPausedTime;
+    qint32 _kbps;
 };
 
 #endif // DOUBANPLAYER_H

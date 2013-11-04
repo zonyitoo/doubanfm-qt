@@ -178,13 +178,14 @@ std::shared_ptr<DoubanUser> DoubanFM::getUser() {
     return _user;
 }
 
-void DoubanFM::getNewPlayList(const qint32& channel) {
+void DoubanFM::getNewPlayList(const qint32& channel, qint32 kbps) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
             + QString("&user_id=") + ((_user) ? _user->user_id : QString())
             + QString("&expire=") + ((_user) ? _user->expire : QString())
             + QString("&token=") + ((_user) ? _user->token : QString())
             + QString("&sid=&h=")
             + QString("&channel=") + QString::number(channel, 10)
+            + QString("&kbps=") + QString::number(kbps, 10)
             + QString("&type=n");
     if (_managers[1] == nullptr) {
         _managers[1] = new QNetworkAccessManager(this);
@@ -237,7 +238,7 @@ void DoubanFM::onReceivedNewList(QNetworkReply *reply) {
     reply->deleteLater();
 }
 
-void DoubanFM::getPlayingList(const qint32 &channel, const quint32 &sid) {
+void DoubanFM::getPlayingList(const qint32 &channel, const quint32 &sid, qint32 kbps) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
             + QString("&user_id=") + ((_user) ? _user->user_id : QString())
             + QString("&expire=") + ((_user) ? _user->expire : QString())
@@ -245,6 +246,7 @@ void DoubanFM::getPlayingList(const qint32 &channel, const quint32 &sid) {
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
+            + QString("&kbps=") + QString::number(kbps, 10)
             + QString("&type=p");
 
     if (_managers[7] == nullptr) {

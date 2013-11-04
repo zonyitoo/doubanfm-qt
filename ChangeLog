@@ -1,11 +1,11 @@
-2013-11-04  Y. T. Chung   <zonyitoo@gmail.com>
-
-	* libs/doubanplayer (DoubanFM Player): Update playlist without waiting.
-
 2013-11-04  Y. T. Chung  <zonyitoo@gmail.com>
 
-	* libs/doubanplayer (DoubanFM Player): Seperated the player from Control
+	* libs/doubanplayer (DoubanFM Player Class): Seperated the player from Control
 	Panel and provided APIs to control the player.
+
+	* libs/doubanplayer (Auto get new playlist): Update playlist without waiting.
+
+	* libs/doubanplayer (Kbps): Set kbps
 
 	* plugins/mpris/* (DBus MPRIS): MPRIS service. 
 

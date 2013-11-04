@@ -11,7 +11,7 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
     QObject(parent),
     doubanfm(DoubanFM::getInstance()),
     _channel(-INT_MAX), _volume(0), _can_control(true),
-    bufplaylist(nullptr)
+    bufplaylist(nullptr), _kbps(64)
 {
     connect(doubanfm, &DoubanFM::receivedNewList, [this] (const QList<DoubanFMSong>& rcvsongs) {
         this->songs = rcvsongs;
@@ -69,13 +69,13 @@ void DoubanPlayer::currentIndexChanged(int position) {
         if (songs.size() > 0)
             doubanfm->getPlayingList(channel, songs.back().sid);
         else
-            doubanfm->getNewPlayList(channel);
+            doubanfm->(channel);
         return;
     }*/
     // Jump out of playlist
     if (position < 0) {
         if (bufplaylist == nullptr) {
-            doubanfm->getNewPlayList(_channel);
+            doubanfm->getNewPlayList(_channel, _kbps);
             setCanControl(false);
         }
         else {
@@ -94,7 +94,7 @@ void DoubanPlayer::currentIndexChanged(int position) {
     }
     // Currently playing the last song in the list
     else if (position == songs.size() - 1) {
-        doubanfm->getPlayingList(_channel, songs.back().sid);
+        doubanfm->getPlayingList(_channel, songs.back().sid, _kbps);
     }
     // Got update playlist
     else if (bufplaylist != nullptr) {
@@ -144,7 +144,7 @@ void DoubanPlayer::play() {
 
     int elapsed = time(nullptr) - this->lastPausedTime;
     if (elapsed >= 30 * 60) {
-        doubanfm->getPlayingList(_channel, this->currentSong().sid);
+        doubanfm->getPlayingList(_channel, this->currentSong().sid, _kbps);
         QTime pt(0, 0, 0, 0);
         pt.addSecs(elapsed);
         qDebug() << "Have paused " << pt <<  ", getting a new playlist";
@@ -184,7 +184,7 @@ void DoubanPlayer::next() {
     if (player.playlist() == nullptr) return;
     int sindex = player.playlist()->currentIndex();
     if (sindex < 0) {
-        doubanfm->getNewPlayList(this->_channel);
+        doubanfm->getNewPlayList(this->_channel, _kbps);
         return;
     }
     doubanfm->skipSong(songs[sindex].sid, _channel);
@@ -220,7 +220,7 @@ void DoubanPlayer::trashCurrentSong() {
 void DoubanPlayer::setChannel(qint32 chanid) {
     if (chanid == _channel) return;
     this->_channel = chanid;
-    doubanfm->getNewPlayList(chanid);
+    doubanfm->getNewPlayList(chanid, _kbps);
     setCanControl(false);
 }
 
@@ -243,4 +243,12 @@ qint64 DoubanPlayer::duration() const {
 
 QMediaPlayer::State DoubanPlayer::state() const {
     return player.state();
+}
+
+void DoubanPlayer::setKbps(qint32 kbps) {
+    this->_kbps = kbps;
+}
+
+qint32 DoubanPlayer::kbps() const {
+    return this->_kbps;
 }

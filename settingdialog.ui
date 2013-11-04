@@ -20,51 +20,82 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
        <string>基本</string>
       </attribute>
-      <widget class="QGroupBox" name="kbpsGroupBox">
-       <property name="geometry">
-        <rect>
-         <x>30</x>
-         <y>20</y>
-         <width>201</width>
-         <height>92</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>码率</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QRadioButton" name="kbps64">
-          <property name="text">
-           <string>64Kbps</string>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="kbpsGroupBox">
+         <property name="title">
+          <string>码率</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="leftMargin">
+           <number>0</number>
           </property>
-          <property name="checked">
-           <bool>true</bool>
+          <property name="rightMargin">
+           <number>0</number>
           </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QRadioButton" name="kbps128">
-          <property name="text">
-           <string>128Kbps</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" rowspan="2" colspan="2">
-         <widget class="QRadioButton" name="kbps192">
-          <property name="text">
-           <string>192Kbps</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
+          <item>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="QRadioButton" name="kbps64">
+              <property name="text">
+               <string>64Kbps</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QRadioButton" name="kbps128">
+              <property name="text">
+               <string>128Kbps</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QRadioButton" name="kbps192">
+              <property name="text">
+               <string>192Kbps</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="kbpsWarning">
+            <property name="font">
+             <font>
+              <family>文泉驿微米黑</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>注意：非Pro用户设置将无效</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>107</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="loginTab">
       <attribute name="title">

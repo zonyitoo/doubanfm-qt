@@ -4,6 +4,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtXml/QDomDocument>
+#include "libs/doubanplayer.h"
 
 SettingDialog::SettingDialog(QWidget *parent) :
     QDialog(parent),
@@ -126,13 +127,14 @@ void SettingDialog::timer_event() {
 }
 
 void SettingDialog::kbps_radio_button_clicked(QAbstractButton *button) {
+    auto player = DoubanPlayer::getInstance();
     if (button == ui->kbps64) {
-
+        player->setKbps(64);
     }
     else if (button == ui->kbps128) {
-        qDebug() << "128";
+        player->setKbps(128);
     }
     else if (button == ui->kbps192) {
-
+        player->setKbps(192);
     }
 }

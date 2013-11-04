@@ -19,8 +19,8 @@ public:
     void userLogout();
     void userReLogin();
 
-    void getNewPlayList(const qint32 &channel);
-    void getPlayingList(const qint32& channel, const quint32& sid);
+    void getNewPlayList(const qint32 &channel, qint32 kbps = 64);
+    void getPlayingList(const qint32& channel, const quint32& sid, qint32 kbps = 64);
     void rateSong(const quint32& sid, const qint32& channel, const bool toRate);
     void unrateSong(const quint32& sid, const qint32& channel);
     void skipSong(const quint32& sid, const qint32& channel);

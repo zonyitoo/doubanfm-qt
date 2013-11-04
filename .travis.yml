@@ -1,6 +1,6 @@
 language: cpp
 before_install:
-    - sudo apt-add-repository ppa:ubuntu-sdk-team/ppa -y
+    - echo | sudo apt-add-repository ppa:ubuntu-sdk-team/ppa
     - sudo apt-get update
 
 install:

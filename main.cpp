@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     QLocalSocket socket;
     socket.connectToServer(LOCAL_SOCKET_NAME);
     if (socket.waitForConnected(500)) {
+        qWarning() << "There is already a instance running, raising it up";
         return 0;
     }
 
@@ -50,6 +51,8 @@ int main(int argc, char *argv[])
             w.show();
         else
             w.activateWindow();
+
+        qDebug() << "Raise window";
     });
     server.listen(LOCAL_SOCKET_NAME);
 

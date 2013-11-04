@@ -38,7 +38,7 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->pauseWidget->setVisible(false);
 
     connect(ui->pauseWidget, SIGNAL(clicked()), ui->controlWidget, SLOT(play()));
-    exitShortcut = new QShortcut(QKeySequence::Close, this);
+    exitShortcut = new QShortcut(QKeySequence("Ctrl+Q"), this);
     connect(exitShortcut, SIGNAL(activated()), qApp, SLOT(quit()));
     pauseShortcut = new QShortcut(QKeySequence("Space"), this);
     connect(pauseShortcut, &QShortcut::activated, [this] () {
@@ -55,6 +55,8 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(deleteShortcut, SIGNAL(activated()), ui->controlWidget, SLOT(on_trashButton_clicked()));
     likeShortcut = new QShortcut(QKeySequence("F"), this);
     connect(likeShortcut, SIGNAL(activated()), ui->controlWidget, SLOT(on_likeButton_clicked()));
+    hideShortcut = new QShortcut(QKeySequence("Ctrl+W"), this);
+    connect(hideShortcut, SIGNAL(activated()), this, SLOT(hide()));
 
     connect(ui->channelWidget, SIGNAL(mouseLeave()), this, SLOT(animHideChannelWidget()));
 
@@ -90,6 +92,7 @@ MainWidget::~MainWidget()
     if (systemTrayIcon) delete systemTrayIcon;
     delete ui;
     delete exitShortcut;
+    delete hideShortcut;
     delete pauseShortcut;
     delete topBorder;
     delete bottomBorder;

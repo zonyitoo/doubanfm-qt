@@ -42,6 +42,7 @@ private:
     QShortcut *nextShortcut;
     QShortcut *deleteShortcut;
     QShortcut *likeShortcut;
+    QShortcut *hideShortcut;
 
     bool _isChannelWidgetShowing;
     bool _isAnimStarted;

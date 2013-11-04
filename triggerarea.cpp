@@ -5,10 +5,10 @@ TriggerArea::TriggerArea(QWidget *parent) :
 {
 }
 
-void TriggerArea::enterEvent(QEvent *ev) {
+void TriggerArea::enterEvent(QEvent *) {
     emit enter();
 }
 
-void TriggerArea::leaveEvent(QEvent *ev) {
+void TriggerArea::leaveEvent(QEvent *) {
     emit leave();
 }

@@ -17,7 +17,7 @@ SettingDialog::SettingDialog(QWidget *parent) :
     kbpsGroup->addButton(ui->kbps64);
     kbpsGroup->addButton(ui->kbps128);
     kbpsGroup->addButton(ui->kbps192);
-    connect(kbpsGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(on_kbps_radio_button_clicked(QAbstractButton*)));
+    connect(kbpsGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(kbps_radio_button_clicked(QAbstractButton*)));
 
     if (doubanfm->hasLogin()) {
         auto user = doubanfm->getUser();
@@ -125,7 +125,7 @@ void SettingDialog::timer_event() {
     ui->loginButton->setText(tr("登录"));
 }
 
-void SettingDialog::on_kbps_radio_button_clicked(QAbstractButton *button) {
+void SettingDialog::kbps_radio_button_clicked(QAbstractButton *button) {
     if (button == ui->kbps64) {
 
     }

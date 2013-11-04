@@ -5,6 +5,7 @@
 #include <libs/doubanfm.h>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
+#include <ctime>
 
 class DoubanPlayer : public QObject
 {
@@ -69,7 +70,7 @@ private:
     QMediaPlaylist *bufplaylist;
     QList<DoubanFMSong> bufsongs;
 
-    QTime lastPausedTime;
+    time_t lastPausedTime;
 };
 
 #endif // DOUBANPLAYER_H

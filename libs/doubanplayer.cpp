@@ -13,16 +13,18 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
     _channel(-INT_MAX), _volume(0), _can_control(true),
     bufplaylist(nullptr)
 {
-    player.setPlaylist(new QMediaPlaylist(&player));
-    connect(player.playlist(), SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
-
     connect(doubanfm, &DoubanFM::receivedNewList, [this] (const QList<DoubanFMSong>& rcvsongs) {
         this->songs = rcvsongs;
         qDebug() << "Received new playlist with" << rcvsongs.size() << "songs";
         QMediaPlaylist *playlist = player.playlist();
+        if (playlist == nullptr) playlist = new QMediaPlaylist(&player);
         playlist->clear();
         for (const DoubanFMSong& song : this->songs) {
             playlist->addMedia(QUrl(song.url));
+        }
+        if (player.playlist() == nullptr) {
+            connect(playlist, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+            player.setPlaylist(playlist);
         }
         if (player.state() != QMediaPlayer::PlayingState)
             player.play();
@@ -31,6 +33,7 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
 
     connect(doubanfm, &DoubanFM::receivedPlayingList, [this] (const QList<DoubanFMSong>& rcvsongs) {
         qDebug() << "Received new playlist with" << rcvsongs.size() << "songs";
+        if (this->bufplaylist != nullptr) delete this->bufplaylist;
         this->bufplaylist = new QMediaPlaylist(&player);
         bufsongs = rcvsongs;
 
@@ -139,17 +142,18 @@ void DoubanPlayer::play() {
     fadein->start(QPropertyAnimation::DeleteWhenStopped);
     emit playing();
 
-    QTime cur = QTime::currentTime();
-    if (cur.msec() - lastPausedTime.msec() >= 30 * 60 * 1000) {
+    int elapsed = time(nullptr) - this->lastPausedTime;
+    if (elapsed >= 30 * 60) {
         doubanfm->getPlayingList(_channel, this->currentSong().sid);
-        qDebug() << "Have paused for a long time, getting a new playlist";
+        QTime pt(0, 0, 0, 0);
+        pt.addSecs(elapsed);
+        qDebug() << "Have paused " << pt <<  ", getting a new playlist";
     }
-    lastPausedTime = cur;
 }
 
 void DoubanPlayer::pause() {
     emit paused();
-    this->lastPausedTime = QTime::currentTime();
+    this->lastPausedTime = time(nullptr);
     QPropertyAnimation *fadeout = new QPropertyAnimation(&player, "volume");
     fadeout->setDuration(1000);
     fadeout->setStartValue(player.volume());
@@ -162,6 +166,11 @@ void DoubanPlayer::pause() {
 }
 
 DoubanFMSong DoubanPlayer::currentSong() const {
+    if (player.playlist() == nullptr) {
+        DoubanFMSong loading;
+        loading.title = "Loading";
+        return loading;
+    }
     int sindex = player.playlist()->currentIndex();
     if (sindex < 0) return DoubanFMSong();
     return songs[sindex];
@@ -172,6 +181,7 @@ qint64 DoubanPlayer::position() const {
 }
 
 void DoubanPlayer::next() {
+    if (player.playlist() == nullptr) return;
     int sindex = player.playlist()->currentIndex();
     if (sindex < 0) {
         doubanfm->getNewPlayList(this->_channel);
@@ -187,18 +197,21 @@ void DoubanPlayer::stop() {
 }
 
 void DoubanPlayer::rateCurrentSong() {
+    if (player.playlist() == nullptr) return;
     int sindex = player.playlist()->currentIndex();
     doubanfm->rateSong(songs[sindex].sid, _channel, true);
     setCanControl(false);
 }
 
 void DoubanPlayer::unrateCurrentSong() {
+    if (player.playlist() == nullptr) return;
     int sindex = player.playlist()->currentIndex();
     doubanfm->rateSong(songs[sindex].sid, _channel, false);
     setCanControl(false);
 }
 
 void DoubanPlayer::trashCurrentSong() {
+    if (player.playlist() == nullptr) return;
     int sindex = player.playlist()->currentIndex();
     doubanfm->byeSong(songs[sindex].sid, _channel);
     setCanControl(false);

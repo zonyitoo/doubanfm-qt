@@ -24,7 +24,7 @@ private slots:
     void on_loginButton_clicked();
 
     void timer_event();
-    void on_kbps_radio_button_clicked(QAbstractButton *button);
+    void kbps_radio_button_clicked(QAbstractButton *button);
 
 private:
     Ui::SettingDialog *ui;

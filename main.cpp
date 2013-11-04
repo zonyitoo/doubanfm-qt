@@ -1,13 +1,23 @@
 #include "mainwidget.h"
 #include <QApplication>
+#include <QLocalSocket>
+#include <QLocalServer>
 
 #include "plugins/mpris/doubanmprisplugin.h"
 
 #include "settingdialog.h"
 
+const QString LOCAL_SOCKET_NAME = "QDoubanFM_LocalSocket";
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    QLocalSocket socket;
+    socket.connectToServer(LOCAL_SOCKET_NAME);
+    if (socket.waitForConnected(500)) {
+        return 0;
+    }
 
     DoubanFM::getInstance();
 
@@ -16,8 +26,8 @@ int main(int argc, char *argv[])
     //w.setAttribute(Qt::WA_NoBackground);
     //w.setAttribute(Qt::WA_NoSystemBackground);
     //w.setAttribute(Qt::WA_TranslucentBackground);
-
     w.show();
+
     QFont appfont = QApplication::font();
     appfont.setStyleStrategy(QFont::PreferAntialias);
     a.setFont(appfont);
@@ -33,6 +43,16 @@ int main(int argc, char *argv[])
     //n->show();
 
     new DoubanMprisPlugin();
+
+    QLocalServer server(&w);
+    w.connect(&server, &QLocalServer::newConnection, [&] () {
+        if (w.isHidden())
+            w.show();
+        else
+            w.activateWindow();
+        qDebug() << Q_FUNC_INFO;
+    });
+    server.listen(LOCAL_SOCKET_NAME);
 
     return a.exec();
 }

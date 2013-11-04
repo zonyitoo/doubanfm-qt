@@ -9,6 +9,7 @@
 #include "lyricwidget.h"
 #include <QShortcut>
 #include <QLabel>
+#include <QSystemTrayIcon>
 
 namespace Ui {
 class MainWidget;
@@ -26,6 +27,8 @@ public:
     bool isChannelWidgetShowing() const;
     bool isAnimationStarted() const;
     bool isLyricWidgetShowing() const;
+
+    void closeEvent(QCloseEvent *);
 
 signals:
     void animationStart();
@@ -49,6 +52,8 @@ private:
 
     void animStart();
     void animFinish();
+
+    QSystemTrayIcon *systemTrayIcon;
 
 public slots:
     void animHideChannelWidget();

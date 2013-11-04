@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include <QMenu>
 
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent),
@@ -13,7 +14,8 @@ MainWidget::MainWidget(QWidget *parent) :
     _isAnimStarted(false),
     _isLyricWidgetShowing(false),
     topBorder(new QLabel(this)),
-    bottomBorder(new QLabel(this))
+    bottomBorder(new QLabel(this)),
+    systemTrayIcon(nullptr)
 {
     ui->setupUi(this);  
     ui->lyricWidget->lower();
@@ -61,10 +63,31 @@ MainWidget::MainWidget(QWidget *parent) :
 
     connect(ui->controlWidget, SIGNAL(openLyricPanel()), this, SLOT(animShowLyricWidget()));
     connect(ui->controlWidget, SIGNAL(closeLyricPanel()), this, SLOT(animHideLyricWidget()));
+
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+        systemTrayIcon = new QSystemTrayIcon(QIcon("://icon.png"), this);
+        connect(systemTrayIcon, &QSystemTrayIcon::activated, [&] () {
+            if (this->isHidden())
+                this->show();
+        });
+        QMenu *trayMenu = new QMenu(this);
+        auto _openAction = trayMenu->addAction("打开主界面");
+        trayMenu->addSeparator();
+        auto _closeAction = trayMenu->addAction("退出");
+        connect(trayMenu, &QMenu::triggered, [this, _openAction, _closeAction] (QAction *action) {
+            if (action == _openAction)
+                this->show();
+            else if (action == _closeAction)
+                qApp->quit();
+        });
+        systemTrayIcon->setContextMenu(trayMenu);
+        systemTrayIcon->show();
+    }
 }
 
 MainWidget::~MainWidget()
 {
+    if (systemTrayIcon) delete systemTrayIcon;
     delete ui;
     delete exitShortcut;
     delete pauseShortcut;
@@ -283,4 +306,14 @@ void MainWidget::animShowLyricWidget() {
     });
 
     animgroup->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void MainWidget::closeEvent(QCloseEvent *ev) {
+    if (systemTrayIcon) {
+        ev->ignore();
+        this->hide();
+    }
+    else {
+        QWidget::closeEvent(ev);
+    }
 }

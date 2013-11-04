@@ -2,6 +2,8 @@
 #include <QDBusConnection>
 #include "mprisadapter.h"
 #include "mprisplayeradapter.h"
+#include <QApplication>
+#include <QWidget>
 
 static const QString PLAYER_SERVICE_NAME = "org.mpris.MediaPlayer2.doubanfm";
 static const QString PLAYER_OBJECT_PATH = "/org/mpris/MediaPlayer2";
@@ -139,5 +141,12 @@ void DoubanMprisPlugin::Quit() {
 }
 
 void DoubanMprisPlugin::Raise() {
-
+    auto widgetlist = QApplication::topLevelWidgets();
+    for (QWidget *widget : widgetlist) {
+        if (!widget->parent()) {
+            if (widget->isHidden()) widget->show();
+            else widget->activateWindow();
+            break;
+        }
+    }
 }

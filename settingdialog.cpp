@@ -83,6 +83,22 @@ SettingDialog::SettingDialog(QWidget *parent) :
         ui->loginButton->setText(msg);
         QTimer::singleShot(3000, this, SLOT(timer_event()));
     });
+
+    QSettings settings("QDoubanFM", "QDoubanFM");
+    settings.beginGroup("General");
+    qint32 _kbps = settings.value("kbps", 64).toInt();
+    settings.endGroup();
+    switch (_kbps) {
+    case 64:
+        ui->kbps64->setChecked(true);
+        break;
+    case 128:
+        ui->kbps128->setChecked(true);
+        break;
+    case 192:
+        ui->kbps192->setChecked(true);
+        break;
+    }
 }
 
 SettingDialog::~SettingDialog()

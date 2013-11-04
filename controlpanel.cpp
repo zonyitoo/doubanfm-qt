@@ -218,6 +218,7 @@ void ControlPanel::loadConfig() {
     settings.beginGroup("General");
     player->setVolume(settings.value("volume", 100).toInt());
     qint32 _channel = settings.value("channel", 1).toInt();
+    player->setKbps(settings.value("kbps", 64).toInt());
     settings.endGroup();
 
     if (_channel == -3 && doubanfm->hasLogin()) {
@@ -230,6 +231,7 @@ void ControlPanel::saveConfig() {
     settings.beginGroup("General");
     settings.setValue("channel", player->channel());
     settings.setValue("volume", player->volume());
+    settings.setValue("kbps", player->kbps());
     settings.endGroup();
 }
 

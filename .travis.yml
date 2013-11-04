@@ -2,11 +2,19 @@ language: cpp
 env:
     - QT_SELECT=qt5
 before_install:
-    - echo | sudo apt-add-repository ppa:ubuntu-sdk-team/ppa
     - sudo apt-get update
 
 install:
-    - sudo apt-get install ubuntu-sdk
+    - sudo apt-get install build-essential perl python git
+    - sudo apt-get install "^libxcb.*" libx11-xcb-dev libglu1-mesa-dev libxrender-dev
+    - sudo apt-get install libasound2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
+    - git clone https://git.gitorious.org/qt/qt5.git qt5
+    - cd qt5
+    - ./init-repository
+    - git checkout stable
+    - ./configure -developer-build -opensource -nomake examples -nomake tests -confirm-license -no-gtkstyle 
+    - make -j4
+    - sudo make install
 
 script:
     - qmake -project

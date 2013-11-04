@@ -50,7 +50,6 @@ int main(int argc, char *argv[])
             w.show();
         else
             w.activateWindow();
-        qDebug() << Q_FUNC_INFO;
     });
     server.listen(LOCAL_SOCKET_NAME);
 

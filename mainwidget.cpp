@@ -315,6 +315,7 @@ void MainWidget::closeEvent(QCloseEvent *ev) {
     if (systemTrayIcon) {
         ev->ignore();
         this->hide();
+        qWarning() << "Mainwindow hide";
     }
     else {
         QWidget::closeEvent(ev);

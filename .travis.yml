@@ -1,11 +1,12 @@
 language: cpp
+env:
+    - QT_SELECT=qt5
 before_install:
     - echo | sudo apt-add-repository ppa:ubuntu-sdk-team/ppa
     - sudo apt-get update
 
 install:
-    - sudo apt-get install libqt5network5 libqt5gui5 libqt5core5 libqt5multimedia5 qtmultimedia5-dev gstreamer0.10-fluendo-mp3 libpulse0 libpulse-dev libqt5dbus5
-    - sudo apt-get install qt5-base qt5-qmake
+    - sudo apt-get install ubuntu-sdk
 
 script:
     - qmake -project

@@ -20,7 +20,7 @@
 
 ## 安装方法
 
-在Ubuntu 13.04 x86\_64、13.10 x86\_64及Archlinux上测试通过
+在Ubuntu 13.04 x86\_64、Ubuntu 13.10 x86\_64及Archlinux上测试通过
 
 ```bash
 qmake doubanfm-qt.pro

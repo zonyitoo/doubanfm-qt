@@ -10,7 +10,7 @@ install:
     - sudo apt-get install libasound2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
     - git clone https://git.gitorious.org/qt/qt5.git qt5
     - cd qt5
-    - ./init-repository
+    - ./init-repository --no-webkit --http
     - git checkout stable
     - ./configure -developer-build -opensource -nomake examples -nomake tests -confirm-license -no-gtkstyle 
     - make -j4

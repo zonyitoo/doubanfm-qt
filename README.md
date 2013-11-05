@@ -1,7 +1,5 @@
 # DoubanFM 客户端
 
-[![Build Status](https://travis-ci.org/zonyitoo/doubanfm-qt.png?branch=master)](https://travis-ci.org/zonyitoo/doubanfm-qt)
-
 使用Qt5编写的DoubanFM客户端
 
 [API接口文档](https://github.com/zonyitoo/doubanfm-qt/wiki/%E8%B1%86%E7%93%A3FM-API)

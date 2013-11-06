@@ -38,6 +38,7 @@ DoubanFM::~DoubanFM() {
 
     QSettings settings("QDoubanFM", "QDoubanFM");
     auto user = this->getUser();
+    if (!user) return;
     settings.beginGroup("User");
     settings.setValue("email", user->email);
     settings.setValue("expire", user->expire);
@@ -135,7 +136,6 @@ void DoubanFM::onReceivedAuth(QNetworkReply *reply) {
             return;
         }
 
-        _user.reset(new DoubanUser);
         _user->user_id = obj["user_id"].toString();
         _user->expire = obj["expire"].toString();
         _user->token = obj["token"].toString();

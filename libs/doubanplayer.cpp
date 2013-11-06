@@ -165,14 +165,14 @@ void DoubanPlayer::pause() {
     fadeout->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
-const DoubanFMSong &DoubanPlayer::currentSong() const {
-    if (player.playlist() == nullptr) {
-        DoubanFMSong loading;
+const DoubanFMSong& DoubanPlayer::currentSong() const {
+    int sindex = -1;
+    if (player.playlist() == nullptr
+            || (sindex = player.playlist()->currentIndex()) < 0) {
+        static DoubanFMSong loading;
         loading.title = "Loading";
         return loading;
     }
-    int sindex = player.playlist()->currentIndex();
-    if (sindex < 0) return DoubanFMSong();
     return songs[sindex];
 }
 

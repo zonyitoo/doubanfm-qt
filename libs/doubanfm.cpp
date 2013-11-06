@@ -51,8 +51,8 @@ DoubanFM::~DoubanFM() {
 }
 
 DoubanFM* DoubanFM::getInstance() {
-    static DoubanFM *_INSTANCE = new DoubanFM();
-    return _INSTANCE;
+    static DoubanFM _INSTANCE(nullptr);
+    return &_INSTANCE;
 }
 
 void DoubanFM::onLoginSucceed(std::shared_ptr<DoubanUser> user) {

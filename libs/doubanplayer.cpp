@@ -1,10 +1,8 @@
 #include "doubanplayer.h"
 
 DoubanPlayer *DoubanPlayer::getInstance() {
-    static DoubanPlayer *_instance = nullptr;
-    if (_instance == nullptr)
-        _instance = new DoubanPlayer(nullptr);
-    return _instance;
+    static DoubanPlayer _instance(nullptr);
+    return &_instance;
 }
 
 DoubanPlayer::DoubanPlayer(QObject *parent) :

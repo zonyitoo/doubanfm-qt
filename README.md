@@ -29,6 +29,12 @@ make
 
 或运行`install.sh`脚本来安装到系统中（For Linux Only），安装好后在桌面系中的的启动器中找到`QDoubanFM`运行即可
 
+* ArchLinux的AUR仓库中提供直接安装的[PKGBUILD](https://aur.archlinux.org/packages/qdoubanfm-git/)，感谢shadowma和puxx
+
+```bash
+yaourt -S qdoubanfm-git
+```
+
 ## 快捷键
 `Ctrl` + `W` 隐藏窗口，最小化到托盘
 

@@ -34,7 +34,7 @@ DoubanFM::DoubanFM(QObject *parent) : QObject(parent) {
 
 DoubanFM::~DoubanFM() {
     for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
-        delete _managers[i];
+        if (_managers[i]) delete _managers[i];
 
     QSettings settings("QDoubanFM", "QDoubanFM");
     std::shared_ptr<DoubanUser> user = this->getUser();

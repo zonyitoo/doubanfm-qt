@@ -8,10 +8,10 @@ PauseMask::PauseMask(QWidget *parent) :
     ui(new Ui::PauseMask)
 {
     ui->setupUi(this);
-    connect(DoubanPlayer::getInstance(), &DoubanPlayer::playing, [=] () {
+    connect(&DoubanPlayer::getInstance(), &DoubanPlayer::playing, [=] () {
         this->setVisible(false);
     });
-    connect(DoubanPlayer::getInstance(), &DoubanPlayer::paused, [=] () {
+    connect(&DoubanPlayer::getInstance(), &DoubanPlayer::paused, [=] () {
         this->setVisible(true);
     });
 }

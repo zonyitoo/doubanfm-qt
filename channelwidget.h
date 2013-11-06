@@ -38,7 +38,7 @@ private:
     Ui::ChannelWidget *ui;
 
     QObjectList labels;
-    DoubanFM *doubanfm;
+    DoubanFM& doubanfm;
     QList<DoubanChannel> channels;
     qint32 channel;
     QTimer *timer;

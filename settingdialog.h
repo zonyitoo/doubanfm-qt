@@ -29,7 +29,7 @@ private slots:
 private:
     Ui::SettingDialog *ui;
 
-    DoubanFM *doubanfm;
+    DoubanFM& doubanfm;
     QButtonGroup *kbpsGroup;
 
     QNetworkAccessManager *userIconGetter;

@@ -26,13 +26,13 @@ DoubanMprisPlugin::DoubanMprisPlugin(QObject *parent) :
     new MprisPlayerAdapter(this);
     con.registerObject(PLAYER_OBJECT_PATH, this);
 
-    connect(player, &DoubanPlayer::stateChanged, [=] (QMediaPlayer::State) {
+    connect(&player, &DoubanPlayer::stateChanged, [=] (QMediaPlayer::State) {
         QVariantMap changedMap;
         changedMap.insert("PlaybackStatus", this->PlaybackStatus());
         DBUS_NOTIFY_PROPERTIES_CHANGED("org.mpris.MediaPlayer2.Player", changedMap);
     });
 
-    connect(player, &DoubanPlayer::currentSongChanged, [=] (const DoubanFMSong& song) {
+    connect(&player, &DoubanPlayer::currentSongChanged, [=] (const DoubanFMSong& song) {
         QVariantMap map;
         map.insert("mpris:length", song.length);
         map.insert("xesam:album", song.albumtitle);
@@ -66,7 +66,7 @@ bool DoubanMprisPlugin::CanSeek() const {
     return false;
 }
 qlonglong DoubanMprisPlugin::Position() const {
-    return this->player->position();
+    return this->player.position();
 }
 
 bool DoubanMprisPlugin::CanQuit() const {
@@ -84,7 +84,7 @@ QString DoubanMprisPlugin::Identity() const {
 
 QVariantMap DoubanMprisPlugin::Metadata() const {
     QVariantMap map;
-    DoubanFMSong song = player->currentSong();
+    DoubanFMSong song = player.currentSong();
     map.insert("mpris:length", song.length);
     map.insert("xesam:album", song.albumtitle);
     map.insert("mpris:artUrl", song.picture);
@@ -99,7 +99,7 @@ QVariantMap DoubanMprisPlugin::Metadata() const {
 }
 
 QString DoubanMprisPlugin::PlaybackStatus() const {
-    auto status = player->state();
+    auto status = player.state();
     switch (status) {
     case QMediaPlayer::PlayingState:
         return "Playing";
@@ -111,29 +111,29 @@ QString DoubanMprisPlugin::PlaybackStatus() const {
 }
 
 void DoubanMprisPlugin::Next() {
-    this->player->next();
+    this->player.next();
 }
 
 void DoubanMprisPlugin::Pause() {
-    this->player->pause();
+    this->player.pause();
 }
 
 void DoubanMprisPlugin::Play() {
-    this->player->play();
+    this->player.play();
 }
 
 void DoubanMprisPlugin::PlayPause() {
-    switch (player->state()) {
+    switch (player.state()) {
     case QMediaPlayer::PlayingState:
-        player->pause();
+        player.pause();
         break;
     default:
-        player->play();
+        player.play();
     }
 }
 
 void DoubanMprisPlugin::Stop() {
-    this->player->stop();
+    this->player.stop();
 }
 
 void DoubanMprisPlugin::Quit() {

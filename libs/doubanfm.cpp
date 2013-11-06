@@ -18,16 +18,16 @@ DoubanFM::DoubanFM(QObject *parent) : QObject(parent) {
 
     QSettings settings("QDoubanFM", "QDoubanFM");
     settings.beginGroup("User");
-    std::shared_ptr<DoubanUser> user(new DoubanUser());
-    user->email = settings.value("email", "").toString();
-    user->expire = settings.value("expire", "").toString();
-    user->password = settings.value("password", "").toString();
-    user->token = settings.value("token", "").toString();
-    user->user_id = settings.value("user_id", "").toString();
-    user->user_name = settings.value("user_name", "").toString();
-    if (user->email.size() && user->expire.size()
-            && user->password.size() && user->token.size()
-            && user->user_id.size() && user->user_name.size())
+    DoubanUser user;
+    user.email = settings.value("email", "").toString();
+    user.expire = settings.value("expire", "").toString();
+    user.password = settings.value("password", "").toString();
+    user.token = settings.value("token", "").toString();
+    user.user_id = settings.value("user_id", "").toString();
+    user.user_name = settings.value("user_name", "").toString();
+    if (user.email.size() && user.expire.size()
+            && user.password.size() && user.token.size()
+            && user.user_id.size() && user.user_name.size())
         this->setUser(user);
     settings.endGroup();
 }
@@ -37,8 +37,7 @@ DoubanFM::~DoubanFM() {
         if (_managers[i]) delete _managers[i];
 
     QSettings settings("QDoubanFM", "QDoubanFM");
-    std::shared_ptr<DoubanUser> user = this->getUser();
-    if (!user) user.reset(new DoubanUser);
+    auto user = this->getUser();
     settings.beginGroup("User");
     settings.setValue("email", user->email);
     settings.setValue("expire", user->expire);
@@ -50,19 +49,9 @@ DoubanFM::~DoubanFM() {
     settings.sync();
 }
 
-DoubanFM* DoubanFM::getInstance() {
+DoubanFM& DoubanFM::getInstance() {
     static DoubanFM _INSTANCE(nullptr);
-    return &_INSTANCE;
-}
-
-void DoubanFM::onLoginSucceed(std::shared_ptr<DoubanUser> user) {
-    _user->user_id = user->user_id;
-    _user->expire = user->expire;
-    _user->token = user->token;
-    _user->user_name = user->user_name;
-    _user->email = user->email;
-
-    emit this->loginSucceed(_user);
+    return _INSTANCE;
 }
 
 void DoubanFM::userLogin(const QString &email, const QString &password) {
@@ -145,14 +134,15 @@ void DoubanFM::onReceivedAuth(QNetworkReply *reply) {
             reply->deleteLater();
             return;
         }
-        std::shared_ptr<DoubanUser> nuser(new DoubanUser());
-        nuser->user_id = obj["user_id"].toString();
-        nuser->expire = obj["expire"].toString();
-        nuser->token = obj["token"].toString();
-        nuser->user_name = obj["user_name"].toString();
-        nuser->email = obj["email"].toString();
 
-        onLoginSucceed(nuser);
+        _user.reset(new DoubanUser);
+        _user->user_id = obj["user_id"].toString();
+        _user->expire = obj["expire"].toString();
+        _user->token = obj["token"].toString();
+        _user->user_name = obj["user_name"].toString();
+        _user->email = obj["email"].toString();
+
+        emit this->loginSucceed(*_user);
     }
 
     reply->deleteLater();
@@ -163,10 +153,8 @@ void DoubanFM::userLogout() {
     emit logoffSucceed();
 }
 
-void DoubanFM::setUser(std::shared_ptr<DoubanUser> user) {
-    if (!user) return;
-
-    _user = user;
+void DoubanFM::setUser(const DoubanUser &user) {
+    _user.reset(new DoubanUser(user));
 
     QTime time;
     if (_user->expire.toInt() <= time.msec()) {
@@ -174,8 +162,8 @@ void DoubanFM::setUser(std::shared_ptr<DoubanUser> user) {
     }
 }
 
-std::shared_ptr<DoubanUser> DoubanFM::getUser() {
-    return _user;
+const DoubanUser * const DoubanFM::getUser() const {
+    return _user.get();
 }
 
 void DoubanFM::getNewPlayList(const qint32& channel, qint32 kbps) {

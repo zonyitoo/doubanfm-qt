@@ -13,7 +13,7 @@ class DoubanFM : public QObject
     Q_OBJECT
 public:
     ~DoubanFM();
-    static DoubanFM *getInstance();
+    static DoubanFM &getInstance();
 
     void userLogin(const QString &email, const QString &password);
     void userLogout();
@@ -29,8 +29,8 @@ public:
 
     void getChannels();
 
-    void setUser(std::shared_ptr<DoubanUser> user);
-    std::shared_ptr<DoubanUser> getUser();
+    void setUser(const DoubanUser& user);
+    const DoubanUser * const getUser() const;
     bool hasLogin();
     
 signals:
@@ -41,7 +41,7 @@ signals:
     void receivedCurrentEnd(bool succeed);
     void receivedByeSong(bool succeed);
     void receivedChannels(const QList<DoubanChannel>& channels);
-    void loginSucceed(std::shared_ptr<DoubanUser> user);
+    void loginSucceed(const DoubanUser &user);
     void loginFailed(const QString &errmsg);
     void logoffSucceed();
     
@@ -55,8 +55,6 @@ private slots:
     void onReceivedCurrentEnd(QNetworkReply *reply);
     void onReceivedByeSong(QNetworkReply *reply);
     void onReceivedChannels(QNetworkReply *reply);
-
-    void onLoginSucceed(std::shared_ptr<DoubanUser> user);
 
 private:
     explicit DoubanFM(QObject *parent = 0);
@@ -75,7 +73,7 @@ private:
      */
     QNetworkAccessManager *_managers[DOUBAN_MANAGER_ARRAY_SIZE];
 
-    std::shared_ptr<DoubanUser> _user;
+    std::unique_ptr<DoubanUser> _user;
 };
 
 

@@ -51,7 +51,7 @@ public slots:
     void Raise();
 
 private:
-    DoubanPlayer *player;
+    DoubanPlayer& player;
 };
 
 #endif // DOUBANMPRISPLUGIN_H

@@ -32,12 +32,12 @@ signals:
 
 private:
     Ui::ControlPanel *ui;
-    DoubanFM *doubanfm;
+    DoubanFM& doubanfm;
     //qint32 channel;
     //QList<DoubanChannel> channels;
     //QList<DoubanFMSong> songs;
     //QMediaPlayer player;
-    DoubanPlayer *player;
+    DoubanPlayer& player;
 
     QNetworkAccessManager *imgmgr;
     //Notification *notify;

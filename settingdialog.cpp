@@ -20,8 +20,8 @@ SettingDialog::SettingDialog(QWidget *parent) :
     kbpsGroup->addButton(ui->kbps192);
     connect(kbpsGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(kbps_radio_button_clicked(QAbstractButton*)));
 
-    if (doubanfm->hasLogin()) {
-        auto user = doubanfm->getUser();
+    if (doubanfm.hasLogin()) {
+        auto user = doubanfm.getUser();
         ui->email->setEnabled(false);
         ui->password->setEnabled(false);
         ui->loginButton->setText(tr("登出"));
@@ -70,14 +70,14 @@ SettingDialog::SettingDialog(QWidget *parent) :
         reply->deleteLater();
     });
 
-    connect(doubanfm, &DoubanFM::loginSucceed, [=] (std::shared_ptr<DoubanUser> user) {
-        userInfoGetter->get(QNetworkRequest(QUrl("http://api.douban.com/people/" + user->user_id)));
+    connect(&doubanfm, &DoubanFM::loginSucceed, [=] (const DoubanUser &user) {
+        userInfoGetter->get(QNetworkRequest(QUrl("http://api.douban.com/people/" + user.user_id)));
         ui->loginButton->setText(tr("登出"));
-        ui->usernameLabel->setText(user->user_name);
+        ui->usernameLabel->setText(user.user_name);
         ui->loginButton->setEnabled(true);
     });
 
-    connect(doubanfm, &DoubanFM::loginFailed, [=] (const QString& msg) {
+    connect(&doubanfm, &DoubanFM::loginFailed, [=] (const QString& msg) {
         ui->email->setEnabled(true);
         ui->password->setEnabled(true);
         ui->loginButton->setText(msg);
@@ -113,18 +113,18 @@ void SettingDialog::setUserIcon(const QPixmap &pixmap) {
 
 void SettingDialog::on_loginButton_clicked()
 {
-    if (!doubanfm->hasLogin()) {
+    if (!doubanfm.hasLogin()) {
         QString email = ui->email->text();
         QString pwd = ui->password->text();
         if (email.size() == 0 || pwd.size() == 0) return;
-        doubanfm->userLogin(email, pwd);
+        doubanfm.userLogin(email, pwd);
         ui->email->setEnabled(false);
         ui->password->setEnabled(false);
         ui->loginButton->setEnabled(false);
         ui->loginButton->setText(tr("登录中..."));
     }
     else {
-        doubanfm->userLogout();
+        doubanfm.userLogout();
         ui->email->setText("");
         ui->password->setText("");
         ui->email->setEnabled(true);
@@ -143,14 +143,14 @@ void SettingDialog::timer_event() {
 }
 
 void SettingDialog::kbps_radio_button_clicked(QAbstractButton *button) {
-    auto player = DoubanPlayer::getInstance();
+    auto& player = DoubanPlayer::getInstance();
     if (button == ui->kbps64) {
-        player->setKbps(64);
+        player.setKbps(64);
     }
     else if (button == ui->kbps128) {
-        player->setKbps(128);
+        player.setKbps(128);
     }
     else if (button == ui->kbps192) {
-        player->setKbps(192);
+        player.setKbps(192);
     }
 }

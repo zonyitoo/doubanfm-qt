@@ -16,7 +16,7 @@ LyricWidget::LyricWidget(QWidget *parent) :
     ui->border->setText(QString("<font color='grey'>") + tr("无歌词") + QString("</font>"));
     ui->bg->lower();
 
-    connect(DoubanPlayer::getInstance(), SIGNAL(positionChanged(qint64)),
+    connect(&DoubanPlayer::getInstance(), SIGNAL(positionChanged(qint64)),
             this, SLOT(setTick(qint64)));
     connect(lyricGetter, &LyricGetter::gotLyric, [this] (const QLyricList& lyric) {
         this->setLyric(lyric);
@@ -24,7 +24,7 @@ LyricWidget::LyricWidget(QWidget *parent) :
     connect(lyricGetter, &LyricGetter::gotLyricError, [this] (const QString&) {
         this->clear();
     });
-    connect(DoubanPlayer::getInstance(), SIGNAL(currentSongChanged(DoubanFMSong)),
+    connect(&DoubanPlayer::getInstance(), SIGNAL(currentSongChanged(DoubanFMSong)),
             this, SLOT(setSong(DoubanFMSong)));
 }
 

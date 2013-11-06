@@ -9,18 +9,17 @@
 
 ChannelWidget::ChannelWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ChannelWidget)
+    ui(new Ui::ChannelWidget),
+    doubanfm(DoubanFM::getInstance())
 {
     ui->setupUi(this);
 
     ui->nextButton->raise();
     ui->prevButton->raise();
 
-    doubanfm = DoubanFM::getInstance();
-
-    connect(doubanfm, SIGNAL(receivedChannels(QList<DoubanChannel>)),
+    connect(&doubanfm, SIGNAL(receivedChannels(QList<DoubanChannel>)),
             this, SLOT(setChannels(QList<DoubanChannel>)));
-    doubanfm->getChannels();
+    doubanfm.getChannels();
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, [=] () {
@@ -38,21 +37,21 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
     QSettings settings("QDoubanFM", "QDoubanFM");
     settings.beginGroup("General");
     channel = settings.value("channel", 1).toInt();
-    if (!doubanfm->hasLogin() && channel == -3) channel = 1;
+    if (!doubanfm.hasLogin() && channel == -3) channel = 1;
     settings.endGroup();
 
-    connect(doubanfm, &DoubanFM::loginSucceed, [this] (std::shared_ptr<DoubanUser> ) {
+    connect(&doubanfm, &DoubanFM::loginSucceed, [this] (const DoubanUser &) {
         if (ui->slider->currentIndex() != 0)
             this->ui->slider->scrollToIndex(0);
         else
-            doubanfm->getNewPlayList(-3);
+            doubanfm.getNewPlayList(-3);
         qDebug() << "LoginSucceed. Refreshing Playlist";
         QLabel *pnt = static_cast<QLabel *>(labels[0]);
         pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
     });
 
     connect(this, SIGNAL(channelChanged(qint32)),
-            DoubanPlayer::getInstance(), SLOT(setChannel(qint32)));
+            &DoubanPlayer::getInstance(), SLOT(setChannel(qint32)));
 }
 
 ChannelWidget::~ChannelWidget()
@@ -63,7 +62,7 @@ ChannelWidget::~ChannelWidget()
 void ChannelWidget::on_nextButton_clicked()
 {
     if (ui->slider->currentIndex() == 0) return;
-    if (!doubanfm->hasLogin() && ui->slider->currentIndex() == 1) return;
+    if (!doubanfm.hasLogin() && ui->slider->currentIndex() == 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() - 1);
     QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);
     pnt->setText(pnt->text().replace("white", "grey").replace("<b>", "<a>").replace("</b>", "</a>"));

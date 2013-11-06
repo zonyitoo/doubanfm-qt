@@ -19,12 +19,12 @@ class DoubanPlayer : public QObject
     Q_PROPERTY(bool canControl READ canControl NOTIFY canControlChanged)
     Q_PROPERTY(qint32 kbps READ kbps WRITE setKbps)
 public:
-    static DoubanPlayer *getInstance();
+    static DoubanPlayer& getInstance();
 
     qint64 position() const;
     qint64 duration() const;
 
-    DoubanFMSong currentSong() const;
+    const DoubanFMSong& currentSong() const;
     qint32 channel() const;
     int volume() const;
     QMediaPlayer::State state() const;
@@ -73,7 +73,7 @@ private:
 
     QList<DoubanFMSong> songs;
     QMediaPlayer player;
-    DoubanFM *doubanfm;
+    DoubanFM& doubanfm;
     qint32 _channel;
     qint32 _volume;
     bool _can_control;

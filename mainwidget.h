@@ -28,8 +28,6 @@ public:
     bool isAnimationStarted() const;
     bool isLyricWidgetShowing() const;
 
-    void closeEvent(QCloseEvent *);
-
 signals:
     void animationStart();
     void animationFinish();

@@ -66,6 +66,9 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(ui->controlWidget, SIGNAL(openLyricPanel()), this, SLOT(animShowLyricWidget()));
     connect(ui->controlWidget, SIGNAL(closeLyricPanel()), this, SLOT(animHideLyricWidget()));
 
+    // FIXME: Ubuntu doesn't support QSystemTrayIcon
+    // Following code will cause confusing behaviour
+#ifdef WITH_SYSTEM_TRAY_ICON
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
         systemTrayIcon = new QSystemTrayIcon(QIcon("://icon.png"), this);
         connect(systemTrayIcon, &QSystemTrayIcon::activated, [&] () {
@@ -85,11 +88,16 @@ MainWidget::MainWidget(QWidget *parent) :
         systemTrayIcon->setContextMenu(trayMenu);
         systemTrayIcon->show();
     }
+#endif
+
 }
 
 MainWidget::~MainWidget()
 {
-    if (systemTrayIcon) delete systemTrayIcon;
+    if (systemTrayIcon) {
+        systemTrayIcon->hide();
+        systemTrayIcon->deleteLater();
+    }
     delete ui;
     delete exitShortcut;
     delete hideShortcut;

@@ -3,7 +3,9 @@
 #include <QLocalSocket>
 #include <QLocalServer>
 
+#ifdef WITH_MPRIS_PLUGIN
 #include "plugins/mpris/doubanmprisplugin.h"
+#endif
 
 #include "settingdialog.h"
 
@@ -43,7 +45,9 @@ int main(int argc, char *argv[])
     //n->setAutoDelete(true);
     //n->show();
 
+#ifdef WITH_MPRIS_PLUGIN
     new DoubanMprisPlugin();
+#endif
 
     QLocalServer server(&w);
     w.connect(&server, &QLocalServer::newConnection, [&] () {

@@ -4,13 +4,16 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network multimedia dbus xml
+QT       += core gui network multimedia xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = doubanfm-qt
+macx:TARGET = DoubanFM-Qt
 TEMPLATE = app
 
+# Don't open it if you are using Ubuntu
+DEFINES += WITH_SYSTEM_TRAY_ICON
 
 SOURCES += main.cpp\
         mainwidget.cpp \
@@ -26,10 +29,7 @@ SOURCES += main.cpp\
     albumimage.cpp \
     triggerarea.cpp \
     albumwidget.cpp \
-    plugins/mpris/mprisplayeradapter.cpp \
-    plugins/mpris/mprisadapter.cpp \
     libs/doubanplayer.cpp \
-    plugins/mpris/doubanmprisplugin.cpp \
     settingdialog.cpp
 
 HEADERS  += mainwidget.h \
@@ -47,11 +47,26 @@ HEADERS  += mainwidget.h \
     triggerarea.h \
     channelwidgettrigger.h \
     albumwidget.h \
-    plugins/mpris/mprisplayeradapter.h \
-    plugins/mpris/mprisadapter.h \
     libs/doubanplayer.h \
-    plugins/mpris/doubanmprisplugin.h \
     settingdialog.h
+
+!win32:!macx {
+    QT += dbus
+    DEFINES += LINUX WITH_MPRIS_PLUGIN
+
+    SOURCES +=  plugins/mpris/mprisplayeradapter.cpp \
+                plugins/mpris/mprisadapter.cpp \
+                plugins/mpris/doubanmprisplugin.cpp
+
+    HEADERS +=  plugins/mpris/mprisplayeradapter.h \
+                plugins/mpris/mprisadapter.h \
+                plugins/mpris/doubanmprisplugin.h
+
+    OTHER_FILES += \
+        plugins/org.mpris.MediaPlayer2.xml \
+        plugins/org.mpris.MediaPlayer2.Player.xml \
+        plugins/org.freedesktop.DBus.Properties.xml
+}
 
 FORMS    += mainwidget.ui \
     channelwidget.ui \
@@ -66,8 +81,3 @@ RESOURCES += \
     imgs.qrc
 
 CONFIG += c++11
-
-OTHER_FILES += \
-    plugins/org.mpris.MediaPlayer2.xml \
-    plugins/org.mpris.MediaPlayer2.Player.xml \
-    plugins/org.freedesktop.DBus.Properties.xml

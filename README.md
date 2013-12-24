@@ -2,6 +2,16 @@
 
 使用Qt5编写的DoubanFM客户端
 
+### 注意
+
+#. Ubuntu由于不支持Qt的`QSystemTrayIcon`，直接使用会有Bug，**必须**在生成`Makefile`前在`doubanfm-qt.pro`中删除`DEFINES += WITH_SYSTEM_TRAY_ICON`！
+
+#. KDE用户在打开时载入会出现`SIGSEGM`，目前*原因未知*，如果有人知道解决方法请告诉我谢谢！Issues中有提及。
+
+#. `Ctrl`+`W`后软件界面消失为**正常行为**，只要重新点图标（启动器）就可以唤醒。若强行Kill会导致此功能失效，需要手动删除`/tmp/QDoubanFM_LocalSocket`，或者会在其他位置，不同发行版可能位置不同。
+
+#. Windows及OSX上的有兼容性问题，但功能大致正常。
+
 [API接口文档](https://github.com/zonyitoo/doubanfm-qt/wiki/%E8%B1%86%E7%93%A3FM-API)
 
 ## 依赖
@@ -19,7 +29,7 @@
 
 ## 安装方法
 
-在Ubuntu 13.04 x86\_64、Ubuntu 13.10 x86\_64及Archlinux上测试通过
+* 在Archlinux上测试通过
 
 ```bash
 qmake doubanfm-qt.pro
@@ -35,6 +45,20 @@ make
 ```bash
 yaourt -S qdoubanfm-git
 ```
+
+* 在Ubuntu 13.04 x86\_64、Ubuntu 13.10 x86\_64上测试通过
+
+先使用编辑器打开`doubanfm-qt.pro`，删除
+
+```
+DEFINES += WITH_SYSTEM_TRAY_ICON
+```
+
+剩余步骤与上面相同。
+
+* Windows或OSX
+
+这两个系统比较特殊，建议到官网下载QtCreator打开`doubanfm-qt.pro`选择`Release`编译。
 
 ## 快捷键
 `Ctrl` + `W` 隐藏窗口，最小化到托盘
@@ -65,6 +89,7 @@ yaourt -S qdoubanfm-git
 * <del>在网络不好时卡住会崩溃</del>
 * <del>动画有Bug，若打开了频道界面然后鼠标离开，则会让控制面板滑动位置出错</del>
 * KDE4.9 上未知原因崩溃
+* Ubuntu不支持`QSystemTrayIcon`导致软件不能正常退出
 
 ## LICENSE
 本项目基于MIT协议发布

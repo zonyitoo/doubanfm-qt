@@ -4,13 +4,13 @@
 
 ### 注意
 
-#. Ubuntu由于不支持Qt的`QSystemTrayIcon`，直接使用会有Bug，**必须**在生成`Makefile`前在`doubanfm-qt.pro`中删除`DEFINES += WITH_SYSTEM_TRAY_ICON`！
+* Ubuntu由于不支持Qt的`QSystemTrayIcon`，直接使用会有Bug，**必须**在生成`Makefile`前在`doubanfm-qt.pro`中删除`DEFINES += WITH_SYSTEM_TRAY_ICON`！
 
-#. KDE用户在打开时载入会出现`SIGSEGM`，目前*原因未知*，如果有人知道解决方法请告诉我谢谢！Issues中有提及。
+* KDE用户在打开时载入会出现`SIGSEGM`，目前*原因未知*，如果有人知道解决方法请告诉我谢谢！Issues中有提及。
 
-#. `Ctrl`+`W`后软件界面消失为**正常行为**，只要重新点图标（启动器）就可以唤醒。若强行Kill会导致此功能失效，需要手动删除`/tmp/QDoubanFM_LocalSocket`，或者会在其他位置，不同发行版可能位置不同。
+* `Ctrl`+`W`后软件界面消失为**正常行为**，只要重新点图标（启动器）就可以唤醒。若强行Kill会导致此功能失效，需要手动删除`/tmp/QDoubanFM_LocalSocket`，或者会在其他位置，不同发行版可能位置不同。
 
-#. Windows及OSX上的有兼容性问题，但功能大致正常。
+* Windows及OSX上的有兼容性问题，但功能大致正常。
 
 [API接口文档](https://github.com/zonyitoo/doubanfm-qt/wiki/%E8%B1%86%E7%93%A3FM-API)
 

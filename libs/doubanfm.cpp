@@ -8,9 +8,9 @@
 
 #include <algorithm>
 
-static const QString DOUBAN_FM_API_ADDR = "http://www.douban.com/j/app/radio/people";
-static const QString DOUBAN_FM_API_CHANNEL = "http://www.douban.com/j/app/radio/channels";
-static const QString DOUBAN_FM_LOGIN = "http://www.douban.com/j/app/login";
+static const QString DOUBAN_FM_API_ADDR = "https://www.douban.com/j/app/radio/people";
+static const QString DOUBAN_FM_API_CHANNEL = "https://www.douban.com/j/app/radio/channels";
+static const QString DOUBAN_FM_LOGIN = "https://www.douban.com/j/app/login";
 
 DoubanFM::DoubanFM(QObject *parent) : QObject(parent) {
     for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)

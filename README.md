@@ -5,6 +5,7 @@
 [API接口文档](https://github.com/zonyitoo/doubanfm-qt/wiki/%E8%B1%86%E7%93%A3FM-API)
 
 ## 依赖
+* qt5-base
 * libqt5network5 libqt5gui5 libqt5core5 libqt5multimedia5 qtmultimedia5-dev
 * gstreamer0.10-fluendo-mp3
 * libpulse0 libpulse-dev
@@ -59,10 +60,11 @@ yaourt -S qdoubanfm-git
 * <del>后台播放 + 托盘提示</del>
 * <del>歌词</del>
 
-## BUGS
+## KNOWN BUGS
 * <del>在长时间暂停后重启播放会崩溃</del>
 * <del>在网络不好时卡住会崩溃</del>
 * <del>动画有Bug，若打开了频道界面然后鼠标离开，则会让控制面板滑动位置出错</del>
+* KDE4.9 上未知原因崩溃
 
 ## LICENSE
 本项目基于MIT协议发布

@@ -22,6 +22,8 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
         }
         if (player.playlist() == nullptr) {
             connect(playlist, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+            // FIXME: Crash on KDE4.9 libkdecore.so.5
+            // Segmentation Fault by unknown reason
             player.setPlaylist(playlist);
         }
         if (player.state() != QMediaPlayer::PlayingState)

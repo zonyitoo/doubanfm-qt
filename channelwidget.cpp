@@ -59,7 +59,7 @@ ChannelWidget::~ChannelWidget()
     delete ui;
 }
 
-void ChannelWidget::on_nextButton_clicked()
+void ChannelWidget::on_prevButton_clicked()
 {
     if (ui->slider->currentIndex() == 0) return;
     if (!doubanfm.hasLogin() && ui->slider->currentIndex() == 1) return;
@@ -70,7 +70,7 @@ void ChannelWidget::on_nextButton_clicked()
     pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
-void ChannelWidget::on_prevButton_clicked()
+void ChannelWidget::on_nextButton_clicked()
 {
     if (ui->slider->currentIndex() == ui->slider->numberOfChildren() - 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() + 1);

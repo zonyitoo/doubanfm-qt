@@ -21,7 +21,7 @@ public:
     ~ChannelWidget();
 
     void leaveEvent(QEvent *ev);
-
+    void wheelEvent(QWheelEvent *ev);
 public slots:
     void setChannels(const QList<DoubanChannel>& channels);
 

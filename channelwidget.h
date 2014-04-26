@@ -37,7 +37,6 @@ private slots:
 private:
     Ui::ChannelWidget *ui;
 
-    QObjectList labels;
     DoubanFM& doubanfm;
     QList<DoubanChannel> channels;
     qint32 channel;

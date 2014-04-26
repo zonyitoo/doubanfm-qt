@@ -14,15 +14,19 @@ HorizontalSlider::HorizontalSlider(QWidget *parent) :
     container->setLayout(hbox);
     container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     curIndex = 0;
+    items = nullptr;
 }
 
 HorizontalSlider::~HorizontalSlider() {
+    delete items;
     delete hbox;
 }
 
-void HorizontalSlider::setChildren(const QObjectList& list) {
+void HorizontalSlider::setChildren(QList<QWidget*>* list) {
+    if(items != nullptr) delete items;
+    items = list;
     int accu = 0;
-    for (QObject const *object : list) {
+    for (QObject const *object : *list) {
         hbox->addWidget((QWidget *) object);
         widths.append(((QWidget *) object)->width());
         accu += ((QWidget *) object)->width();

@@ -64,9 +64,9 @@ void ChannelWidget::on_prevButton_clicked()
     if (ui->slider->currentIndex() == 0) return;
     if (!doubanfm.hasLogin() && ui->slider->currentIndex() == 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() - 1);
-    QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);
+    QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex() + 1]);
     pnt->setText(pnt->text().replace("white", "grey").replace("<b>", "<a>").replace("</b>", "</a>"));
-    pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex() - 1]);
+    pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);
     pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
@@ -74,9 +74,9 @@ void ChannelWidget::on_nextButton_clicked()
 {
     if (ui->slider->currentIndex() == ui->slider->numberOfChildren() - 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() + 1);
-    QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);
+    QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex() - 1]);
     pnt->setText(pnt->text().replace("white", "grey").replace("<b>", "<a>").replace("</b>", "</a>"));
-    pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex() + 1]);
+    pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);
     pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
@@ -105,4 +105,12 @@ void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
 
 void ChannelWidget::leaveEvent(QEvent *) {
     emit mouseLeave();
+}
+
+void ChannelWidget::wheelEvent(QWheelEvent *ev){
+    if(ev->angleDelta().y()<0){
+        on_nextButton_clicked();
+    }else{
+        on_prevButton_clicked();
+    }
 }

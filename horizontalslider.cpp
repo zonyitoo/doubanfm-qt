@@ -40,6 +40,8 @@ void HorizontalSlider::scrollToIndex(int index) {
     if (index == curIndex) return;
     if (index > numberOfChildren() - 1) return;
 
+    this->curIndex = index;
+
     QPropertyAnimation *anim = new QPropertyAnimation(container, "geometry");
     anim->setDuration(300);
     anim->setStartValue(container->geometry());
@@ -54,7 +56,6 @@ void HorizontalSlider::scrollToIndex(int index) {
     anim->setEndValue(endval);
     anim->setEasingCurve(QEasingCurve::OutCubic);
     connect(anim, &QPropertyAnimation::finished, [=] () {
-        this->curIndex = index;
         emit scrollFinished();
     });
     anim->start(QAbstractAnimation::DeleteWhenStopped);

@@ -7,6 +7,8 @@
 #include "mainwidget.h"
 #include "libs/doubanplayer.h"
 
+#define HIGHTLIGHT_STYLE  "font-size:20px;font-style:bold;color:white;"
+#define DARK_STYLE  "font-size:15px;font-style:normal; color:grey"
 ChannelWidget::ChannelWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ChannelWidget),
@@ -40,14 +42,15 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
     if (!doubanfm.hasLogin() && channel == -3) channel = 1;
     settings.endGroup();
 
-    connect(&doubanfm, &DoubanFM::loginSucceed, [this] (const DoubanUser &) {
-        if (ui->slider->currentIndex() != 0)
-            this->ui->slider->scrollToIndex(0);
-        else
+    connect(&doubanfm, &DoubanFM::logoffSucceed, [this] () {
+        if (ui->slider->currentIndex() == 0){
+            ui->slider->currentObject()->setStyleSheet(DARK_STYLE);
+            ui->slider->scrollToIndex(1);
+            ui->slider->currentObject()->setStyleSheet(HIGHTLIGHT_STYLE);
+        }else
             doubanfm.getNewPlayList(-3);
-        qDebug() << "LoginSucceed. Refreshing Playlist";
-        QLabel *pnt = static_cast<QLabel *>(labels[0]);
-        pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
+        qDebug() << "LoginoffSucceed. Refreshing Playlist";
+
     });
 
     connect(this, SIGNAL(channelChanged(qint32)),
@@ -64,43 +67,45 @@ void ChannelWidget::on_prevButton_clicked()
     if (ui->slider->currentIndex() == 0) return;
     if (!doubanfm.hasLogin() && ui->slider->currentIndex() == 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() - 1);
-    QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex() + 1]);
-    pnt->setText(pnt->text().replace("white", "grey").replace("<b>", "<a>").replace("</b>", "</a>"));
-    pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);
-    pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
+
+    ui->slider->nextObject()->setStyleSheet(DARK_STYLE);
+    ui->slider->currentObject()->setStyleSheet(HIGHTLIGHT_STYLE);
+
 }
 
 void ChannelWidget::on_nextButton_clicked()
 {
     if (ui->slider->currentIndex() == ui->slider->numberOfChildren() - 1) return;
     ui->slider->scrollToIndex(ui->slider->currentIndex() + 1);
-    QLabel *pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex() - 1]);
-    pnt->setText(pnt->text().replace("white", "grey").replace("<b>", "<a>").replace("</b>", "</a>"));
-    pnt = static_cast<QLabel *>(labels[ui->slider->currentIndex()]);
-    pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
+
+    ui->slider->preObject()->setStyleSheet(DARK_STYLE);
+    ui->slider->currentObject()->setStyleSheet(HIGHTLIGHT_STYLE);
+
 }
 
 void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
     this->channels = channels;
     int curindex = 0;
+   QList< QWidget*>* labels= new QList<QWidget*>();
     for (int i = 0; i < channels.size(); ++ i) {
         const DoubanChannel& channel = channels[i];
         QLabel *label = new QLabel(ui->slider);
         QFont font("文泉驿微米黑", 12);
         font.setStyleStrategy(QFont::PreferAntialias);
         label->setFont(font);
-        label->setText(QString("<font color='grey'><a>") +
-                        channel.name + QString("</a></font>MHz"));
+        label->setText(channel.name+" MHz");
+        label->setStyleSheet(DARK_STYLE);
         label->setMinimumSize(ui->slider->width() / 3, ui->slider->height());
         label->setMaximumSize(ui->slider->width() / 3, ui->slider->height());
         label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        labels.append(label);
+        labels->append(label);
         if (channel.channel_id == this->channel) curindex = i;
     }
     ui->slider->setChildren(labels);
     ui->slider->scrollToIndex(curindex);
-    QLabel *pnt = static_cast<QLabel *>(labels[curindex]);
-    pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
+    ui->slider->currentObject()->setStyleSheet(HIGHTLIGHT_STYLE);
+
+    //pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 
 void ChannelWidget::leaveEvent(QEvent *) {

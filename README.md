@@ -6,7 +6,7 @@
 
 <a href='http://me.alipay.com/zonyitoo'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a>
 
-[支付宝](https://mobilecodec.alipay.com/show.htm?code=apg27kri1rgm7oc1a9&picSize=S)
+![支付宝](https://mobilecodec.alipay.com/show.htm?code=apg27kri1rgm7oc1a9&picSize=S)
 
 ### 注意
 

@@ -2,7 +2,11 @@
 
 使用Qt5编写的DoubanFM客户端
 
-如果你喜欢本项目，<a href='http://me.alipay.com/zonyitoo'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a> 给我买瓶啤酒喝吧;)
+如果你喜欢本项目的话，给我买瓶啤酒喝好不;)
+
+<a href='http://me.alipay.com/zonyitoo'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a>
+
+[支付宝](https://mobilecodec.alipay.com/show.htm?code=apg27kri1rgm7oc1a9&picSize=S)
 
 ### 注意
 

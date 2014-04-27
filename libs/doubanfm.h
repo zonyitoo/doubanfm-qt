@@ -30,7 +30,7 @@ public:
     void getChannels();
 
     void setUser(const DoubanUser& user);
-    const DoubanUser * const getUser() const;
+    const DoubanUser * getUser() const;
     bool hasLogin();
     
 signals:

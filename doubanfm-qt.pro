@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     triggerarea.cpp \
     albumwidget.cpp \
     libs/doubanplayer.cpp \
-    settingdialog.cpp
+    settingdialog.cpp \
+    plugins/doubanfmplugin.cpp
 
 HEADERS  += mainwidget.h \
     channelwidget.h \
@@ -48,7 +49,9 @@ HEADERS  += mainwidget.h \
     channelwidgettrigger.h \
     albumwidget.h \
     libs/doubanplayer.h \
-    settingdialog.h
+    settingdialog.h \
+    plugins/doubanfmplugin.h \
+    plugins/plugin.hpp
 
 !win32:!macx {
     QT += dbus
@@ -81,3 +84,11 @@ RESOURCES += \
     imgs.qrc
 
 CONFIG += c++11
+
+win32 {
+    RC_FILE = winrc.rc
+}
+
+macx {
+    ICON = QDoubanFM.icns
+}

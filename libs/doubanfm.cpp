@@ -162,7 +162,7 @@ void DoubanFM::setUser(const DoubanUser &user) {
     }
 }
 
-const DoubanUser * const DoubanFM::getUser() const {
+const DoubanUser *DoubanFM::getUser() const {
     return _user.get();
 }
 

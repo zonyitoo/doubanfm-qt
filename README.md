@@ -2,6 +2,8 @@
 
 使用Qt5编写的DoubanFM客户端
 
+如果你喜欢本项目，<a href='http://me.alipay.com/zonyitoo'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a> 给我买瓶啤酒喝吧;)
+
 ### 注意
 
 * Ubuntu由于不支持Qt的`QSystemTrayIcon`，直接使用会有Bug，**必须**在生成`Makefile`前在`doubanfm-qt.pro`中删除`DEFINES += WITH_SYSTEM_TRAY_ICON`！

@@ -17,7 +17,7 @@ static bool DBUS_NOTIFY_PROPERTIES_CHANGED(QString iface, QVariantMap changed, Q
 }
 
 DoubanMprisPlugin::DoubanMprisPlugin(QObject *parent) :
-    QObject(parent), player(DoubanPlayer::getInstance())
+    DoubanFMPlugin(parent)
 {
     QDBusConnection con = QDBusConnection::sessionBus();
     //con.registerService("org.mpris.MediaPlayer2");

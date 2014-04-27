@@ -3,10 +3,11 @@
 
 #include <QObject>
 #include "libs/doubanplayer.h"
+#include <plugins/doubanfmplugin.h>
 #include <QDBusMessage>
 #include <memory>
 
-class DoubanMprisPlugin : public QObject
+class DoubanMprisPlugin : public DoubanFMPlugin
 {
     Q_OBJECT
 public:

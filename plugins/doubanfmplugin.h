@@ -22,7 +22,6 @@ protected:
 
 class DoubanFMPluginLoader : public QObject {
 public:
-    DoubanFMPluginLoader(QObject *parent = nullptr);
     ~DoubanFMPluginLoader();
 
     void regPlugin(QString name, const DoubanFMPlugin * plugin);
@@ -30,6 +29,7 @@ public:
 
     static DoubanFMPluginLoader & getInstance();
 private:
+    DoubanFMPluginLoader(QObject *parent = nullptr);
     QMap<QString, const DoubanFMPlugin *> plugins;
 };
 

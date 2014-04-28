@@ -1,8 +1,6 @@
 #include "doubanfmplugin.h"
 #include <QDebug>
 
-QMap<QString, const DoubanFMPlugin *> plugins = QMap<QString, const DoubanFMPlugin *>();
-
 DoubanFMPlugin::DoubanFMPlugin(QObject *parent) :
     QObject(parent),
     player(DoubanPlayer::getInstance())

@@ -64,6 +64,13 @@ DoubanPlayer::DoubanPlayer(QObject *parent) :
     connect(&player, &QMediaPlayer::stateChanged, [this] (QMediaPlayer::State s) { emit this->stateChanged(s); });
 }
 
+DoubanPlayer::~DoubanPlayer() {
+    player.disconnect();
+    if (player.state() != QMediaPlayer::StoppedState) {
+        player.stop();
+    }
+}
+
 void DoubanPlayer::currentIndexChanged(int position) {
     /*if (position < 0) {
         if (songs.size() > 0)

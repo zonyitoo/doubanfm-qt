@@ -20,6 +20,7 @@ class DoubanPlayer : public QObject
     Q_PROPERTY(qint32 kbps READ kbps WRITE setKbps)
 public:
     static DoubanPlayer& getInstance();
+    ~DoubanPlayer();
 
     qint64 position() const;
     qint64 duration() const;

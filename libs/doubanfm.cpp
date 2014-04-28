@@ -33,6 +33,8 @@ DoubanFM::DoubanFM(QObject *parent) : QObject(parent) {
 }
 
 DoubanFM::~DoubanFM() {
+    this->disconnect();
+
     for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
         if (_managers[i]) delete _managers[i];
 

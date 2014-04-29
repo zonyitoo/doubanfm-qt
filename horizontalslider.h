@@ -12,30 +12,23 @@ public:
     explicit HorizontalSlider(QWidget *parent = 0);
     ~HorizontalSlider();
 
-    void setChildren(QList<QWidget*> *list);
+    void setChildren(const QList<QWidget *>& list);
+    void addChild(QWidget *widget);
 
     void scrollToIndex(int index);
     int numberOfChildren();
 
+    void clear();
+
     int currentIndex();
-    QWidget* currentObject(){  return (*items)[curIndex];    }
-    QWidget* preObject(){
-        if(curIndex>0)
-            return (*items)[curIndex - 1];
-        else
-            return nullptr;
-    }
-    QWidget* nextObject(){
-        if(curIndex<items->length()-1)
-            return (*items)[curIndex + 1];
-        else
-            return nullptr;
-    }
+    QWidget *currentObject() const;
+    QWidget *preObject() const;
+    QWidget *nextObject() const;
 
 private:
     QHBoxLayout *hbox;
     QWidget *container;
-    QList<QWidget*>* items;
+    QList<QWidget *> items;
     QList<int> widths;
     int curIndex;
 

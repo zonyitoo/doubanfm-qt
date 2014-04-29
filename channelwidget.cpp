@@ -47,10 +47,10 @@ ChannelWidget::ChannelWidget(QWidget *parent) :
             ui->slider->currentObject()->setStyleSheet(DARK_STYLE);
             ui->slider->scrollToIndex(1);
             ui->slider->currentObject()->setStyleSheet(HIGHTLIGHT_STYLE);
-        }else
-            doubanfm.getNewPlayList(-3);
-        qDebug() << "LoginoffSucceed. Refreshing Playlist";
-
+        } else {
+            doubanfm.getNewPlayList(channel);
+        }
+        qDebug() << "Logoff successfully. Refreshing playlist";
     });
 
     connect(this, SIGNAL(channelChanged(qint32)),
@@ -86,11 +86,11 @@ void ChannelWidget::on_nextButton_clicked()
 void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
     this->channels = channels;
     int curindex = 0;
-   QList< QWidget*>* labels= new QList<QWidget*>();
+    QList<QWidget *> labels;
     for (int i = 0; i < channels.size(); ++ i) {
         const DoubanChannel& channel = channels[i];
         QLabel *label = new QLabel(ui->slider);
-        QFont font("文泉驿微米黑", 12);
+        QFont font("Sans", 12);
         font.setStyleStrategy(QFont::PreferAntialias);
         label->setFont(font);
         label->setText(channel.name+" MHz");
@@ -98,7 +98,7 @@ void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
         label->setMinimumSize(ui->slider->width() / 3, ui->slider->height());
         label->setMaximumSize(ui->slider->width() / 3, ui->slider->height());
         label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        labels->append(label);
+        labels.append(label);
         if (channel.channel_id == this->channel) curindex = i;
     }
     ui->slider->setChildren(labels);

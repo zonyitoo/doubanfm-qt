@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     albumwidget.cpp \
     libs/doubanplayer.cpp \
     settingdialog.cpp \
-    plugins/doubanfmplugin.cpp
+    plugins/doubanfmplugin.cpp \
+    libs/doubanchannelmanager.cpp
 
 HEADERS  += mainwidget.h \
     channelwidget.h \
@@ -51,7 +52,8 @@ HEADERS  += mainwidget.h \
     libs/doubanplayer.h \
     settingdialog.h \
     plugins/doubanfmplugin.h \
-    plugins/plugin.hpp
+    plugins/plugin.hpp \
+    libs/doubanchannelmanager.h
 
 !win32:!macx {
     QT += dbus

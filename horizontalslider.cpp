@@ -4,32 +4,39 @@
 #include <QDebug>
 
 HorizontalSlider::HorizontalSlider(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent), hbox(nullptr)
 {
     container = new QWidget(this);
+    container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    curIndex = 0;
+}
+
+HorizontalSlider::~HorizontalSlider() {
+    delete container;
+}
+
+void HorizontalSlider::clear() {
+    if (hbox != nullptr) {
+        container->setLayout(nullptr);
+        delete hbox;
+    }
     hbox = new QHBoxLayout(container);
     hbox->setMargin(0);
     hbox->setSpacing(0);
     hbox->setContentsMargins(0, 0, 0, 0);
     container->setLayout(hbox);
-    container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    curIndex = 0;
-    items = nullptr;
 }
 
-HorizontalSlider::~HorizontalSlider() {
-    delete items;
-    delete hbox;
-}
+void HorizontalSlider::setChildren(const QList<QWidget *>& list) {
+    clear();
 
-void HorizontalSlider::setChildren(QList<QWidget*>* list) {
-    if(items != nullptr) delete items;
     items = list;
     int accu = 0;
-    for (QObject const *object : *list) {
-        hbox->addWidget((QWidget *) object);
-        widths.append(((QWidget *) object)->width());
-        accu += ((QWidget *) object)->width();
+    for (QWidget *object : list) {
+        object->setParent(container);
+        hbox->addWidget(object);
+        widths.append(object->width());
+        accu += object->width();
     }
     container->setMaximumWidth(accu);
     container->setMinimumWidth(accu);
@@ -38,6 +45,14 @@ void HorizontalSlider::setChildren(QList<QWidget*>* list) {
     curIndex = 0;
     container->move(QPoint(this->width() / 2 - widths[0] / 2, 0));
     refresh();
+}
+
+void HorizontalSlider::addChild(QWidget *widget) {
+    hbox->addWidget(widget);
+    widths.append(widget->width());
+    auto orig_width = container->maximumWidth();
+    container->setMaximumWidth(orig_width + widget->width());
+    container->setMinimumWidth(orig_width + widget->width());
 }
 
 void HorizontalSlider::scrollToIndex(int index) {
@@ -66,7 +81,7 @@ void HorizontalSlider::scrollToIndex(int index) {
 }
 
 int HorizontalSlider::numberOfChildren() {
-    return widths.size();
+    return items.size();
 }
 
 int HorizontalSlider::currentIndex() {
@@ -75,4 +90,16 @@ int HorizontalSlider::currentIndex() {
 
 void HorizontalSlider::refresh() {
 
+}
+
+QWidget *HorizontalSlider::currentObject() const {
+    return items[curIndex];
+}
+
+QWidget *HorizontalSlider::preObject() const {
+    return items[curIndex - 1];
+}
+
+QWidget *HorizontalSlider::nextObject() const {
+    return items[curIndex + 1];
 }

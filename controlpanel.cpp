@@ -134,6 +134,13 @@ ControlPanel::ControlPanel(QWidget *parent) :
         ui->trashButton->setEnabled(can);
         ui->likeButton->setEnabled(can);
     });
+    connect(&doubanfm,&DoubanFM::needRelogin,[this] () {
+
+        settingDialog->show();
+    });
+    connect(settingDialog,&SettingDialog::finished,[=] (int result) {
+        qDebug()<<"accepted:"<<player.channel()<<result;
+    });
     /*
     connect(ui->lyricWidgetTriggerLeft, &LyricWidgetTriggerLeft::enter, [this] () {
         QPropertyAnimation *anim = new QPropertyAnimation(ui->albumImg, "geometry");

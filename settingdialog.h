@@ -17,7 +17,8 @@ class SettingDialog : public QDialog
 public:
     explicit SettingDialog(QWidget *parent = 0);
     ~SettingDialog();
-
+public slots:
+        void show();
 private slots:
     void setUserIcon(const QPixmap& pixmap);
 

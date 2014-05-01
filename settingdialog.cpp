@@ -20,16 +20,7 @@ SettingDialog::SettingDialog(QWidget *parent) :
     kbpsGroup->addButton(ui->kbps192);
     connect(kbpsGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(kbps_radio_button_clicked(QAbstractButton*)));
 
-    if (doubanfm.hasLogin()) {
-        auto user = doubanfm.getUser();
-        ui->email->setEnabled(false);
-        ui->password->setEnabled(false);
-        ui->loginButton->setText(tr("登出"));
-        ui->email->setText(user->email);
-        ui->password->setText(user->password);
-        ui->usernameLabel->setText(user->user_name);
-        userInfoGetter->get(QNetworkRequest(QUrl("http://api.douban.com/people/" + user->user_id)));
-    }
+
 
     connect(userIconGetter, &QNetworkAccessManager::finished, [=] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
@@ -153,4 +144,27 @@ void SettingDialog::kbps_radio_button_clicked(QAbstractButton *button) {
     else if (button == ui->kbps192) {
         player.setKbps(192);
     }
+}
+
+void SettingDialog::show(){
+    auto user = doubanfm.getUser();
+    if (doubanfm.hasLogin()) {
+
+        ui->email->setEnabled(false);
+        ui->password->setEnabled(false);
+        ui->loginButton->setText(tr("登出"));
+        ui->email->setText(user->email);
+        ui->password->setText(/*user->password*/"****************");
+        ui->usernameLabel->setText(user->user_name);
+        userInfoGetter->get(QNetworkRequest(QUrl("http://api.douban.com/people/" + user->user_id)));
+    }else{
+         if(user)
+             ui->email->setText(user->email);
+
+        ui->email->setEnabled(true);
+        ui->password->setEnabled(true);
+        ui->loginButton->setEnabled(true);
+        ui->loginButton->setText(tr("登录"));
+    }
+    QWidget::show();
 }

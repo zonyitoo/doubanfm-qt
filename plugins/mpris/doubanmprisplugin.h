@@ -50,9 +50,6 @@ public slots:
 
     void Quit();
     void Raise();
-
-private:
-    DoubanPlayer& player;
 };
 
 #endif // DOUBANMPRISPLUGIN_H

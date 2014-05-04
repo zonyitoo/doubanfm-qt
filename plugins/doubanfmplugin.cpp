@@ -7,6 +7,9 @@ DoubanFMPlugin::DoubanFMPlugin(QObject *parent) :
 {
 }
 
+DoubanFMPlugin::~DoubanFMPlugin() {
+}
+
 DoubanFMPluginLoader::DoubanFMPluginLoader(QObject *parent)
     : QObject(parent) {
 

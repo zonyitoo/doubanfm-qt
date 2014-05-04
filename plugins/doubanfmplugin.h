@@ -10,7 +10,7 @@ class DoubanFMPlugin : public QObject
     Q_OBJECT
 public:
     explicit DoubanFMPlugin(QObject *parent = nullptr);
-    virtual ~DoubanFMPlugin() = default;
+    virtual ~DoubanFMPlugin();
 
 signals:
 

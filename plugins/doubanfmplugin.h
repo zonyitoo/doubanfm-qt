@@ -34,7 +34,8 @@ private:
 };
 
 #define REGISTER_PLUGIN(name, cname) \
-    DoubanFMPluginLoader::getInstance().regPlugin(name, new cname())
+    DoubanFMPluginLoader::getInstance().regPlugin(name, \
+        new cname(&DoubanFMPluginLoader::getInstance()))
 
 #define REMOVE_PLUGIN(name) \
     DoubanFMPluginLoader::getInstance().rmPlugin(name)

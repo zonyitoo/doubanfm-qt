@@ -4,6 +4,7 @@
 #include "plugins/doubanfmplugin.h"
 
 #ifdef WITH_MPRIS_PLUGIN
+#pragma message("Enabled MPRIS plugin")
 #include "plugins/mpris/doubanmprisplugin.h"
 #endif
 

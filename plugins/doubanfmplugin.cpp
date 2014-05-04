@@ -31,6 +31,7 @@ void DoubanFMPluginLoader::regPlugin(QString name, const DoubanFMPlugin *plugin)
     if (itr != plugins.end()) {
         qWarning() << "Plugin name \"" << name << "\" already exists";
     } else {
+        qWarning() << "Loaded " << name << " plugin";
         plugins[name] = plugin;
     }
 }

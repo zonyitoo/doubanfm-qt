@@ -12,6 +12,20 @@ TARGET = doubanfm-qt
 macx:TARGET = DoubanFM-Qt
 TEMPLATE = app
 
+INCLUDEPATH+=.
+TMPDIR=tmp
+CONFIG(release,debug|release){
+	TMPDIR=release_$${TMPDIR}
+}
+MOC_DIR=$${TMPDIR}/moc
+OBJECTS_DIR=$${TMPDIR}/obj
+UI_DIR=$${TMPDIR}/ui
+COMPILER=$$[QMAKE_SPEC]
+equals(COMPILER,"win32-msvc2012"){
+	DEFINES+=MSVC2012
+}
+
+
 # Don't open it if you are using Ubuntu
 DEFINES += WITH_SYSTEM_TRAY_ICON
 

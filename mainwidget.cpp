@@ -7,6 +7,12 @@
 #include <QParallelAnimationGroup>
 #include <QMenu>
 
+#ifdef MSVC2012
+#include "STRINGS_GBK.H"
+#else
+#include "STRINGS_UTF8.H"
+#endif
+
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWidget),
@@ -76,9 +82,9 @@ MainWidget::MainWidget(QWidget *parent) :
                 this->show();
         });
         QMenu *trayMenu = new QMenu(this);
-        auto _openAction = trayMenu->addAction("打开主界面");
+		auto _openAction = trayMenu->addAction(STRINGS_OPENMAINUI);
         trayMenu->addSeparator();
-        auto _closeAction = trayMenu->addAction("退出");
+        auto _closeAction = trayMenu->addAction(STRINGS_EXIT);
         connect(trayMenu, &QMenu::triggered, [this, _openAction, _closeAction] (QAction *action) {
             if (action == _openAction)
                 this->show();

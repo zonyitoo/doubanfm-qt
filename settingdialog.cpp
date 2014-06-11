@@ -6,6 +6,13 @@
 #include <QtXml/QDomDocument>
 #include "libs/doubanplayer.h"
 
+#ifdef MSVC2012
+#include "STRINGS_GBK.H"
+#else
+#include "STRINGS_UTF8.H"
+#endif
+
+
 SettingDialog::SettingDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingDialog),
@@ -131,7 +138,7 @@ void SettingDialog::on_loginButton_clicked()
         ui->password->setEnabled(true);
         ui->loginButton->setText(tr("登录"));
         ui->userIcon->setPixmap(QPixmap(":/img/user_man_circle.png"));
-        ui->usernameLabel->setText(tr("未登录"));
+        ui->usernameLabel->setText(tr(STRINGS_NOTLOGIN));
     }
 }
 

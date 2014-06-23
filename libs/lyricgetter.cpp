@@ -36,13 +36,9 @@ LyricGetter::LyricGetter(QObject *parent) :
             reply->deleteLater();
             return;
         }
-        //QTextCodec *codec = QTextCodec::codecForName("utf-8");// 兼容显示中文歌词
-        //QString allLyric = codec->toUnicode(reply->readAll());
-        //QTextStream stream(&allLyric);
         QTextStream stream(reply->readAll());
         QTextCodec *codec = QTextCodec::codecForName("utf-8");
         stream.setCodec(codec);
-        //stream.setAutoDetectUnicode(true);
         emit gotLyric(QLyricParser::parse(stream));
 
         reply->deleteLater();

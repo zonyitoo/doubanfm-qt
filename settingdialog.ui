@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>设置</string>
+   <string>Settings</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -29,7 +29,7 @@
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>基本</string>
+       <string>Basic</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
@@ -40,7 +40,7 @@
           </font>
          </property>
          <property name="title">
-          <string>码率</string>
+          <string>Bit rate</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <property name="leftMargin">
@@ -85,7 +85,7 @@
              </font>
             </property>
             <property name="text">
-             <string>注意：非Pro用户设置将无效</string>
+             <string>Notice: Invalid for no-Pro users</string>
             </property>
            </widget>
           </item>
@@ -109,7 +109,7 @@
      </widget>
      <widget class="QWidget" name="loginTab">
       <attribute name="title">
-       <string>用户</string>
+       <string>User</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
@@ -157,7 +157,7 @@
            <item>
             <widget class="QLabel" name="usernameLabel">
              <property name="text">
-              <string>未登录</string>
+              <string>Not logged in</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -187,7 +187,7 @@
           <set>Qt::ImhEmailCharactersOnly</set>
          </property>
          <property name="placeholderText">
-          <string>邮箱</string>
+          <string>E-mail address</string>
          </property>
         </widget>
        </item>
@@ -197,14 +197,14 @@
           <enum>QLineEdit::Password</enum>
          </property>
          <property name="placeholderText">
-          <string>密码</string>
+          <string>Password</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="loginButton">
          <property name="text">
-          <string>登录</string>
+          <string>Log in</string>
          </property>
          <property name="default">
           <bool>true</bool>

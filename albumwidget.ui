@@ -31,7 +31,7 @@
     <string/>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -81,7 +81,7 @@
 border-radius: 2px;</string>
         </property>
         <property name="text">
-         <string>&lt;font color=&quot;white&quot;&gt;&amp;nbsp;&amp;nbsp;查看专辑信息&amp;nbsp;&amp;nbsp;&lt;/font&gt;</string>
+         <string>&lt;font color=&quot;white&quot;&gt;&amp;nbsp;&amp;nbsp;View album info&amp;nbsp;&amp;nbsp;&lt;/font&gt;</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

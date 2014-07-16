@@ -6,11 +6,6 @@
 #include <QtXml/QDomDocument>
 #include "libs/doubanplayer.h"
 
-#ifdef MSVC2012
-#include "STRINGS_GBK.H"
-#else
-#include "STRINGS_UTF8.H"
-#endif
 
 
 SettingDialog::SettingDialog(QWidget *parent) :
@@ -31,7 +26,7 @@ SettingDialog::SettingDialog(QWidget *parent) :
         auto user = doubanfm.getUser();
         ui->email->setEnabled(false);
         ui->password->setEnabled(false);
-        ui->loginButton->setText(tr("登出"));
+        ui->loginButton->setText(tr("Log out"));
         ui->email->setText(user->email);
         ui->password->setText(user->password);
         ui->usernameLabel->setText(user->user_name);
@@ -79,7 +74,7 @@ SettingDialog::SettingDialog(QWidget *parent) :
 
     connect(&doubanfm, &DoubanFM::loginSucceed, [=] (const DoubanUser &user) {
         userInfoGetter->get(QNetworkRequest(QUrl("http://api.douban.com/people/" + user.user_id)));
-        ui->loginButton->setText(tr("登出"));
+        ui->loginButton->setText(tr("Log out"));
         ui->usernameLabel->setText(user.user_name);
         ui->loginButton->setEnabled(true);
     });
@@ -128,7 +123,7 @@ void SettingDialog::on_loginButton_clicked()
         ui->email->setEnabled(false);
         ui->password->setEnabled(false);
         ui->loginButton->setEnabled(false);
-        ui->loginButton->setText(tr("登录中..."));
+        ui->loginButton->setText(tr("Logging in..."));
     }
     else {
         doubanfm.userLogout();
@@ -136,9 +131,9 @@ void SettingDialog::on_loginButton_clicked()
         ui->password->setText("");
         ui->email->setEnabled(true);
         ui->password->setEnabled(true);
-        ui->loginButton->setText(tr("登录"));
+        ui->loginButton->setText(tr("Log in"));
         ui->userIcon->setPixmap(QPixmap(":/img/user_man_circle.png"));
-        ui->usernameLabel->setText(tr(STRINGS_NOTLOGIN));
+        ui->usernameLabel->setText(tr("Not logged in"));
     }
 }
 
@@ -146,7 +141,7 @@ void SettingDialog::timer_event() {
     ui->email->setEnabled(true);
     ui->password->setEnabled(true);
     ui->loginButton->setEnabled(true);
-    ui->loginButton->setText(tr("登录"));
+    ui->loginButton->setText(tr("Log in"));
 }
 
 void SettingDialog::kbps_radio_button_clicked(QAbstractButton *button) {

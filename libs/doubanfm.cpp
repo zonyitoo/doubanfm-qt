@@ -60,7 +60,7 @@ DoubanFM& DoubanFM::getInstance() {
 void DoubanFM::userLogin(const QString &email, const QString &password) {
     QString args = QString("app_name=radio_desktop_win&version=100")
             + QString("&email=") + email
-            + QString("&password=") + password;
+            + QString("&password=") + QUrl::toPercentEncoding(password);
     QNetworkRequest request;
     request.setHeader(QNetworkRequest::ContentTypeHeader,
                       QVariant("application/x-www-form-urlencoded"));
@@ -80,7 +80,7 @@ void DoubanFM::userReLogin() {
     if (!_user) return;
     QString args = QString("app_name=radio_desktop_win&version=100")
             + QString("&email=") + _user->email
-            + QString("&password=") + _user->password;
+            + QString("&password=") + QUrl::toPercentEncoding(_user->password);
     QNetworkRequest request;
     request.setHeader(QNetworkRequest::ContentTypeHeader,
                       QVariant("application/x-www-form-urlencoded"));

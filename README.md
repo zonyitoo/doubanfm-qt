@@ -4,7 +4,9 @@
 
 如果你喜欢本项目的话，给我买瓶啤酒喝好不;)
 
-<a href='http://me.alipay.com/zonyitoo'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a>
+<!--支付宝已经下线了这个功能
+<a href='http://me.alipay.com/zonyitoo'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a> 
+-->
 
 ![支付宝](https://tfsimg.alipay.com/images/mobilecodec/T1nwBdXXdlXXXXXXXX)
 
@@ -80,22 +82,22 @@ DEFINES += WITH_SYSTEM_TRAY_ICON
 `F` 标记/取消标记红心
 
 ## TODO
-* <del>基本播放功能</del>
-* <del>频道选择</del>
-* <del>用户登录</del>
-* <del>快捷键</del>
-* <del>动画</del>
-* i18n支持
-* <del>Linux的播放提示 + DBus</del>
-* <del>后台播放 + 托盘提示</del>
-* <del>歌词</del>
+- [x] 基本播放功能
+- [x] 频道选择
+- [x] 用户登录
+- [x] 快捷键
+- [x] 动画
+- [ ] i18n支持
+- [x] Linux的播放提示 + DBus
+- [x] 后台播放 + 托盘提示
+- [x] 歌词
 
 ## KNOWN BUGS
-* <del>在长时间暂停后重启播放会崩溃</del>
-* <del>在网络不好时卡住会崩溃</del>
-* <del>动画有Bug，若打开了频道界面然后鼠标离开，则会让控制面板滑动位置出错</del>
-* KDE4.9 上未知原因崩溃
-* Ubuntu不支持`QSystemTrayIcon`导致软件不能正常退出
+- [x] 在长时间暂停后重启播放会崩溃
+- [x] 在网络不好时卡住会崩溃
+- [x] 动画有Bug，若打开了频道界面然后鼠标离开，则会让控制面板滑动位置出错
+- [ ] KDE4.9 上未知原因崩溃
+- [ ] Ubuntu不支持`QSystemTrayIcon`导致软件不能正常退出
 
 ## LICENSE
 本项目基于MIT协议发布

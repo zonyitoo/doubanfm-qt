@@ -21,13 +21,12 @@ DoubanFM::DoubanFM(QObject *parent) : QObject(parent) {
     DoubanUser user;
     user.email = settings.value("email", "").toString();
     user.expire = settings.value("expire", "").toString();
-    user.password = settings.value("password", "").toString();
     user.token = settings.value("token", "").toString();
     user.user_id = settings.value("user_id", "").toString();
     user.user_name = settings.value("user_name", "").toString();
     if (user.email.size() && user.expire.size()
-            && user.password.size() && user.token.size()
-            && user.user_id.size() && user.user_name.size())
+            && user.token.size() && user.user_id.size()
+             && user.user_name.size())
         this->setUser(user);
     settings.endGroup();
 }
@@ -44,7 +43,6 @@ DoubanFM::~DoubanFM() {
     settings.beginGroup("User");
     settings.setValue("email", user->email);
     settings.setValue("expire", user->expire);
-    settings.setValue("password", user->password);
     settings.setValue("token", user->token);
     settings.setValue("user_id", user->user_id);
     settings.setValue("user_name", user->user_name);
@@ -73,7 +71,6 @@ void DoubanFM::userLogin(const QString &email, const QString &password) {
     }
     _managers[8]->post(request, args.toLatin1());
     _user.reset(new DoubanUser);
-    _user->password = password;
 }
 
 void DoubanFM::userReLogin() {
@@ -160,7 +157,7 @@ void DoubanFM::setUser(const DoubanUser &user) {
 
     QTime time;
     if (_user->expire.toInt() <= time.msec()) {
-        this->userReLogin();
+        emit needRelogin();
     }
 }
 
@@ -170,9 +167,7 @@ const DoubanUser *DoubanFM::getUser() const {
 
 void DoubanFM::getNewPlayList(const qint32& channel, qint32 kbps) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
+            + getUserParam()
             + QString("&sid=&h=")
             + QString("&channel=") + QString::number(channel, 10)
             + QString("&kbps=") + QString::number(kbps, 10)
@@ -198,7 +193,7 @@ void DoubanFM::onReceivedNewList(QNetworkReply *reply) {
         if (obj["r"].toInt() != 0) {
             if (obj["err"].toString() == "expired") {
                 qDebug() << Q_FUNC_INFO << "User expired. Relogin";
-                userReLogin();
+                emit needRelogin();
             }
             else
                 qDebug() << Q_FUNC_INFO << "Err" << obj["err"].toString();
@@ -230,9 +225,7 @@ void DoubanFM::onReceivedNewList(QNetworkReply *reply) {
 
 void DoubanFM::getPlayingList(const qint32 &channel, const quint32 &sid, qint32 kbps) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
+            + getUserParam()
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
@@ -260,7 +253,7 @@ void DoubanFM::onReceivedPlayingList(QNetworkReply *reply) {
         if (obj["r"].toInt() != 0) {
             if (obj["err"].toString() == "expired") {
                 qDebug() << Q_FUNC_INFO << "User expired. Relogin";
-                userReLogin();
+                emit needRelogin();
             }
             else
                 qDebug() << Q_FUNC_INFO << "Err" << obj["err"].toString();
@@ -292,9 +285,7 @@ void DoubanFM::onReceivedPlayingList(QNetworkReply *reply) {
 
 void DoubanFM::rateSong(const quint32& sid, const qint32 &channel, const bool toRate) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
+            + getUserParam()
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
@@ -320,7 +311,7 @@ void DoubanFM::onReceivedRateSong(QNetworkReply *reply) {
         if (obj["r"].toInt() == 1) {
             if (obj["err"].toString() == "expired") {
                 qDebug() << Q_FUNC_INFO << "User expired. Relogin";
-                userReLogin();
+                emit needRelogin();
             }
             emit receivedRateSong(false);
         }
@@ -333,9 +324,7 @@ void DoubanFM::onReceivedRateSong(QNetworkReply *reply) {
 
 void DoubanFM::skipSong(const quint32 &sid, const qint32 &channel) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
+            + getUserParam()
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
@@ -360,7 +349,7 @@ void DoubanFM::onReceivedSkipSong(QNetworkReply *reply) {
         if (obj["r"].toInt() == 1) {
             if (obj["err"].toString() == "expired") {
                 qDebug() << Q_FUNC_INFO << "User expired. Relogin";
-                userReLogin();
+                emit needRelogin();
             }
             emit receivedSkipSong(false);
         }
@@ -373,9 +362,7 @@ void DoubanFM::onReceivedSkipSong(QNetworkReply *reply) {
 
 void DoubanFM::songEnd(const quint32& sid, const qint32 &channel) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
+            + getUserParam()
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
@@ -398,9 +385,7 @@ void DoubanFM::onReceivedCurrentEnd(QNetworkReply *reply) {
 
 void DoubanFM::byeSong(const quint32 &sid, const qint32 &channel) {
     QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
+            + getUserParam()
             + QString("&sid=") + QString::number(sid)
             + QString("&h=")
             + QString("&channel=") + QString::number(channel, 10)
@@ -425,7 +410,7 @@ void DoubanFM::onReceivedByeSong(QNetworkReply *reply) {
         if (obj["r"].toInt() == 1) {
             if (obj["err"].toString() == "expired") {
                 qDebug() << Q_FUNC_INFO << "User expired. Relogin";
-                userReLogin();
+                emit needRelogin();
             }
             emit receivedByeSong(false);
         }
@@ -435,7 +420,12 @@ void DoubanFM::onReceivedByeSong(QNetworkReply *reply) {
     }
     reply->deleteLater();
 }
-
+QString DoubanFM::getUserParam(){
+    bool login = hasLogin();
+    return QString("&user_id=") + (( login ) ? _user->user_id : QString())
+            + QString("&expire=") + (( login ) ? _user->expire : QString())
+            + QString("&token=") + (( login ) ? _user->token : QString());
+}
 void DoubanFM::getChannels() {
     if (_managers[6] == nullptr) {
         _managers[6] = new QNetworkAccessManager(this);
@@ -485,5 +475,5 @@ void DoubanFM::onReceivedChannels(QNetworkReply *reply) {
 }
 
 bool DoubanFM::hasLogin() {
-    return !!_user;
+    return !!_user&& _user->expire.toLongLong()>QDateTime::currentMSecsSinceEpoch()/1000;
 }

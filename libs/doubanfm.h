@@ -27,6 +27,7 @@ public:
     void songEnd(const quint32& sid, const qint32& channel);
     void byeSong(const quint32& sid, const qint32& channel);
 
+    inline QString getUserParam();
     void getChannels();
 
     void setUser(const DoubanUser& user);
@@ -44,6 +45,7 @@ signals:
     void loginSucceed(const DoubanUser &user);
     void loginFailed(const QString &errmsg);
     void logoffSucceed();
+    void needRelogin();
     
 private slots:
     void onReceivedAuth(QNetworkReply *reply);

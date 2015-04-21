@@ -476,7 +476,7 @@ void DoubanFM::onReceivedChannels(QNetworkReply *reply) {
     DoubanChannel favourites;
     favourites.abbr_en = "fav";
     favourites.channel_id = -3;
-    favourites.name = "红心兆赫";
+    favourites.name = tr("My favourite");
     favourites.name_en = "favourites";
     favourites.seq_id = -3;
     channels.push_front(favourites);

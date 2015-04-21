@@ -356,7 +356,7 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
      </font>
     </property>
     <property name="text">
-     <string>&lt;font color=white&gt;频&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;道&lt;/font&gt;</string>
+     <string>&lt;font color=white&gt;Channels&lt;/font&gt;</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -418,7 +418,7 @@ QPushButton:checked {
 }</string>
    </property>
    <property name="text">
-    <string>歌     词</string>
+    <string>Lyric</string>
    </property>
    <property name="iconSize">
     <size>

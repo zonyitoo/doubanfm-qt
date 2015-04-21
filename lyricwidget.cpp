@@ -5,11 +5,6 @@
 #include <QPropertyAnimation>
 #include <QDebug>
 
-#ifdef MSVC2012
-#include "STRINGS_GBK.H"
-#else
-#include "STRINGS_UTF8.H"
-#endif
 
 LyricWidget::LyricWidget(QWidget *parent) :
     QWidget(parent), ui(new Ui_LyricWidget),
@@ -19,7 +14,7 @@ LyricWidget::LyricWidget(QWidget *parent) :
     isShowing(false), haveSearchedLyric(false), saveTick(0)
 {
     ui->setupUi(this);
-    ui->border->setText(QString("<font color='grey'>") + tr(STRINGS_NOLYRIC) + QString("</font>"));
+    ui->border->setText(QString("<font color='grey'>") + tr("No lyrics") + QString("</font>"));
     ui->bg->lower();
 
     connect(&DoubanPlayer::getInstance(), SIGNAL(positionChanged(qint64)),
@@ -160,7 +155,7 @@ void LyricWidget::clear() {
     labels.clear();
     heights.clear();
     firstShowing = false;
-    ui->border->setText(QString("<font color='grey'>") + tr(STRINGS_NOLYRIC) + QString("</font>"));
+    ui->border->setText(QString("<font color='grey'>") + tr("No lyrics") + QString("</font>"));
 }
 
 void LyricWidget::mousePressEvent(QMouseEvent *event) {

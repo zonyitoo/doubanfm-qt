@@ -3,3 +3,10 @@
 Makefile
 *.user
 doubanfm-qt
+doubanfm-qt.exe
+Makefile.*
+release/
+release_tmp/
+debug/
+tmp/
+doubanfm-qt.pro.user

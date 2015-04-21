@@ -37,6 +37,8 @@ LyricGetter::LyricGetter(QObject *parent) :
             return;
         }
         QTextStream stream(reply->readAll());
+        QTextCodec *codec = QTextCodec::codecForName("utf-8");
+        stream.setCodec(codec);
         emit gotLyric(QLyricParser::parse(stream));
 
         reply->deleteLater();

@@ -71,6 +71,7 @@ void DoubanFM::userLogin(const QString &email, const QString &password) {
         connect(_managers[8], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedAuth(QNetworkReply*)));
     }
+    qDebug() << "Login with " << email;
     _managers[8]->post(request, args.toLatin1());
     _user.reset(new DoubanUser);
     _user->password = password;
@@ -91,6 +92,7 @@ void DoubanFM::userReLogin() {
         connect(_managers[0], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedRelogin(QNetworkReply*)));
     }
+    qDebug() << "Relogin with " << _user->email;
     _managers[0]->post(request, args.toLatin1());
 
     QEventLoop eventloop;
@@ -99,6 +101,12 @@ void DoubanFM::userReLogin() {
 }
 
 void DoubanFM::onReceivedRelogin(QNetworkReply *reply) {
+    if (reply->error() != QNetworkReply::NetworkError::NoError) {
+        qWarning() << "Error occurred while re-loging in: " << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
 
@@ -123,6 +131,12 @@ void DoubanFM::onReceivedRelogin(QNetworkReply *reply) {
 }
 
 void DoubanFM::onReceivedAuth(QNetworkReply *reply) {
+    if (reply->error() != QNetworkReply::NetworkError::NoError) {
+        qWarning() << "Error occurred while authenticating: " << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
 
@@ -182,10 +196,17 @@ void DoubanFM::getNewPlayList(const qint32& channel, qint32 kbps) {
         connect(_managers[1], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedNewList(QNetworkReply*)));
     }
+    qDebug() << "Getting playlist (new) for channel: " << channel << ", kbps: " << kbps;
     _managers[1]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
 void DoubanFM::onReceivedNewList(QNetworkReply *reply) {
+    if (reply->error() != QNetworkReply::NetworkError::NoError) {
+        qWarning() << "Error occurred while receiving new list: " << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
 
@@ -244,10 +265,17 @@ void DoubanFM::getPlayingList(const qint32 &channel, const quint32 &sid, qint32 
         connect(_managers[7], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedPlayingList(QNetworkReply*)));
     }
+    qDebug() << "Getting playlist (playing) for channel: " << channel << ", sid: " << sid << ", kbps: " << kbps;
     _managers[7]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
 void DoubanFM::onReceivedPlayingList(QNetworkReply *reply) {
+    if (reply->error() != QNetworkReply::NetworkError::NoError) {
+        qWarning() << "Error occurred while receiving playing list: " << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
 
@@ -304,10 +332,17 @@ void DoubanFM::rateSong(const quint32& sid, const qint32 &channel, const bool to
         connect(_managers[2], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedRateSong(QNetworkReply*)));
     }
+    qDebug() << "Sending `rate` " << sid << " " << channel << " " << toRate;
     _managers[2]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
 void DoubanFM::onReceivedRateSong(QNetworkReply *reply) {
+    if (reply->error() != QNetworkReply::NetworkError::NoError) {
+        qWarning() << "Error occurred while sending `rate`: " << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
 
@@ -345,10 +380,17 @@ void DoubanFM::skipSong(const quint32 &sid, const qint32 &channel) {
         connect(_managers[3], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedSkipSong(QNetworkReply*)));
     }
+    qDebug() << "Sending `skip` " << sid << " " << channel;
     _managers[3]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
 void DoubanFM::onReceivedSkipSong(QNetworkReply *reply) {
+    if (reply->error() != QNetworkReply::NetworkError::NoError) {
+        qWarning() << "Error occurred while sending `skip`: " << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
 
@@ -385,10 +427,16 @@ void DoubanFM::songEnd(const quint32& sid, const qint32 &channel) {
         connect(_managers[4], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedCurrentEnd(QNetworkReply*)));
     }
+    qDebug() << "Sending `end` " << sid << " " << channel;
     _managers[4]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
 void DoubanFM::onReceivedCurrentEnd(QNetworkReply *reply) {
+    if (reply->error() != QNetworkReply::NetworkError::NoError) {
+        qWarning() << "Error occurred while sending `end`: " << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
 
@@ -410,10 +458,17 @@ void DoubanFM::byeSong(const quint32 &sid, const qint32 &channel) {
         connect(_managers[5], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedByeSong(QNetworkReply*)));
     }
+    qDebug() << "Sending `bye` " << sid << " " << channel;
     _managers[5]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
 }
 
 void DoubanFM::onReceivedByeSong(QNetworkReply *reply) {
+    if (reply->error() != QNetworkReply::NetworkError::NoError) {
+        qWarning() << "Error occurred while sending `bye`: " << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
 
@@ -442,14 +497,21 @@ void DoubanFM::getChannels() {
         connect(_managers[6], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedChannels(QNetworkReply*)));
     }
+
+    qDebug() << "Getting channels from " << QUrl(DOUBAN_FM_API_CHANNEL);
     _managers[6]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_CHANNEL)));
 }
 
 void DoubanFM::onReceivedChannels(QNetworkReply *reply) {
+    if (reply->error() != QNetworkReply::NetworkError::NoError) {
+        qWarning() << "Error occured while getting channels: " << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString all = codec->toUnicode(reply->readAll());
     QList<DoubanChannel> channels;
-
     QJsonParseError parseerr;
     QVariant result = QJsonDocument::fromJson(all.toUtf8(), &parseerr).toVariant();
 

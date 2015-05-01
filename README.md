@@ -54,8 +54,11 @@ make
 yaourt -S qdoubanfm-git
 ```
 
-* 在Ubuntu 13.04 x86\_64、Ubuntu 13.10 x86\_64上测试通过
+* Ubuntu
 
+已经在Ubuntu 13.04 x86\_64至Ubuntu 15.04 x86\_64上测试通过。
+
+在Ubuntu版本低于15.04时，Qt的系统托盘不能正常工作，所以
 先使用编辑器打开`doubanfm-qt.pro`，删除
 
 ```
@@ -63,6 +66,7 @@ DEFINES += WITH_SYSTEM_TRAY_ICON
 ```
 
 剩余步骤与上面相同。
+
 
 * Windows或OSX
 

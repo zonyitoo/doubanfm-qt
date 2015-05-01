@@ -24,7 +24,7 @@ COMPILER=$$[QMAKE_SPEC]
 
 TRANSLATIONS+=i18n/zh_CN.ts
 
-# Don't open it if you are using Ubuntu
+# Don't open it if you are using Ubuntu below 15.04
 DEFINES += WITH_SYSTEM_TRAY_ICON
 
 SOURCES += main.cpp\

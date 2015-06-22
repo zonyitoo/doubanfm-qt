@@ -14,7 +14,6 @@ QLyricList QLyricParser::parse(QTextStream &stream) {
     while (!stream.atEnd())
     {
         QString line = stream.readLine();
-        qDebug() << line;
         QList<QTime> ticks;
         QRegularExpressionMatch match = timeRegExp.match(line);
         int length = 0;

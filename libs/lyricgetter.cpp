@@ -38,8 +38,6 @@ LyricGetter::LyricGetter(QObject *parent) :
             return;
         }
 
-        qDebug() << "Got lyric!";
-
         QTextStream stream(reply->readAll());
         QTextCodec *codec = QTextCodec::codecForName("utf-8");
         stream.setCodec(codec);

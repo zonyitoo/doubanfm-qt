@@ -66,6 +66,11 @@ void DoubanFM::userLogin(const QString &email, const QString &password) {
                       QVariant("application/x-www-form-urlencoded"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(args.length()));
     request.setUrl(QUrl(DOUBAN_FM_LOGIN));
+
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
     if (_managers[8] == nullptr) {
         _managers[8] = new QNetworkAccessManager(this);
         connect(_managers[8], SIGNAL(finished(QNetworkReply*)),
@@ -87,6 +92,11 @@ void DoubanFM::userReLogin() {
                       QVariant("application/x-www-form-urlencoded"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(args.length()));
     request.setUrl(QUrl(DOUBAN_FM_LOGIN));
+
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
     if (_managers[0] == nullptr) {
         _managers[0] = new QNetworkAccessManager(this);
         connect(_managers[0], SIGNAL(finished(QNetworkReply*)),
@@ -196,8 +206,14 @@ void DoubanFM::getNewPlayList(const qint32& channel, qint32 kbps) {
         connect(_managers[1], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedNewList(QNetworkReply*)));
     }
+
+    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
     qDebug() << "Getting playlist (new) for channel: " << channel << ", kbps: " << kbps;
-    _managers[1]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
+    _managers[1]->get(request);
 }
 
 void DoubanFM::onReceivedNewList(QNetworkReply *reply) {
@@ -265,8 +281,14 @@ void DoubanFM::getPlayingList(const qint32 &channel, const quint32 &sid, qint32 
         connect(_managers[7], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedPlayingList(QNetworkReply*)));
     }
+
+    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
     qDebug() << "Getting playlist (playing) for channel: " << channel << ", sid: " << sid << ", kbps: " << kbps;
-    _managers[7]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
+    _managers[7]->get(request);
 }
 
 void DoubanFM::onReceivedPlayingList(QNetworkReply *reply) {
@@ -332,8 +354,14 @@ void DoubanFM::rateSong(const quint32& sid, const qint32 &channel, const bool to
         connect(_managers[2], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedRateSong(QNetworkReply*)));
     }
+
+    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
     qDebug() << "Sending `rate` " << sid << " " << channel << " " << toRate;
-    _managers[2]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
+    _managers[2]->get(request);
 }
 
 void DoubanFM::onReceivedRateSong(QNetworkReply *reply) {
@@ -380,8 +408,14 @@ void DoubanFM::skipSong(const quint32 &sid, const qint32 &channel) {
         connect(_managers[3], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedSkipSong(QNetworkReply*)));
     }
+
+    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
     qDebug() << "Sending `skip` " << sid << " " << channel;
-    _managers[3]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
+    _managers[3]->get(request);
 }
 
 void DoubanFM::onReceivedSkipSong(QNetworkReply *reply) {
@@ -427,8 +461,14 @@ void DoubanFM::songEnd(const quint32& sid, const qint32 &channel) {
         connect(_managers[4], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedCurrentEnd(QNetworkReply*)));
     }
+
+    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
     qDebug() << "Sending `end` " << sid << " " << channel;
-    _managers[4]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
+    _managers[4]->get(request);
 }
 
 void DoubanFM::onReceivedCurrentEnd(QNetworkReply *reply) {
@@ -458,8 +498,14 @@ void DoubanFM::byeSong(const quint32 &sid, const qint32 &channel) {
         connect(_managers[5], SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(onReceivedByeSong(QNetworkReply*)));
     }
+
+    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
     qDebug() << "Sending `bye` " << sid << " " << channel;
-    _managers[5]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args)));
+    _managers[5]->get(request);
 }
 
 void DoubanFM::onReceivedByeSong(QNetworkReply *reply) {
@@ -498,8 +544,13 @@ void DoubanFM::getChannels() {
                 this, SLOT(onReceivedChannels(QNetworkReply*)));
     }
 
+    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_CHANNEL));
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
     qDebug() << "Getting channels from " << QUrl(DOUBAN_FM_API_CHANNEL);
-    _managers[6]->get(QNetworkRequest(QUrl(DOUBAN_FM_API_CHANNEL)));
+    _managers[6]->get(request);
 }
 
 void DoubanFM::onReceivedChannels(QNetworkReply *reply) {

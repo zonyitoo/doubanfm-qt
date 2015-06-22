@@ -19,6 +19,7 @@ LyricGetter::LyricGetter(QObject *parent) :
         }
         QTextCodec *codec = QTextCodec::codecForName("utf-8");
         QString all = codec->toUnicode(reply->readAll());
+        qDebug() << "Lyric query: " << all;
         QJsonParseError parseerr;
         QVariant result = QJsonDocument::fromJson(all.toUtf8(), &parseerr).toVariant();
         QVariantMap obj = result.toMap();
@@ -36,6 +37,9 @@ LyricGetter::LyricGetter(QObject *parent) :
             reply->deleteLater();
             return;
         }
+
+        qDebug() << "Got lyric!";
+
         QTextStream stream(reply->readAll());
         QTextCodec *codec = QTextCodec::codecForName("utf-8");
         stream.setCodec(codec);
@@ -54,5 +58,13 @@ void LyricGetter::getLyric(const QString &song, const QString &artist) {
     QString fullurl = LYRIC_API + "/" + QUrl::toPercentEncoding(song);
     if (artist.size())
         fullurl += "/" + QUrl::toPercentEncoding(artist);
-    querymgr->get(QNetworkRequest(QUrl(fullurl)));
+
+    qDebug() << "Going to get lyric for " << artist << " " << song;
+
+    auto request = QNetworkRequest(QUrl(fullurl));
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
+    querymgr->get(request);
 }

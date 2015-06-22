@@ -106,8 +106,6 @@ void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
     ui->slider->scrollToIndex(curindex);
     ui->slider->currentObject()->setStyleSheet(HIGHTLIGHT_STYLE);
 
-    emit channelChanged(channels[curindex].channel_id);
-
     //pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }
 

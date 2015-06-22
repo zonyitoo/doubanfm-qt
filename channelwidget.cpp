@@ -100,10 +100,13 @@ void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
         label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         labels.append(label);
         if (channel.channel_id == this->channel) curindex = i;
+        qDebug() << "Channel name=" << channel.name << " id=" << channel.channel_id;
     }
     ui->slider->setChildren(labels);
     ui->slider->scrollToIndex(curindex);
     ui->slider->currentObject()->setStyleSheet(HIGHTLIGHT_STYLE);
+
+    emit channelChanged(channels[curindex].channel_id);
 
     //pnt->setText(pnt->text().replace("grey", "white").replace("<a>", "<b>").replace("</a>", "</b>"));
 }

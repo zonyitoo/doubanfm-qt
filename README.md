@@ -67,6 +67,11 @@ DEFINES += WITH_SYSTEM_TRAY_ICON
 
 剩余步骤与上面相同。
 
+* Fedora 添加 [FZUG 仓库](https://github.com/FZUG/repo/wiki/FZUG) 后，使用以下命令即可安装，感谢 FZUG 社区。
+
+```bash
+dnf install doubanfm-qt
+```
 
 * Windows或OSX
 

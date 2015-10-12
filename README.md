@@ -48,12 +48,6 @@ make
 
 或运行`install.sh`脚本来安装到系统中（For Linux Only），安装好后在桌面系中的的启动器中找到`QDoubanFM`运行即可
 
-* ArchLinux的AUR仓库中提供直接安装的[PKGBUILD](https://aur.archlinux.org/packages/qdoubanfm-git/)，感谢shadowma和puxx
-
-```bash
-yaourt -S qdoubanfm-git
-```
-
 * Ubuntu
 
 已经在Ubuntu 13.04 x86\_64至Ubuntu 15.04 x86\_64上测试通过。

@@ -3,45 +3,41 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 
-static const QString LYRIC_API = "http://geci.me/api/lyric";
+static const QString LYRIC_API = "http://api.douban.com/v2/fm/lyric";
 
 LyricGetter::LyricGetter(QObject *parent) :
     QObject(parent)
 {
     querymgr = new QNetworkAccessManager(this);
-    getmgr = new QNetworkAccessManager(this);
     connect(querymgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
-            qDebug() << "Lyric not found.";
+            qDebug() << "Lyric not found. Err " << reply->errorString();
             reply->deleteLater();
-            emit gotLyricError("Lyric doesn't exist.");
+            emit gotLyricError("Lyric doesn't exist");
             return;
         }
-        QTextCodec *codec = QTextCodec::codecForName("utf-8");
+        const QTextCodec *codec = QTextCodec::codecForName("utf-8");
         QString all = codec->toUnicode(reply->readAll());
         qDebug() << "Lyric query: " << all;
         QJsonParseError parseerr;
         QVariant result = QJsonDocument::fromJson(all.toUtf8(), &parseerr).toVariant();
-        QVariantMap obj = result.toMap();
-        if (obj["count"].toInt() != 0) {
-            QVariantList resultlist = obj["result"].toList();
-            QVariantMap first = resultlist[0].toMap();
-            getmgr->get(QNetworkRequest(QUrl(first["lrc"].toString())));
-        }
 
-        reply->deleteLater();
-    });
-    connect(getmgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
-        if (QNetworkReply::NoError != reply->error()) {
-            qDebug() << "Lyric not found.";
-            reply->deleteLater();
+        if (parseerr.error != QJsonParseError::ParseError::NoError) {
+            qDebug() << "Lyric response parse error: " << parseerr.errorString();
+            emit gotLyricError("Lyric doesn't exist");
             return;
         }
 
-        QTextStream stream(reply->readAll());
-        QTextCodec *codec = QTextCodec::codecForName("utf-8");
-        stream.setCodec(codec);
-        emit gotLyric(QLyricParser::parse(stream));
+        QVariantMap obj = result.toMap();
+
+        if (obj.find("lyric") == obj.end()) {
+            qDebug() << "Could not find lyric";
+            emit gotLyricError("Lyric doesn't exist");
+        } else {
+            QString lyric_str = obj["lyric"].toString();
+            QTextStream lyric(&lyric_str);
+            emit gotLyric(QLyricParser::parse(lyric));
+        }
 
         reply->deleteLater();
     });
@@ -49,20 +45,18 @@ LyricGetter::LyricGetter(QObject *parent) :
 
 LyricGetter::~LyricGetter() {
     delete querymgr;
-    delete getmgr;
 }
 
-void LyricGetter::getLyric(const QString &song, const QString &artist) {
-    QString fullurl = LYRIC_API + "/" + QUrl::toPercentEncoding(song);
-    if (artist.size())
-        fullurl += "/" + QUrl::toPercentEncoding(artist);
+void LyricGetter::getLyric(const DoubanFMSong& song) {
+    qDebug() << "Going to get lyric for " << song.artist << " " << song.title;
 
-    qDebug() << "Going to get lyric for " << artist << " " << song;
+    auto request = QNetworkRequest(QUrl(LYRIC_API));
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
 
-    auto request = QNetworkRequest(QUrl(fullurl));
-    QSslConfiguration conf = request.sslConfiguration();
-    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(conf);
+    QUrlQuery postData;
+    postData.addQueryItem("sid", QString::number(song.sid));
+    postData.addQueryItem("ssid", song.ssid);
 
-    querymgr->get(request);
+    querymgr->post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
 }

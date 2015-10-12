@@ -129,6 +129,7 @@ void DoubanPlayer::currentIndexChanged(int position) {
     qDebug() << "    kbps: " << songs[position].kbps;
     qDebug() << "    like: " << songs[position].like;
     qDebug() << "    sid: " << songs[position].sid;
+    qDebug() << "    ssid: " << songs[position].ssid;
     qDebug() << "    subType: " << songs[position].subtype;
 }
 
@@ -154,7 +155,7 @@ void DoubanPlayer::play() {
     if (elapsed >= 30 * 60) {
         doubanfm.getPlayingList(_channel, this->currentSong().sid, _kbps);
         QTime pt(0, 0, 0, 0);
-        pt.addSecs(elapsed);
+        pt = pt.addSecs(elapsed);
         this->setCanControl(false);
         qDebug() << "Have paused " << pt <<  ", getting a new playlist";
     }

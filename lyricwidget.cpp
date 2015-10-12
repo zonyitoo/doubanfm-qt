@@ -167,7 +167,7 @@ void LyricWidget::mousePressEvent(QMouseEvent *event) {
 void LyricWidget::setSong(const DoubanFMSong &song) {
     this->clear();
     if (isShowing) {
-        lyricGetter->getLyric(song.title, song.artist);
+        lyricGetter->getLyric(song);
         this->haveSearchedLyric = true;
     }
     else {
@@ -181,7 +181,7 @@ void LyricWidget::setShowing(bool s) {
     if (s) {
         if (!haveSearchedLyric) {
             this->haveSearchedLyric = true;
-            lyricGetter->getLyric(saveCurrentSong.title, saveCurrentSong.artist);
+            lyricGetter->getLyric(saveCurrentSong);
         }
         else {
             this->setTick(saveTick);

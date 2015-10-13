@@ -9,8 +9,6 @@ QLyricList QLyricParser::parse(QTextStream &stream) {
     QList<QLyric> result;
     int zeroCount = 0;
 
-    qDebug() << *stream.string();
-
     while (!stream.atEnd())
     {
         QString line = stream.readLine();

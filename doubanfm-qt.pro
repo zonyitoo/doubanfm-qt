@@ -22,7 +22,7 @@ OBJECTS_DIR=$${TMPDIR}/obj
 UI_DIR=$${TMPDIR}/ui
 COMPILER=$$[QMAKE_SPEC]
 
-TRANSLATIONS+=i18n/zh_CN.ts
+TRANSLATIONS += i18n/zh_CN.ts
 
 # Don't open it if you are using Ubuntu below 15.04
 DEFINES += WITH_SYSTEM_TRAY_ICON
@@ -100,9 +100,10 @@ RESOURCES += \
 CONFIG += c++11
 
 win32 {
-    RC_FILE = winrc.rc
+    RC_FILE = data/win32/winrc.rc
 }
 
 macx {
-    ICON = QDoubanFM.icns
+    ICON = data/macx/QDoubanFM.icns
+    QMAKE_INFO_PLIST = data/macx/Info.plist
 }

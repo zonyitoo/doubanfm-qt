@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN" sourcelanguage="en_US">
+<TS version="2.1" language="zh_CN" sourcelanguage="en_US">
 <context>
     <name>AlbumWidget</name>
     <message>
@@ -49,7 +49,7 @@
 <context>
     <name>DoubanFM</name>
     <message>
-        <location filename="../libs/doubanfm.cpp" line="479"/>
+        <location filename="../libs/doubanfm.cpp" line="592"/>
         <source>My favourite</source>
         <translation>红心兆赫</translation>
     </message>

@@ -100,7 +100,7 @@ void ChannelWidget::setChannels(const QList<DoubanChannel>& channels) {
         label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         labels.append(label);
         if (channel.channel_id == this->channel) curindex = i;
-        qDebug() << "Channel name=" << channel.name << " id=" << channel.channel_id;
+        qDebug() << "Channel name=" << qPrintable(channel.name) << " id=" << channel.channel_id;
     }
     ui->slider->setChildren(labels);
     ui->slider->scrollToIndex(curindex);

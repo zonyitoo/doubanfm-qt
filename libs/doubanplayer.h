@@ -72,8 +72,8 @@ private slots:
 private:
     explicit DoubanPlayer(QObject *parent = 0);
 
-    QList<DoubanFMSong> songs;
-    QMediaPlayer player;
+    QList<DoubanFMSong> songs_;
+    QMediaPlayer player_;
     DoubanFM& doubanfm;
     qint32 _channel;
     qint32 _volume;

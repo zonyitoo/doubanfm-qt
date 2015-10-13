@@ -11,19 +11,18 @@ LyricGetter::LyricGetter(QObject *parent) :
     querymgr = new QNetworkAccessManager(this);
     connect(querymgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
-            qDebug() << "Lyric not found. Err " << reply->errorString();
+            qDebug() << "Lyric not found. Err " << qPrintable(reply->errorString());
             reply->deleteLater();
             emit gotLyricError("Lyric doesn't exist");
             return;
         }
         const QTextCodec *codec = QTextCodec::codecForName("utf-8");
         QString all = codec->toUnicode(reply->readAll());
-        qDebug() << "Lyric query: " << all;
         QJsonParseError parseerr;
         QVariant result = QJsonDocument::fromJson(all.toUtf8(), &parseerr).toVariant();
 
         if (parseerr.error != QJsonParseError::ParseError::NoError) {
-            qDebug() << "Lyric response parse error: " << parseerr.errorString();
+            qDebug() << "Lyric response parse error: " << qPrintable(parseerr.errorString());
             emit gotLyricError("Lyric doesn't exist");
             return;
         }
@@ -34,6 +33,7 @@ LyricGetter::LyricGetter(QObject *parent) :
             qDebug() << "Could not find lyric";
             emit gotLyricError("Lyric doesn't exist");
         } else {
+            qDebug() << "Got lyric for " << qPrintable(obj["name"].toString());
             QString lyric_str = obj["lyric"].toString();
             QTextStream lyric(&lyric_str);
             emit gotLyric(QLyricParser::parse(lyric));
@@ -48,7 +48,7 @@ LyricGetter::~LyricGetter() {
 }
 
 void LyricGetter::getLyric(const DoubanFMSong& song) {
-    qDebug() << "Going to get lyric for " << song.artist << " " << song.title;
+    qDebug() << "Going to get lyric for " << qPrintable(song.artist) << " " << qPrintable(song.title);
 
     auto request = QNetworkRequest(QUrl(LYRIC_API));
     request.setHeader(QNetworkRequest::ContentTypeHeader,

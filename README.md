@@ -40,6 +40,7 @@
 * 在Archlinux上测试通过
 
 ```bash
+lupdate doubanfm-qt.pro
 qmake doubanfm-qt.pro
 make
 ```

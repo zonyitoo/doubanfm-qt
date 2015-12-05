@@ -7,8 +7,7 @@
 #include <QMediaPlaylist>
 #include <ctime>
 
-class DoubanPlayer : public QObject
-{
+class DoubanPlayer : public QObject {
     Q_OBJECT
     Q_PROPERTY(qint64 position READ position NOTIFY positionChanged)
     Q_PROPERTY(qint64 duration READ duration)
@@ -70,7 +69,7 @@ private slots:
     void currentIndexChanged(int position);
 
 private:
-    explicit DoubanPlayer(QObject *parent = 0);
+    explicit DoubanPlayer(QObject* parent = 0);
 
     QList<DoubanFMSong> songs_;
     QMediaPlayer player_;
@@ -79,11 +78,11 @@ private:
     qint32 _volume;
     bool _can_control;
 
-    QMediaPlaylist *bufplaylist;
+    QMediaPlaylist* bufplaylist;
     QList<DoubanFMSong> bufsongs;
 
     time_t lastPausedTime;
     qint32 _kbps;
 };
 
-#endif // DOUBANPLAYER_H
+#endif  // DOUBANPLAYER_H

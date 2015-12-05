@@ -39,4 +39,4 @@ struct DoubanFMSong {
     bool like;
 };
 
-#endif // DOUBAN_TYPES_H
+#endif  // DOUBAN_TYPES_H

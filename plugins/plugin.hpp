@@ -13,4 +13,4 @@ inline void load_plugins() {
 #endif
 }
 
-#endif // PLUGIN_HPP
+#endif  // PLUGIN_HPP

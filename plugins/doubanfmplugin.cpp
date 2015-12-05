@@ -1,27 +1,19 @@
 #include "doubanfmplugin.h"
 #include <QDebug>
 
-DoubanFMPlugin::DoubanFMPlugin(QObject *parent) :
-    QObject(parent),
-    player(DoubanPlayer::getInstance())
-{
-}
+DoubanFMPlugin::DoubanFMPlugin(QObject *parent) : QObject(parent), player(DoubanPlayer::getInstance()) {}
 
-DoubanFMPlugin::~DoubanFMPlugin() {
-}
+DoubanFMPlugin::~DoubanFMPlugin() {}
 
-DoubanFMPluginLoader::DoubanFMPluginLoader(QObject *parent)
-    : QObject(parent) {
-
-}
+DoubanFMPluginLoader::DoubanFMPluginLoader(QObject *parent) : QObject(parent) {}
 
 DoubanFMPluginLoader::~DoubanFMPluginLoader() {
-    for (auto & p : plugins) {
+    for (auto &p : plugins) {
         delete p;
     }
 }
 
-DoubanFMPluginLoader & DoubanFMPluginLoader::getInstance() {
+DoubanFMPluginLoader &DoubanFMPluginLoader::getInstance() {
     static DoubanFMPluginLoader instance;
     return instance;
 }
@@ -35,6 +27,4 @@ void DoubanFMPluginLoader::regPlugin(QString name, const DoubanFMPlugin *plugin)
     }
 }
 
-void DoubanFMPluginLoader::rmPlugin(QString name) {
-    plugins.remove(name);
-}
+void DoubanFMPluginLoader::rmPlugin(QString name) { plugins.remove(name); }

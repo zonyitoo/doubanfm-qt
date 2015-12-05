@@ -8,26 +8,25 @@
 
 #include <algorithm>
 
-static const QString DOUBAN_FM_API_ADDR = "https://www.douban.com/j/app/radio/people";
+static const QString DOUBAN_FM_API_ADDR    = "https://www.douban.com/j/app/radio/people";
 static const QString DOUBAN_FM_API_CHANNEL = "https://www.douban.com/j/app/radio/channels";
-static const QString DOUBAN_FM_LOGIN = "https://www.douban.com/j/app/login";
+static const QString DOUBAN_FM_LOGIN       = "https://www.douban.com/j/app/login";
 
-DoubanFM::DoubanFM(QObject *parent) : QObject(parent) {
-    for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
+DoubanFM::DoubanFM(QObject* parent) : QObject(parent) {
+    for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++i)
         _managers[i] = nullptr;
 
     QSettings settings("QDoubanFM", "QDoubanFM");
     settings.beginGroup("User");
     DoubanUser user;
-    user.email = settings.value("email", "").toString();
-    user.expire = settings.value("expire", "").toString();
-    user.password = settings.value("password", "").toString();
-    user.token = settings.value("token", "").toString();
-    user.user_id = settings.value("user_id", "").toString();
+    user.email     = settings.value("email", "").toString();
+    user.expire    = settings.value("expire", "").toString();
+    user.password  = settings.value("password", "").toString();
+    user.token     = settings.value("token", "").toString();
+    user.user_id   = settings.value("user_id", "").toString();
     user.user_name = settings.value("user_name", "").toString();
-    if (user.email.size() && user.expire.size()
-            && user.password.size() && user.token.size()
-            && user.user_id.size() && user.user_name.size())
+    if (user.email.size() && user.expire.size() && user.password.size() && user.token.size() && user.user_id.size()
+        && user.user_name.size())
         this->setUser(user);
     settings.endGroup();
 }
@@ -35,12 +34,14 @@ DoubanFM::DoubanFM(QObject *parent) : QObject(parent) {
 DoubanFM::~DoubanFM() {
     this->disconnect();
 
-    for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++ i)
-        if (_managers[i]) delete _managers[i];
+    for (size_t i = 0; i < DOUBAN_MANAGER_ARRAY_SIZE; ++i)
+        if (_managers[i])
+            delete _managers[i];
 
     QSettings settings("QDoubanFM", "QDoubanFM");
     auto user = this->getUser();
-    if (!user) return;
+    if (!user)
+        return;
     settings.beginGroup("User");
     settings.setValue("email", user->email);
     settings.setValue("expire", user->expire);
@@ -57,13 +58,11 @@ DoubanFM& DoubanFM::getInstance() {
     return _INSTANCE;
 }
 
-void DoubanFM::userLogin(const QString &email, const QString &password) {
-    QString args = QString("app_name=radio_desktop_win&version=100")
-            + QString("&email=") + email
-            + QString("&password=") + QUrl::toPercentEncoding(password);
+void DoubanFM::userLogin(const QString& email, const QString& password) {
+    QString args = QString("app_name=radio_android&version=100") + QString("&email=") + email + QString("&password=")
+                   + QUrl::toPercentEncoding(password);
     QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-                      QVariant("application/x-www-form-urlencoded"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/x-www-form-urlencoded"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(args.length()));
     request.setUrl(QUrl(DOUBAN_FM_LOGIN));
 
@@ -73,8 +72,7 @@ void DoubanFM::userLogin(const QString &email, const QString &password) {
 
     if (_managers[8] == nullptr) {
         _managers[8] = new QNetworkAccessManager(this);
-        connect(_managers[8], SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(onReceivedAuth(QNetworkReply*)));
+        connect(_managers[8], SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedAuth(QNetworkReply*)));
     }
     qDebug() << "Login with " << email;
     _managers[8]->post(request, args.toLatin1());
@@ -83,13 +81,12 @@ void DoubanFM::userLogin(const QString &email, const QString &password) {
 }
 
 void DoubanFM::userReLogin() {
-    if (!_user) return;
-    QString args = QString("app_name=radio_desktop_win&version=100")
-            + QString("&email=") + _user->email
-            + QString("&password=") + QUrl::toPercentEncoding(_user->password);
+    if (!_user)
+        return;
+    QString args = QString("app_name=radio_android&version=100") + QString("&email=") + _user->email
+                   + QString("&password=") + QUrl::toPercentEncoding(_user->password);
     QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-                      QVariant("application/x-www-form-urlencoded"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/x-www-form-urlencoded"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(args.length()));
     request.setUrl(QUrl(DOUBAN_FM_LOGIN));
 
@@ -99,8 +96,7 @@ void DoubanFM::userReLogin() {
 
     if (_managers[0] == nullptr) {
         _managers[0] = new QNetworkAccessManager(this);
-        connect(_managers[0], SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(onReceivedRelogin(QNetworkReply*)));
+        connect(_managers[0], SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedRelogin(QNetworkReply*)));
     }
     qDebug() << "Relogin with " << _user->email;
     _managers[0]->post(request, args.toLatin1());
@@ -110,15 +106,15 @@ void DoubanFM::userReLogin() {
     eventloop.exec();
 }
 
-void DoubanFM::onReceivedRelogin(QNetworkReply *reply) {
+void DoubanFM::onReceivedRelogin(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Error occurred while re-loging in: " << reply->errorString();
         reply->deleteLater();
         return;
     }
 
-    QTextCodec *codec = QTextCodec::codecForName("utf-8");
-    QString all = codec->toUnicode(reply->readAll());
+    QTextCodec* codec = QTextCodec::codecForName("utf-8");
+    QString all       = codec->toUnicode(reply->readAll());
 
     QJsonParseError parseerr;
     QVariant result = QJsonDocument::fromJson(all.toUtf8(), &parseerr).toVariant();
@@ -130,25 +126,25 @@ void DoubanFM::onReceivedRelogin(QNetworkReply *reply) {
             return;
         }
 
-        _user->user_id = obj["user_id"].toString();
-        _user->expire = obj["expire"].toString();
-        _user->token = obj["token"].toString();
+        _user->user_id   = obj["user_id"].toString();
+        _user->expire    = obj["expire"].toString();
+        _user->token     = obj["token"].toString();
         _user->user_name = obj["user_name"].toString();
-        _user->email = obj["email"].toString();
+        _user->email     = obj["email"].toString();
     }
 
     reply->deleteLater();
 }
 
-void DoubanFM::onReceivedAuth(QNetworkReply *reply) {
+void DoubanFM::onReceivedAuth(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Error occurred while authenticating: " << reply->errorString();
         reply->deleteLater();
         return;
     }
 
-    QTextCodec *codec = QTextCodec::codecForName("utf-8");
-    QString all = codec->toUnicode(reply->readAll());
+    QTextCodec* codec = QTextCodec::codecForName("utf-8");
+    QString all       = codec->toUnicode(reply->readAll());
 
     QJsonParseError parseerr;
     QVariant result = QJsonDocument::fromJson(all.toUtf8(), &parseerr).toVariant();
@@ -162,11 +158,11 @@ void DoubanFM::onReceivedAuth(QNetworkReply *reply) {
             return;
         }
 
-        _user->user_id = obj["user_id"].toString();
-        _user->expire = obj["expire"].toString();
-        _user->token = obj["token"].toString();
+        _user->user_id   = obj["user_id"].toString();
+        _user->expire    = obj["expire"].toString();
+        _user->token     = obj["token"].toString();
         _user->user_name = obj["user_name"].toString();
-        _user->email = obj["email"].toString();
+        _user->email     = obj["email"].toString();
 
         emit this->loginSucceed(*_user);
     }
@@ -179,7 +175,7 @@ void DoubanFM::userLogout() {
     emit logoffSucceed();
 }
 
-void DoubanFM::setUser(const DoubanUser &user) {
+void DoubanFM::setUser(const DoubanUser& user) {
     _user.reset(new DoubanUser(user));
 
     QTime time;
@@ -188,26 +184,20 @@ void DoubanFM::setUser(const DoubanUser &user) {
     }
 }
 
-const DoubanUser *DoubanFM::getUser() const {
-    return _user.get();
-}
+const DoubanUser* DoubanFM::getUser() const { return _user.get(); }
 
 void DoubanFM::getNewPlayList(const qint32& channel, qint32 kbps) {
-    QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
-            + QString("&sid=&h=")
-            + QString("&channel=") + QString::number(channel, 10)
-            + QString("&kbps=") + QString::number(kbps, 10)
-            + QString("&type=n");
+    QString args = QString("?app_name=radio_android&version=100") + QString("&user_id=")
+                   + ((_user) ? _user->user_id : QString()) + QString("&expire=")
+                   + ((_user) ? _user->expire : QString()) + QString("&token=") + ((_user) ? _user->token : QString())
+                   + QString("&sid=&h=") + QString("&channel=") + QString::number(channel, 10) + QString("&kbps=")
+                   + QString::number(kbps, 10) + QString("&type=n");
     if (_managers[1] == nullptr) {
         _managers[1] = new QNetworkAccessManager(this);
-        connect(_managers[1], SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(onReceivedNewList(QNetworkReply*)));
+        connect(_managers[1], SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedNewList(QNetworkReply*)));
     }
 
-    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    auto request           = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
     QSslConfiguration conf = request.sslConfiguration();
     conf.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(conf);
@@ -216,15 +206,15 @@ void DoubanFM::getNewPlayList(const qint32& channel, qint32 kbps) {
     _managers[1]->get(request);
 }
 
-void DoubanFM::onReceivedNewList(QNetworkReply *reply) {
+void DoubanFM::onReceivedNewList(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Error occurred while receiving new list: " << reply->errorString();
         reply->deleteLater();
         return;
     }
 
-    QTextCodec *codec = QTextCodec::codecForName("utf-8");
-    QString all = codec->toUnicode(reply->readAll());
+    QTextCodec* codec = QTextCodec::codecForName("utf-8");
+    QString all       = codec->toUnicode(reply->readAll());
 
     QList<DoubanFMSong> songs;
     QJsonParseError parseerr;
@@ -236,27 +226,26 @@ void DoubanFM::onReceivedNewList(QNetworkReply *reply) {
             if (obj["err"].toString() == "expired") {
                 qDebug() << Q_FUNC_INFO << "User expired. Relogin";
                 userReLogin();
-            }
-            else
+            } else
                 qDebug() << Q_FUNC_INFO << "Err" << obj["err"].toString();
             reply->deleteLater();
             return;
         }
         QVariantList songList = obj["song"].toList();
-        foreach(const QVariant& item, songList) {
+        foreach (const QVariant& item, songList) {
             QVariantMap song = item.toMap();
             DoubanFMSong s;
-            s.album = song["album"].toString();
-            s.picture = song["picture"].toString();
-            s.ssid = song["ssid"].toString();
-            s.artist = song["artist"].toString();
-            s.url = song["url"].toString();
-            s.company = song["company"].toString();
-            s.title = song["title"].toString();
+            s.album       = song["album"].toString();
+            s.picture     = song["picture"].toString();
+            s.ssid        = song["ssid"].toString();
+            s.artist      = song["artist"].toString();
+            s.url         = song["url"].toString();
+            s.company     = song["company"].toString();
+            s.title       = song["title"].toString();
             s.public_time = song["public_time"].toString();
-            s.sid = song["sid"].toUInt();
-            s.aid = song["aid"].toUInt();
-            s.albumtitle = song["albumtitle"].toString();
+            s.sid         = song["sid"].toUInt();
+            s.aid         = song["aid"].toUInt();
+            s.albumtitle  = song["albumtitle"].toString();
             s.like = song["like"].toBool();
             songs.push_back(s);
         }
@@ -265,24 +254,19 @@ void DoubanFM::onReceivedNewList(QNetworkReply *reply) {
     reply->deleteLater();
 }
 
-void DoubanFM::getPlayingList(const qint32 &channel, const quint32 &sid, qint32 kbps) {
-    QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
-            + QString("&sid=") + QString::number(sid)
-            + QString("&h=")
-            + QString("&channel=") + QString::number(channel, 10)
-            + QString("&kbps=") + QString::number(kbps, 10)
-            + QString("&type=p");
+void DoubanFM::getPlayingList(const qint32& channel, const quint32& sid, qint32 kbps) {
+    QString args = QString("?app_name=radio_android&version=100") + QString("&user_id=")
+                   + ((_user) ? _user->user_id : QString()) + QString("&expire=")
+                   + ((_user) ? _user->expire : QString()) + QString("&token=") + ((_user) ? _user->token : QString())
+                   + QString("&sid=") + QString::number(sid) + QString("&h=") + QString("&channel=")
+                   + QString::number(channel, 10) + QString("&kbps=") + QString::number(kbps, 10) + QString("&type=p");
 
     if (_managers[7] == nullptr) {
         _managers[7] = new QNetworkAccessManager(this);
-        connect(_managers[7], SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(onReceivedPlayingList(QNetworkReply*)));
+        connect(_managers[7], SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedPlayingList(QNetworkReply*)));
     }
 
-    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    auto request           = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
     QSslConfiguration conf = request.sslConfiguration();
     conf.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(conf);
@@ -291,15 +275,15 @@ void DoubanFM::getPlayingList(const qint32 &channel, const quint32 &sid, qint32 
     _managers[7]->get(request);
 }
 
-void DoubanFM::onReceivedPlayingList(QNetworkReply *reply) {
+void DoubanFM::onReceivedPlayingList(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Error occurred while receiving playing list: " << reply->errorString();
         reply->deleteLater();
         return;
     }
 
-    QTextCodec *codec = QTextCodec::codecForName("utf-8");
-    QString all = codec->toUnicode(reply->readAll());
+    QTextCodec* codec = QTextCodec::codecForName("utf-8");
+    QString all       = codec->toUnicode(reply->readAll());
 
     QList<DoubanFMSong> songs;
     QJsonParseError parseerr;
@@ -311,27 +295,26 @@ void DoubanFM::onReceivedPlayingList(QNetworkReply *reply) {
             if (obj["err"].toString() == "expired") {
                 qDebug() << Q_FUNC_INFO << "User expired. Relogin";
                 userReLogin();
-            }
-            else
+            } else
                 qDebug() << Q_FUNC_INFO << "Err" << obj["err"].toString();
             reply->deleteLater();
             return;
         }
         QVariantList songList = obj["song"].toList();
-        foreach(const QVariant& item, songList) {
+        foreach (const QVariant& item, songList) {
             QVariantMap song = item.toMap();
             DoubanFMSong s;
-            s.album = song["album"].toString();
-            s.picture = song["picture"].toString();
-            s.ssid = song["ssid"].toString();
-            s.artist = song["artist"].toString();
-            s.url = song["url"].toString();
-            s.company = song["company"].toString();
-            s.title = song["title"].toString();
+            s.album       = song["album"].toString();
+            s.picture     = song["picture"].toString();
+            s.ssid        = song["ssid"].toString();
+            s.artist      = song["artist"].toString();
+            s.url         = song["url"].toString();
+            s.company     = song["company"].toString();
+            s.title       = song["title"].toString();
             s.public_time = song["public_time"].toString();
-            s.sid = song["sid"].toUInt();
-            s.aid = song["aid"].toUInt();
-            s.albumtitle = song["albumtitle"].toString();
+            s.sid         = song["sid"].toUInt();
+            s.aid         = song["aid"].toUInt();
+            s.albumtitle  = song["albumtitle"].toString();
             s.like = song["like"].toBool();
             songs.push_back(s);
         }
@@ -340,22 +323,18 @@ void DoubanFM::onReceivedPlayingList(QNetworkReply *reply) {
     reply->deleteLater();
 }
 
-void DoubanFM::rateSong(const quint32& sid, const qint32 &channel, const bool toRate) {
-    QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
-            + QString("&sid=") + QString::number(sid)
-            + QString("&h=")
-            + QString("&channel=") + QString::number(channel, 10)
-            + (toRate? QString("&type=r"): QString("&type=u"));
+void DoubanFM::rateSong(const quint32& sid, const qint32& channel, const bool toRate) {
+    QString args = QString("?app_name=radio_android&version=100") + QString("&user_id=")
+                   + ((_user) ? _user->user_id : QString()) + QString("&expire=")
+                   + ((_user) ? _user->expire : QString()) + QString("&token=") + ((_user) ? _user->token : QString())
+                   + QString("&sid=") + QString::number(sid) + QString("&h=") + QString("&channel=")
+                   + QString::number(channel, 10) + (toRate ? QString("&type=r") : QString("&type=u"));
     if (_managers[2] == nullptr) {
         _managers[2] = new QNetworkAccessManager(this);
-        connect(_managers[2], SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(onReceivedRateSong(QNetworkReply*)));
+        connect(_managers[2], SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedRateSong(QNetworkReply*)));
     }
 
-    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    auto request           = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
     QSslConfiguration conf = request.sslConfiguration();
     conf.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(conf);
@@ -364,15 +343,15 @@ void DoubanFM::rateSong(const quint32& sid, const qint32 &channel, const bool to
     _managers[2]->get(request);
 }
 
-void DoubanFM::onReceivedRateSong(QNetworkReply *reply) {
+void DoubanFM::onReceivedRateSong(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Error occurred while sending `rate`: " << reply->errorString();
         reply->deleteLater();
         return;
     }
 
-    QTextCodec *codec = QTextCodec::codecForName("utf-8");
-    QString all = codec->toUnicode(reply->readAll());
+    QTextCodec* codec = QTextCodec::codecForName("utf-8");
+    QString all       = codec->toUnicode(reply->readAll());
 
     QList<DoubanFMSong> songs;
     QJsonParseError parseerr;
@@ -386,30 +365,25 @@ void DoubanFM::onReceivedRateSong(QNetworkReply *reply) {
                 userReLogin();
             }
             emit receivedRateSong(false);
-        }
-        else {
+        } else {
             emit receivedRateSong(true);
         }
     }
     reply->deleteLater();
 }
 
-void DoubanFM::skipSong(const quint32 &sid, const qint32 &channel) {
-    QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
-            + QString("&sid=") + QString::number(sid)
-            + QString("&h=")
-            + QString("&channel=") + QString::number(channel, 10)
-            + QString("&type=s");
+void DoubanFM::skipSong(const quint32& sid, const qint32& channel) {
+    QString args = QString("?app_name=radio_android&version=100") + QString("&user_id=")
+                   + ((_user) ? _user->user_id : QString()) + QString("&expire=")
+                   + ((_user) ? _user->expire : QString()) + QString("&token=") + ((_user) ? _user->token : QString())
+                   + QString("&sid=") + QString::number(sid) + QString("&h=") + QString("&channel=")
+                   + QString::number(channel, 10) + QString("&type=s");
     if (_managers[3] == nullptr) {
         _managers[3] = new QNetworkAccessManager(this);
-        connect(_managers[3], SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(onReceivedSkipSong(QNetworkReply*)));
+        connect(_managers[3], SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedSkipSong(QNetworkReply*)));
     }
 
-    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    auto request           = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
     QSslConfiguration conf = request.sslConfiguration();
     conf.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(conf);
@@ -418,15 +392,15 @@ void DoubanFM::skipSong(const quint32 &sid, const qint32 &channel) {
     _managers[3]->get(request);
 }
 
-void DoubanFM::onReceivedSkipSong(QNetworkReply *reply) {
+void DoubanFM::onReceivedSkipSong(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Error occurred while sending `skip`: " << reply->errorString();
         reply->deleteLater();
         return;
     }
 
-    QTextCodec *codec = QTextCodec::codecForName("utf-8");
-    QString all = codec->toUnicode(reply->readAll());
+    QTextCodec* codec = QTextCodec::codecForName("utf-8");
+    QString all       = codec->toUnicode(reply->readAll());
 
     QJsonParseError parseerr;
     QVariant result = QJsonDocument::fromJson(all.toUtf8(), &parseerr).toVariant();
@@ -439,30 +413,25 @@ void DoubanFM::onReceivedSkipSong(QNetworkReply *reply) {
                 userReLogin();
             }
             emit receivedSkipSong(false);
-        }
-        else {
+        } else {
             emit receivedSkipSong(true);
         }
     }
     reply->deleteLater();
 }
 
-void DoubanFM::songEnd(const quint32& sid, const qint32 &channel) {
-    QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
-            + QString("&sid=") + QString::number(sid)
-            + QString("&h=")
-            + QString("&channel=") + QString::number(channel, 10)
-            + QString("&type=e");
+void DoubanFM::songEnd(const quint32& sid, const qint32& channel) {
+    QString args = QString("?app_name=radio_android&version=100") + QString("&user_id=")
+                   + ((_user) ? _user->user_id : QString()) + QString("&expire=")
+                   + ((_user) ? _user->expire : QString()) + QString("&token=") + ((_user) ? _user->token : QString())
+                   + QString("&sid=") + QString::number(sid) + QString("&h=") + QString("&channel=")
+                   + QString::number(channel, 10) + QString("&type=e");
     if (_managers[4] == nullptr) {
         _managers[4] = new QNetworkAccessManager(this);
-        connect(_managers[4], SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(onReceivedCurrentEnd(QNetworkReply*)));
+        connect(_managers[4], SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedCurrentEnd(QNetworkReply*)));
     }
 
-    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    auto request           = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
     QSslConfiguration conf = request.sslConfiguration();
     conf.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(conf);
@@ -471,35 +440,33 @@ void DoubanFM::songEnd(const quint32& sid, const qint32 &channel) {
     _managers[4]->get(request);
 }
 
-void DoubanFM::onReceivedCurrentEnd(QNetworkReply *reply) {
+void DoubanFM::onReceivedCurrentEnd(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Error occurred while sending `end`: " << reply->errorString();
         reply->deleteLater();
         return;
     }
-    QTextCodec *codec = QTextCodec::codecForName("utf-8");
-    QString all = codec->toUnicode(reply->readAll());
+    QTextCodec* codec = QTextCodec::codecForName("utf-8");
+    QString all       = codec->toUnicode(reply->readAll());
 
-    if (all == "ok") emit receivedCurrentEnd(true);
-    else emit receivedCurrentEnd(false);
+    if (all == "ok")
+        emit receivedCurrentEnd(true);
+    else
+        emit receivedCurrentEnd(false);
 }
 
-void DoubanFM::byeSong(const quint32 &sid, const qint32 &channel) {
-    QString args = QString("?app_name=radio_desktop_win&version=100")
-            + QString("&user_id=") + ((_user) ? _user->user_id : QString())
-            + QString("&expire=") + ((_user) ? _user->expire : QString())
-            + QString("&token=") + ((_user) ? _user->token : QString())
-            + QString("&sid=") + QString::number(sid)
-            + QString("&h=")
-            + QString("&channel=") + QString::number(channel, 10)
-            + QString("&type=b");
+void DoubanFM::byeSong(const quint32& sid, const qint32& channel) {
+    QString args = QString("?app_name=radio_android&version=100") + QString("&user_id=")
+                   + ((_user) ? _user->user_id : QString()) + QString("&expire=")
+                   + ((_user) ? _user->expire : QString()) + QString("&token=") + ((_user) ? _user->token : QString())
+                   + QString("&sid=") + QString::number(sid) + QString("&h=") + QString("&channel=")
+                   + QString::number(channel, 10) + QString("&type=b");
     if (_managers[5] == nullptr) {
         _managers[5] = new QNetworkAccessManager(this);
-        connect(_managers[5], SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(onReceivedByeSong(QNetworkReply*)));
+        connect(_managers[5], SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedByeSong(QNetworkReply*)));
     }
 
-    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
+    auto request           = QNetworkRequest(QUrl(DOUBAN_FM_API_ADDR + args));
     QSslConfiguration conf = request.sslConfiguration();
     conf.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(conf);
@@ -508,15 +475,15 @@ void DoubanFM::byeSong(const quint32 &sid, const qint32 &channel) {
     _managers[5]->get(request);
 }
 
-void DoubanFM::onReceivedByeSong(QNetworkReply *reply) {
+void DoubanFM::onReceivedByeSong(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Error occurred while sending `bye`: " << reply->errorString();
         reply->deleteLater();
         return;
     }
 
-    QTextCodec *codec = QTextCodec::codecForName("utf-8");
-    QString all = codec->toUnicode(reply->readAll());
+    QTextCodec* codec = QTextCodec::codecForName("utf-8");
+    QString all       = codec->toUnicode(reply->readAll());
 
     QJsonParseError parseerr;
     QVariant result = QJsonDocument::fromJson(all.toUtf8(), &parseerr).toVariant();
@@ -529,8 +496,7 @@ void DoubanFM::onReceivedByeSong(QNetworkReply *reply) {
                 userReLogin();
             }
             emit receivedByeSong(false);
-        }
-        else {
+        } else {
             emit receivedByeSong(true);
         }
     }
@@ -540,11 +506,10 @@ void DoubanFM::onReceivedByeSong(QNetworkReply *reply) {
 void DoubanFM::getChannels() {
     if (_managers[6] == nullptr) {
         _managers[6] = new QNetworkAccessManager(this);
-        connect(_managers[6], SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(onReceivedChannels(QNetworkReply*)));
+        connect(_managers[6], SIGNAL(finished(QNetworkReply*)), this, SLOT(onReceivedChannels(QNetworkReply*)));
     }
 
-    auto request = QNetworkRequest(QUrl(DOUBAN_FM_API_CHANNEL));
+    auto request           = QNetworkRequest(QUrl(DOUBAN_FM_API_CHANNEL));
     QSslConfiguration conf = request.sslConfiguration();
     conf.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(conf);
@@ -553,50 +518,46 @@ void DoubanFM::getChannels() {
     _managers[6]->get(request);
 }
 
-void DoubanFM::onReceivedChannels(QNetworkReply *reply) {
+void DoubanFM::onReceivedChannels(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Error occured while getting channels: " << reply->errorString();
         reply->deleteLater();
         return;
     }
 
-    QTextCodec *codec = QTextCodec::codecForName("utf-8");
-    QString all = codec->toUnicode(reply->readAll());
+    QTextCodec* codec = QTextCodec::codecForName("utf-8");
+    QString all       = codec->toUnicode(reply->readAll());
     QList<DoubanChannel> channels;
     QJsonParseError parseerr;
     QVariant result = QJsonDocument::fromJson(all.toUtf8(), &parseerr).toVariant();
 
     if (parseerr.error == QJsonParseError::NoError) {
-
-        QVariantMap obj = result.toMap();
+        QVariantMap obj     = result.toMap();
         QVariantList chList = obj["channels"].toList();
-        foreach(const QVariant& item, chList) {
+        foreach (const QVariant& item, chList) {
             QVariantMap ch = item.toMap();
             DoubanChannel dc;
-            dc.name = ch["name"].toString();
-            dc.name_en = ch["name_en"].toString();
-            dc.seq_id = ch["seq_id"].toInt();
+            dc.name       = ch["name"].toString();
+            dc.name_en    = ch["name_en"].toString();
+            dc.seq_id     = ch["seq_id"].toInt();
             dc.channel_id = ch["channel_id"].toInt();
             dc.abbr_en = ch["abbr_en"].toString();
             channels.append(dc);
         }
     }
 
-    std::sort(channels.begin(), channels.end(),
-              [] (const DoubanChannel& a, const DoubanChannel& b) {
-        return a.seq_id < b.seq_id;
-    });
+    std::sort(channels.begin(),
+              channels.end(),
+              [](const DoubanChannel& a, const DoubanChannel& b) { return a.seq_id < b.seq_id; });
     DoubanChannel favourites;
-    favourites.abbr_en = "fav";
+    favourites.abbr_en    = "fav";
     favourites.channel_id = -3;
-    favourites.name = tr("My favourite");
-    favourites.name_en = "favourites";
+    favourites.name       = tr("My favourite");
+    favourites.name_en    = "favourites";
     favourites.seq_id = -3;
     channels.push_front(favourites);
     emit receivedChannels(channels);
     reply->deleteLater();
 }
 
-bool DoubanFM::hasLogin() {
-    return !!_user;
-}
+bool DoubanFM::hasLogin() { return !!_user; }

@@ -62,6 +62,9 @@ DEFINES += WITH_SYSTEM_TRAY_ICON
 
 剩余步骤与上面相同。
 
+* openSUSE
+
+[一键安装](https://software.opensuse.org/download.html?project=home%3Aopensuse_zh&package=doubanfm-qt5)
 
 * Windows或OSX
 

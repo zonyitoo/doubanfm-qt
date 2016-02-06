@@ -12,10 +12,10 @@ const QString LOCAL_SOCKET_NAME = "QDoubanFM_LocalSocket";
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    if(true){
-        QTranslator translator;
-        translator.load("i18n/zh_CN.qm");
-        a.installTranslator(&translator);
+    if (true) {
+        auto translator = new QTranslator(&a);
+        translator->load("zh_CN", QApplication::applicationDirPath() + "/i18n");
+        a.installTranslator(translator);
         //此地暂作这样的处理，以后可以增加语言切换功能
     }
     QLocalSocket socket;

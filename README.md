@@ -28,6 +28,7 @@
 * gstreamer0.10-fluendo-mp3
 * libpulse0 libpulse-dev
 * libqt5dbus5
+* libqt5multimedia5-plugins
 
 不同平台相应的包名不一样，基本需求是Qt5的基础包，Qt5 Multimedia模块，Qt5 DBus模块，mp3解码器
 

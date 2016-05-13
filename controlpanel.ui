@@ -98,33 +98,33 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="pauseButton">
+  <widget class="QPushButton" name="pauseButton">
    <property name="geometry">
     <rect>
-     <x>492</x>
-     <y>32</y>
-     <width>13</width>
-     <height>14</height>
+     <x>480</x>
+     <y>30</y>
+     <width>30</width>
+     <height>30</height>
     </rect>
    </property>
-   <property name="minimumSize">
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <property name="icon">
+    <iconset resource="imgs.qrc">
+     <normaloff>:/img/pause.svg</normaloff>
+     <normalon>:/img/pause.svg</normalon>
+     <activeoff>:/img/pause_active.svg</activeoff>
+     <activeon>:/img/pause_active.svg</activeon>:/img/pause.svg</iconset>
+   </property>
+   <property name="iconSize">
     <size>
-     <width>13</width>
-     <height>14</height>
+     <width>24</width>
+     <height>24</height>
     </size>
    </property>
-   <property name="maximumSize">
-    <size>
-     <width>13</width>
-     <height>14</height>
-    </size>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QToolButton{border-image: url(:/img/pause_normal.png);}
-QToolButton:hover{border-image: url(:/img/pause_clicked.png);}</string>
-   </property>
-   <property name="text">
-    <string/>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QSlider" name="seeker">
@@ -136,7 +136,7 @@ QToolButton:hover{border-image: url(:/img/pause_clicked.png);}</string>
      <x>217</x>
      <y>90</y>
      <width>291</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="maximum">
@@ -157,27 +157,34 @@ QToolButton:hover{border-image: url(:/img/pause_clicked.png);}</string>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QToolButton" name="likeButton">
-      <property name="minimumSize">
-       <size>
-        <width>37</width>
-        <height>32</height>
-       </size>
-      </property>
+     <widget class="QPushButton" name="likeButton">
       <property name="maximumSize">
        <size>
-        <width>37</width>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="icon">
+       <iconset resource="imgs.qrc">
+        <normaloff>:/img/heart.svg</normaloff>
+        <normalon>:/img/heart_red.svg</normalon>
+        <activeoff>:/img/heart_active.svg</activeoff>
+        <activeon>:/img/heart_red_active.svg</activeon>:/img/heart.svg</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
         <height>32</height>
        </size>
       </property>
-      <property name="styleSheet">
-       <string notr="true">QToolButton{border-image: url(:/img/like.png);}
-QToolButton:hover{border-image: url(:/img/unlike.png);}
-QToolButton:clicked{border-image: url(:/img/like_disabled.png);}
-QToolButton:disabled{border-image: url(:/img/like_disabled.png);}</string>
+      <property name="checkable">
+       <bool>true</bool>
       </property>
-      <property name="text">
-       <string/>
+      <property name="flat">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -195,27 +202,31 @@ QToolButton:disabled{border-image: url(:/img/like_disabled.png);}</string>
      </spacer>
     </item>
     <item>
-     <widget class="QToolButton" name="trashButton">
-      <property name="minimumSize">
-       <size>
-        <width>32</width>
-        <height>40</height>
-       </size>
-      </property>
+     <widget class="QPushButton" name="trashButton">
       <property name="maximumSize">
        <size>
-        <width>32</width>
+        <width>40</width>
         <height>40</height>
        </size>
       </property>
-      <property name="styleSheet">
-       <string notr="true">QToolButton{border-image: url(:/img/trash_can_normal.png);}
-QToolButton:hover{border-image: url(:/img/trash_can_clicked.png);}
-QToolButton:disabled{border-image: url(:/img/trash_can_clicked.png);}
-QToolButton:clicked{border-image: url(:/img/trash_can_normal.png);}</string>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
-      <property name="text">
-       <string/>
+      <property name="icon">
+       <iconset resource="imgs.qrc">
+        <normaloff>:/img/trash.svg</normaloff>
+        <normalon>:/img/trash.svg</normalon>
+        <activeoff>:/img/trash_active.svg</activeoff>
+        <activeon>:/img/trash_active.svg</activeon>:/img/trash.svg</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -233,27 +244,31 @@ QToolButton:clicked{border-image: url(:/img/trash_can_normal.png);}</string>
      </spacer>
     </item>
     <item>
-     <widget class="QToolButton" name="nextButton">
-      <property name="minimumSize">
-       <size>
-        <width>40</width>
-        <height>24</height>
-       </size>
-      </property>
+     <widget class="QPushButton" name="nextButton">
       <property name="maximumSize">
        <size>
         <width>40</width>
-        <height>24</height>
+        <height>40</height>
        </size>
       </property>
-      <property name="styleSheet">
-       <string notr="true">QToolButton{border-image: url(:/img/next_normal.png);}
-QToolButton:hover{border-image: url(:/img/next_clicked.png);}
-QToolButton:disabled{border-image: url(:/img/next_clicked.png);}
-QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
-      <property name="text">
-       <string/>
+      <property name="icon">
+       <iconset resource="imgs.qrc">
+        <normaloff>:/img/next.svg</normaloff>
+        <normalon>:/img/next.svg</normalon>
+        <activeoff>:/img/next_active.svg</activeoff>
+        <activeon>:/img/next_active.svg</activeon>:/img/next.svg</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -286,7 +301,7 @@ QToolButton:clicked{border-image: url(:/img/next_normal.png);}</string>
     <rect>
      <x>218</x>
      <y>47</y>
-     <width>291</width>
+     <width>261</width>
      <height>20</height>
     </rect>
    </property>
@@ -438,8 +453,8 @@ QPushButton:checked {
     <rect>
      <x>480</x>
      <y>60</y>
-     <width>31</width>
-     <height>27</height>
+     <width>30</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="focusPolicy">
@@ -450,12 +465,15 @@ QPushButton:checked {
    </property>
    <property name="icon">
     <iconset resource="imgs.qrc">
-     <normaloff>:/img/setting-icon.png</normaloff>:/img/setting-icon.png</iconset>
+     <normaloff>:/img/setting.svg</normaloff>
+     <normalon>:/img/setting.svg</normalon>
+     <activeoff>:/img/setting_active.svg</activeoff>
+     <activeon>:/img/setting_active.svg</activeon>:/img/setting.svg</iconset>
    </property>
    <property name="iconSize">
     <size>
-     <width>20</width>
-     <height>20</height>
+     <width>24</width>
+     <height>24</height>
     </size>
    </property>
    <property name="flat">

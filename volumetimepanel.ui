@@ -68,7 +68,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="imgs.qrc">:/img/volume_clicked.png</pixmap>
+    <pixmap resource="imgs.qrc">:/img/volume.svg</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>

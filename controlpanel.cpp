@@ -54,7 +54,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
         ui->albumImg->setAlbumImage(image);
         reply->deleteLater();
     });
-    
+
     //player.setPlaylist(new QMediaPlaylist(&player));
     connect(&player, &DoubanPlayer::currentSongChanged, [=] (const DoubanFMSong& song) {
         setArtistName(song.artist);
@@ -65,16 +65,10 @@ ControlPanel::ControlPanel(QWidget *parent) :
         mod_url.replace("mpic", "lpic");
         imgmgr->get(QNetworkRequest(QUrl(mod_url)));
         if (song.like) {
-            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}"
-                                          "QToolButton:hover{border-image: url(:/img/unlike.png);}"
-                                          "QToolButton:clicked{border-image: url(:/img/like_disabled.png);}"
-                                          "QToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            ui->likeButton->setChecked(true);
         }
         else {
-            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}"
-                                          "QToolButton:hover{border-image: url(:/img/like.png);}"
-                                          "QToolButton:clicked{border-image: url(:/img/like_disabled.png);}"
-                                          "QToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            ui->likeButton->setChecked(false);
         }
     });
 
@@ -92,16 +86,10 @@ ControlPanel::ControlPanel(QWidget *parent) :
         if (!succeed) return;
 
         if (player.currentSong().like) {
-            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/like.png);}"
-                                          "QToolButton:hover{border-image: url(:/img/unlike.png);}"
-                                          "QToolButton:clicked{border-image: url(:/img/like_disabled.png);}"
-                                          "QToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            ui->likeButton->setChecked(true);
         }
         else {
-            ui->likeButton->setStyleSheet("QToolButton{border-image: url(:/img/unlike.png);}"
-                                          "QToolButton:hover{border-image: url(:/img/like.png);}"
-                                          "QToolButton:clicked{border-image: url(:/img/like_disabled.png);}"
-                                          "QToolButton:disabled{border-image: url(:/img/like_disabled.png);}");
+            ui->likeButton->setChecked(false);
         }
     });
 

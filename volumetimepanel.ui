@@ -6,39 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>85</width>
-    <height>16</height>
+    <width>102</width>
+    <height>20</height>
    </rect>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>85</width>
-    <height>16</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>85</width>
-    <height>16</height>
-   </size>
-  </property>
-  <property name="windowTitle">
-   <string>Form</string>
   </property>
   <widget class="QLabel" name="tick">
    <property name="geometry">
     <rect>
-     <x>32</x>
-     <y>1</y>
+     <x>43</x>
+     <y>0</y>
      <width>32</width>
-     <height>16</height>
+     <height>20</height>
     </rect>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>16777215</width>
-     <height>16777215</height>
-    </size>
    </property>
    <property name="font">
     <font>
@@ -58,10 +37,10 @@
   <widget class="QLabel" name="volumeImg">
    <property name="geometry">
     <rect>
-     <x>71</x>
-     <y>3</y>
-     <width>14</width>
-     <height>12</height>
+     <x>80</x>
+     <y>0</y>
+     <width>20</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="text">
@@ -77,10 +56,10 @@
   <widget class="QSlider" name="volume">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>5</y>
-     <width>61</width>
-     <height>7</height>
+     <x>25</x>
+     <y>0</y>
+     <width>75</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="styleSheet">

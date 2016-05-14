@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QLocalSocket>
 #include <QLocalServer>
+#include <QTranslator>
+#include <QLocale>
 
 #include "plugins/plugin.hpp"
 
@@ -60,6 +62,16 @@ int main(int argc, char *argv[])
         qDebug() << "Raise window";
     });
     server.listen(LOCAL_SOCKET_NAME);
+
+    // i18n
+    QTranslator qtTranslator;
+    qtTranslator.load("qt_" + QLocale::system().name(),
+            QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    a.installTranslator(&qtTranslator);
+
+    QTranslator myappTranslator;
+    myappTranslator.load("i18n/" + QLocale::system().name());
+    a.installTranslator(&myappTranslator);
 
     return a.exec();
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN" sourcelanguage="en_US">
+<TS version="2.1" language="zh_CN" sourcelanguage="en_US">
 <context>
     <name>AlbumWidget</name>
     <message>
@@ -36,12 +36,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../controlpanel.ui" line="374"/>
+        <location filename="../controlpanel.ui" line="362"/>
         <source>&lt;font color=white&gt;Channels&lt;/font&gt;</source>
         <translation>&lt;font color=white&gt;频&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;道&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../controlpanel.ui" line="436"/>
+        <location filename="../controlpanel.ui" line="424"/>
         <source>Lyric</source>
         <translation>歌     词</translation>
     </message>
@@ -179,12 +179,7 @@
 <context>
     <name>VolumeTimePanel</name>
     <message>
-        <location filename="../volumetimepanel.ui" line="26"/>
-        <source>Form</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../volumetimepanel.ui" line="52"/>
+        <location filename="../volumetimepanel.ui" line="31"/>
         <source>0:00</source>
         <translation></translation>
     </message>

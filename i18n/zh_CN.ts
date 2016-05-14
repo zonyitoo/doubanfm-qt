@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="zh_CN" sourcelanguage="en_US">
+<TS version="2.0" language="zh_CN" sourcelanguage="en_US">
 <context>
     <name>AlbumWidget</name>
     <message>
@@ -36,12 +36,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../controlpanel.ui" line="359"/>
+        <location filename="../controlpanel.ui" line="374"/>
         <source>&lt;font color=white&gt;Channels&lt;/font&gt;</source>
         <translation>&lt;font color=white&gt;频&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;道&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../controlpanel.ui" line="421"/>
+        <location filename="../controlpanel.ui" line="436"/>
         <source>Lyric</source>
         <translation>歌     词</translation>
     </message>
@@ -49,7 +49,7 @@
 <context>
     <name>DoubanFM</name>
     <message>
-        <location filename="../libs/doubanfm.cpp" line="592"/>
+        <location filename="../libs/doubanfm.cpp" line="555"/>
         <source>My favourite</source>
         <translation>红心兆赫</translation>
     </message>

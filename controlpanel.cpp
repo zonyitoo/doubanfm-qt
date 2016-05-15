@@ -112,11 +112,6 @@ ControlPanel::ControlPanel(QWidget *parent) :
         QDesktopServices::openUrl(QUrl("http://www.douban.com" + player.currentSong().album));
     });
 
-    connect(ui->channelWidgetTrigger, &ChannelWidgetTrigger::enter,
-            [this] () {
-        emit this->openChannelPanel();
-    });
-
     connect(&player, &DoubanPlayer::canControlChanged, [=] (bool can) {
         ui->nextButton->setEnabled(can);
         ui->trashButton->setEnabled(can);
@@ -277,13 +272,17 @@ void ControlPanel::pause() {
     player.pause();
 }
 
-void ControlPanel::enterEvent(QEvent *) {
-    emit closeChannelPanel();
-}
-
 void ControlPanel::on_settingButton_clicked()
 {
     settingDialog->show();
+}
+
+void ControlPanel::on_channelButton_clicked(bool checked)
+{
+    if (checked)
+        emit openChannelPanel();
+    else
+        emit closeChannelPanel();
 }
 
 void ControlPanel::on_lyricButton_clicked(bool checked)

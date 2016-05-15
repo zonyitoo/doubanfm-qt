@@ -18,7 +18,7 @@ MainWidget::MainWidget(QWidget *parent) :
     bottomBorder(new QLabel(this)),
     systemTrayIcon(nullptr)
 {
-    ui->setupUi(this);  
+    ui->setupUi(this);
     ui->lyricWidget->lower();
     ui->channelWidget->raise();
     ui->controlWidget->raise();
@@ -58,8 +58,6 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(likeShortcut, SIGNAL(activated()), ui->controlWidget, SLOT(on_likeButton_clicked()));
     hideShortcut = new QShortcut(QKeySequence("Ctrl+W"), this);
     connect(hideShortcut, SIGNAL(activated()), this, SLOT(hide()));
-
-    connect(ui->channelWidget, SIGNAL(mouseLeave()), this, SLOT(animHideChannelWidget()));
 
     connect(ui->controlWidget, SIGNAL(openChannelPanel()), this, SLOT(animShowChannelWidget()));
     connect(ui->controlWidget, SIGNAL(closeChannelPanel()), this, SLOT(animHideChannelWidget()));

@@ -36,14 +36,14 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../controlpanel.ui" line="362"/>
-        <source>&lt;font color=white&gt;Channels&lt;/font&gt;</source>
-        <translation>&lt;font color=white&gt;频&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;道&lt;/font&gt;</translation>
+        <location filename="../controlpanel.ui" line="336"/>
+        <source>Channel</source>
+        <translation>频        道</translation>
     </message>
     <message>
-        <location filename="../controlpanel.ui" line="424"/>
+        <location filename="../controlpanel.ui" line="397"/>
         <source>Lyric</source>
-        <translation>歌     词</translation>
+        <translation>歌        词</translation>
     </message>
 </context>
 <context>
@@ -76,12 +76,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwidget.cpp" line="80"/>
+        <location filename="../mainwidget.cpp" line="78"/>
         <source>Open main window</source>
         <translation>打开主界面</translation>
     </message>
     <message>
-        <location filename="../mainwidget.cpp" line="82"/>
+        <location filename="../mainwidget.cpp" line="80"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>

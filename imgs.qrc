@@ -16,17 +16,12 @@
     <file>img/setting_active.svg</file>
     <file>img/arrow_left.png</file>
     <file>img/arrow_right.png</file>
-    <file>img/channel.png</file>
     <file>img/bg.png</file>
     <file>icon.png</file>
     <file>img/album_init.jpg</file>
-    <file>img/channel_handler.png</file>
     <file>img/arrow_right_clicked.png</file>
     <file>img/arrow_left_clicked.png</file>
     <file>img/user_man_circle.png</file>
     <file>img/apple-ios-linen-texture.jpg</file>
-    <file>img/icon_lyrics.png</file>
-    <file>img/lyric_handler_normal.png</file>
-    <file>img/lyric_handler_pressed.png</file>
   </qresource>
 </RCC>

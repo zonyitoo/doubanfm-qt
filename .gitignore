@@ -11,3 +11,4 @@ release_tmp/
 debug/
 tmp/
 doubanfm-qt.pro.user
+qrc_*.cpp

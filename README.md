@@ -5,7 +5,7 @@
 如果你喜欢本项目的话，给我买瓶啤酒喝好不;)
 
 <!--支付宝已经下线了这个功能
-<a href='http://me.alipay.com/zonyitoo'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a> 
+<a href='http://me.alipay.com/zonyitoo'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a>
 -->
 
 ![支付宝](https://tfsimg.alipay.com/images/mobilecodec/T1nwBdXXdlXXXXXXXX)
@@ -42,6 +42,7 @@
 
 ```bash
 lupdate doubanfm-qt.pro
+lrelease doubanfm-qt.pro
 qmake doubanfm-qt.pro
 make
 ```

@@ -2,6 +2,8 @@
 #include "ui_controlpanel.h"
 #include <QLinearGradient>
 #include <QPainter>
+#include <QPolygon>
+#include <QRegion>
 #include <QDebug>
 #include <QTime>
 #include <QSettings>
@@ -22,6 +24,15 @@ ControlPanel::ControlPanel(QWidget *parent) :
 {
     ui->setupUi(this);
     loadConfig();
+
+    // Shape of channelButton and lyricButton
+    QPolygon polygonTop, polygonBottom;
+    polygonTop.setPoints(4,   0, 0,   131, 0,   115, 16,    16, 16);
+    polygonBottom.setPoints(4,    16, 0,    115, 0,    131, 16,    0, 16);
+    QRegion regionTop(polygonTop);
+    QRegion regionBottom(polygonBottom);
+    ui->channelButton->setMask(regionTop);
+    ui->lyricButton->setMask(regionBottom);
 
     connect(imgmgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {

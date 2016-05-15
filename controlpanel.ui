@@ -303,7 +303,7 @@
     <string/>
    </property>
   </widget>
-  <widget class="ChannelWidgetTrigger" name="channelWidgetTrigger" native="true">
+  <widget class="QPushButton" name="channelButton">
    <property name="geometry">
     <rect>
      <x>384</x>
@@ -312,59 +312,32 @@
      <height>16</height>
     </rect>
    </property>
-   <property name="minimumSize">
-    <size>
-     <width>0</width>
-     <height>0</height>
-    </size>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
    </property>
-   <property name="maximumSize">
-    <size>
-     <width>16777215</width>
-     <height>16777215</height>
-    </size>
+   <property name="styleSheet">
+    <string notr="true">* {
+border: none;
+background-color:#555;
+color: #fff;
+}
+
+*:hover {
+background-color:#333;
+}
+
+*:clicked {
+background-color:#555;
+}</string>
    </property>
-   <widget class="QLabel" name="channelWidgetTrigger_bg">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>131</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="imgs.qrc">:/img/channel_handler.png</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="channelWidgetTrigger_text">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>131</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>文泉驿微米黑</family>
-      <pointsize>9</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>&lt;font color=white&gt;Channels&lt;/font&gt;</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
+   <property name="text">
+    <string>Channel</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="AlbumWidget" name="albumImg" native="true">
    <property name="geometry">
@@ -399,7 +372,6 @@
    </property>
    <property name="font">
     <font>
-     <family>文泉驿微米黑</family>
      <pointsize>9</pointsize>
     </font>
    </property>
@@ -407,32 +379,24 @@
     <enum>Qt::NoFocus</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">QPushButton {
-    border-image: url(:/img/lyric_handler_normal.png);
-    color: #ffffff;
+    <string notr="true">* {
+border: none;
+background-color:#555;
+color: #fff;
 }
-QPushButton:pressed {
-    border-image: url(:/img/lyric_handler_pressed.png);
-    color: #ffffff;
+
+*:hover {
+background-color:#333;
 }
-QPushButton:checked {
-    border-image: url(:/img/lyric_handler_pressed.png);
-    color: #ffffff;
+
+*:clicked {
+background-color:#555;
 }</string>
    </property>
    <property name="text">
     <string>Lyric</string>
    </property>
-   <property name="iconSize">
-    <size>
-     <width>16</width>
-     <height>16</height>
-    </size>
-   </property>
    <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="flat">
     <bool>true</bool>
    </property>
   </widget>
@@ -474,12 +438,6 @@ QPushButton:checked {
    <class>VolumeTimePanel</class>
    <extends>QWidget</extends>
    <header>volumetimepanel.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ChannelWidgetTrigger</class>
-   <extends>QWidget</extends>
-   <header>channelwidgettrigger.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

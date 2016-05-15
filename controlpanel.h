@@ -17,12 +17,10 @@ class ControlPanel;
 class ControlPanel : public QWidget
 {
     Q_OBJECT
-    
+
 public:
     explicit ControlPanel(QWidget *parent = 0);
     ~ControlPanel();
-
-    void enterEvent(QEvent *);
 
 signals:
     void openChannelPanel();
@@ -67,6 +65,7 @@ private slots:
     void setAlbumName(const QString &name);
     void on_settingButton_clicked();
     void on_lyricButton_clicked(bool checked);
+    void on_channelButton_clicked(bool checked);
 };
 
 #endif // CONTROLPANEL_H

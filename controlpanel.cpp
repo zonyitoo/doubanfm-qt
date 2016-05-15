@@ -2,6 +2,8 @@
 #include "ui_controlpanel.h"
 #include <QLinearGradient>
 #include <QPainter>
+#include <QPolygon>
+#include <QRegion>
 #include <QDebug>
 #include <QTime>
 #include <QSettings>
@@ -22,6 +24,15 @@ ControlPanel::ControlPanel(QWidget *parent) :
 {
     ui->setupUi(this);
     loadConfig();
+
+    // Shape of channelButton and lyricButton
+    QPolygon polygonTop, polygonBottom;
+    polygonTop.setPoints(4,   0, 0,   131, 0,   115, 16,    16, 16);
+    polygonBottom.setPoints(4,    16, 0,    115, 0,    131, 16,    0, 16);
+    QRegion regionTop(polygonTop);
+    QRegion regionBottom(polygonBottom);
+    ui->channelButton->setMask(regionTop);
+    ui->lyricButton->setMask(regionBottom);
 
     connect(imgmgr, &QNetworkAccessManager::finished, [this] (QNetworkReply *reply) {
         if (QNetworkReply::NoError != reply->error()) {
@@ -110,11 +121,6 @@ ControlPanel::ControlPanel(QWidget *parent) :
     //ui->lyricWidget->setVisible(false);
     connect(ui->albumImg, &AlbumWidget::clicked, [this] () {
         QDesktopServices::openUrl(QUrl("http://www.douban.com" + player.currentSong().album));
-    });
-
-    connect(ui->channelWidgetTrigger, &ChannelWidgetTrigger::enter,
-            [this] () {
-        emit this->openChannelPanel();
     });
 
     connect(&player, &DoubanPlayer::canControlChanged, [=] (bool can) {
@@ -277,13 +283,17 @@ void ControlPanel::pause() {
     player.pause();
 }
 
-void ControlPanel::enterEvent(QEvent *) {
-    emit closeChannelPanel();
-}
-
 void ControlPanel::on_settingButton_clicked()
 {
     settingDialog->show();
+}
+
+void ControlPanel::on_channelButton_clicked(bool checked)
+{
+    if (checked)
+        emit openChannelPanel();
+    else
+        emit closeChannelPanel();
 }
 
 void ControlPanel::on_lyricButton_clicked(bool checked)

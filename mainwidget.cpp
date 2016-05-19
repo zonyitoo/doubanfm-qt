@@ -71,8 +71,18 @@ MainWidget::MainWidget(QWidget *parent) :
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
         systemTrayIcon = new QSystemTrayIcon(QIcon("://icon.png"), this);
         connect(systemTrayIcon, &QSystemTrayIcon::activated, [&] () {
-            if (this->isHidden())
+            if (this->isHidden()) {
                 this->show();
+                this->raise();
+                this->activateWindow();
+            } else {
+                if (this->isActiveWindow()) {
+                    this->hide();
+                } else {
+                    this->raise();
+                    this->activateWindow();
+                }
+            }
         });
         QMenu *trayMenu = new QMenu(this);
         auto _openAction = trayMenu->addAction(tr("Open main window"));

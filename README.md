@@ -100,7 +100,7 @@ DEFINES += WITH_SYSTEM_TRAY_ICON
 - [x] 在长时间暂停后重启播放会崩溃
 - [x] 在网络不好时卡住会崩溃
 - [x] 动画有Bug，若打开了频道界面然后鼠标离开，则会让控制面板滑动位置出错
-- [ ] KDE4.9 上未知原因崩溃
+- [x] KDE4.9 上未知原因崩溃 (Fixed in KDE5)
 - [ ] Ubuntu不支持`QSystemTrayIcon`导致软件不能正常退出
 
 ## LICENSE
